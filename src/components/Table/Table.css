@@ -1,0 +1,109 @@
+.MuiTableRow-root > * {
+  padding: 10px;
+}
+
+.MuiTableRow-root.MuiTableRow-head > * {
+  font-weight: bold !important;
+}
+.Table{
+  margin: 1rem;
+  padding: auto;
+  /* background-color: #00b5ff; */
+  /* width: 100%; */
+}
+.Table td,
+th {
+  /* border: none !important; */
+  padding-left: 10px;
+  /* background-color: #00b5f4; */
+}
+
+.Table:first-child {
+  border-radius: 0.7rem !important;
+  
+}
+.status {
+  padding: 8px;
+  border-radius: 9px;
+}
+.Title {
+  font-size: larger;
+}
+.Details {
+  color: #00b5ff !important;
+}
+/* -------------------------------------------------- */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  background-color: #fff;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 20px;
+}
+
+.header-link {
+  color: #00bfa5;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.header-link:hover {
+  text-decoration: underline;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.new-pt-button {
+  background-color: #00bfa5;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.new-pt-button:hover {
+  background-color: #009688;
+}
+
+@media screen and (max-width: 1200px) {
+  .Table {
+    width: 170%;
+    margin-top: 2rem;
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  .Table{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 23rem;
+  }
+}
