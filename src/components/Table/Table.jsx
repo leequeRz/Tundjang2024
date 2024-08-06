@@ -1,90 +1,82 @@
-import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import "./Table.css";
+import React from 'react';
+import './Table.css';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
-function createData(name, trackingId, date, status) {
-  return { name, trackingId, date, status };
-}
-
-const rows = [
-  createData("Lasania Chiken Fri", 18908424, "2 March 2022", "Approved"),
-  createData("Big Baza Bang ", 18908424, "2 March 2022", "Pending"),
-  createData("Mouth Freshner", 18908424, "2 March 2022", "Approved"),
-  createData("Cupcake", 18908421, "2 March 2022", "Delivered"),
-];
-
-const makeStyle = (status) => {
-  if (status === 'Approved') {
-    return {
-      background: 'rgb(145 254 159 / 47%)',
-      color: 'green',
-    };
-  } else if (status === 'Pending') {
-    return {
-      background: '#ffadad8f',
-      color: 'red',
-    };
-  } else {
-    return {
-      background: '#59bfff',
-      color: 'white',
-    };
-  }
+const createData = (name, BP, HR, RR, O2, BT) => {
+  return { name, BP, HR, RR, O2, BT };
 };
 
-export default function BasicTable() {
+const rows = [
+  createData('Jane Cooper', 'Normal', 'High Abnormal', 'High Abnormal', 'High Abnormal', 'High Abnormal'),
+  createData('Floyd Miles', 'High Abnormal', 'Normal', 'High Abnormal', 'High Abnormal', 'High Abnormal'),
+  createData('Ronald Richards', 'High Abnormal', 'Low Abnormal', 'Low Abnormal', 'High Abnormal', 'High Abnormal'),
+  createData('Marvin McKinney', 'Low Abnormal', 'Low Abnormal', 'Low Abnormal', 'Normal', 'Normal'),
+  createData('Jerome Bell', 'Low Abnormal', 'High Abnormal', 'High Abnormal', 'High Abnormal', 'High Abnormal'),
+  createData('Kathryn Murphy', 'Low Abnormal', 'Low Abnormal', 'Normal', 'High Abnormal', 'High Abnormal'),
+  createData('Jacob Jones', 'Normal', 'Normal', 'Low Abnormal', 'High Abnormal', 'Low Abnormal'),
+  createData('Kristin Watson', 'Normal', 'Low Abnormal', 'Low Abnormal', 'Normal', 'Low Abnormal'),
+];
+
+const TableComponent = () => {
   return (
-    <div className="Table">
+    <div className="container">
       <div className="header-container">
         <div className="header-left">
-          <span className="header-title">All Customers</span>
-          <a href="/active-members" className="header-link">Active/Members</a>
+          <div className="header-title">All Customers</div>
+          <div className="header-link">Active Members</div>
         </div>
         <div className="header-right">
           <input type="text" className="search-input" placeholder="Search" />
           <button className="new-pt-button">New PT</button>
         </div>
       </div>
-      <TableContainer
-        component={Paper}
-        style={{ boxShadow: "0px 13px 20px 0px #80808029" }}
-      >
-        <Table sx={{ minWidth: 900 }} aria-label="simple table">
+      <TableContainer component={Paper}>
+        <Table className="Table">
           <TableHead>
             <TableRow>
-              <TableCell>Product</TableCell>
-              <TableCell align="left">Tracking ID</TableCell>
-              <TableCell align="left">Date</TableCell>
-              <TableCell align="left">Status</TableCell>
-              <TableCell align="left"></TableCell>
+              <TableCell>Customer Name</TableCell>
+              <TableCell>BP</TableCell>
+              <TableCell>HR</TableCell>
+              <TableCell>RR</TableCell>
+              <TableCell>O2</TableCell>
+              <TableCell>BT</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody style={{ color: "white" }}>
-            {rows.map((row) => (
-              <TableRow
-                key={row.name}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="left">{row.trackingId}</TableCell>
-                <TableCell align="left">{row.date}</TableCell>
-                <TableCell align="left">
-                  <span className="status" style={makeStyle(row.status)}>{row.status}</span>
-                </TableCell>
-                <TableCell align="left" className="Details">Details</TableCell>
+          <TableBody>
+            {rows.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell>{row.name}</TableCell>
+                <TableCell>{row.BP}</TableCell>
+                <TableCell>{row.HR}</TableCell>
+                <TableCell>{row.RR}</TableCell>
+                <TableCell>{row.O2}</TableCell>
+                <TableCell>{row.BT}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <div className="pagination">
+        <span>Showing data 1 to 8 of 256K entries</span>
+        <div className="pagination-controls">
+          <button>{'<'}</button>
+          <button className="active">1</button>
+          <button>2</button>
+          <button>3</button>
+          <button>4</button>
+          <button>...</button>
+          <button>40</button>
+          <button>{'>'}</button>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default TableComponent;

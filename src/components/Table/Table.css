@@ -5,34 +5,24 @@
 .MuiTableRow-root.MuiTableRow-head > * {
   font-weight: bold !important;
 }
-.Table{
+
+.Table {
   margin: 1rem;
-  padding: auto;
-  /* background-color: #00b5ff; */
-  /* width: 100%; */
-}
-.Table td,
-th {
-  /* border: none !important; */
-  padding-left: 10px;
-  /* background-color: #00b5f4; */
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.Table:first-child {
-  border-radius: 0.7rem !important;
-  
+.Table td,
+.Table th {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
-.status {
-  padding: 8px;
-  border-radius: 9px;
+
+.Table th {
+  background-color: #f5f5f5;
 }
-.Title {
-  font-size: larger;
-}
-.Details {
-  color: #00b5ff !important;
-}
-/* -------------------------------------------------- */
+
 .header-container {
   display: flex;
   justify-content: space-between;
@@ -89,6 +79,34 @@ th {
 .new-pt-button:hover {
   background-color: #009688;
 }
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  background-color: #fff;
+}
+
+.pagination-controls button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.pagination-controls .active {
+  background-color: #00bfa5;
+  color: #fff;
+  border: none;
+}
+
+.pagination-controls button:hover {
+  background-color: #f0f0f0;
+}
+
 
 @media screen and (max-width: 1200px) {
   .Table {
