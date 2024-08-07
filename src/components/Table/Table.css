@@ -33,7 +33,7 @@
 }
 
 .header-left {
-  display: flex;
+  display: block;
   align-items: center;
 }
 
@@ -54,7 +54,7 @@
 }
 
 .header-right {
-  display: flex;
+  display:inline;
   align-items: center;
 }
 
@@ -110,7 +110,7 @@
 
 @media screen and (max-width: 1200px) {
   .Table {
-    width: 170%;
+    width: 100%;
     margin-top: 2rem;
   }
 }
@@ -122,6 +122,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 23rem;
+    width: 100%;
   }
 }

@@ -26,6 +26,7 @@ const rows = [
 const TableComponent = () => {
   return (
     <div className="container">
+      
       <div className="header-container">
         <div className="header-left">
           <div className="header-title">All Customers</div>
@@ -36,6 +37,8 @@ const TableComponent = () => {
           <button className="new-pt-button">New PT</button>
         </div>
       </div>
+
+      
       <TableContainer component={Paper}>
         <Table className="Table">
           <TableHead>
