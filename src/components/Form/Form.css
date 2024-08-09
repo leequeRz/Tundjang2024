@@ -17,24 +17,25 @@ body {
   background: rgb(36, 196, 202);
 }
 
-.container {
+.container-form {
   position: relative;
-  max-width: 700px;
+  max-width: 1200px;
   width: 100%;
   background: #fff;
   padding: 25px;
   border-radius: 8px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  color: #707070;
 }
 
-.container header {
+.container-form header {
   font-size: 1.5rem;
   color: #333;
   font-weight: 500;
   text-align: center;
 }
 
-.container .form {
+.container-form .form {
   margin-top: 30px;
 }
 

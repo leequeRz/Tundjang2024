@@ -3,7 +3,7 @@ import "./Form.css";
 
 const Form = () => {
   return (
-    <section className="container">
+    <section className="container-form">
       <header>Registration Form</header>
       <form action="#" className="form">
         <div className="input-box">
@@ -26,10 +26,12 @@ const Form = () => {
             <input type="date" placeholder="Enter birth date" required />
           </div>
         </div>
+
         <div className="input-box">
           <label>Age</label>
           <input type="text" placeholder="Enter age" required />
         </div>
+
         <div className="gender-box">
           <h3>Gender</h3>
           <div className="gender-option">
@@ -47,7 +49,7 @@ const Form = () => {
             </div>
           </div>
         </div>
-        <br />
+
         <div className="column">
           <label>BT</label>
           <div className="select-box">
@@ -69,6 +71,7 @@ const Form = () => {
             </select>
           </div>
         </div>
+
         <div className="input-box address">
           <label>Address</label>
           <input type="text" placeholder="Enter street address" required />
@@ -90,6 +93,7 @@ const Form = () => {
             <input type="number" placeholder="Enter postal code" required />
           </div>
         </div>
+
         <button>Submit</button>
       </form>
     </section>
