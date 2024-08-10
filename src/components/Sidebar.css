@@ -4,10 +4,15 @@
   position: relative;
   padding-top: 4rem;
   transition: all 300ms ease;
+  box-shadow: 10px 0px 15px rgba(0, 0, 0, 0.2);
+  padding-right: 1rem;
+  
+
 }
 /* logo */
 .bars{
   display: none;
+  
 }
 
 .logo {
@@ -47,6 +52,7 @@
   transition: all 300ms ease;
   border-radius: 0.7rem;
   font-size: 14px;
+  
 }
 
 .menuItem:hover {
@@ -112,7 +118,7 @@
     z-index: 9;
   }
   .close{
-    left: -40%;
+    left: -100%;
   }
 }
 

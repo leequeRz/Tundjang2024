@@ -15,8 +15,7 @@
   color: var(--black);
   background: white;
   height: 100%;
-  width: 1500px;
-  /* width: 100%; */
+  width: 90vw;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,27 +26,70 @@
   display: grid;
   height: 97%;
   width: 97%;
-  /* background: black; */
   border-radius: 2rem;
   gap: 50px;
-  grid-template-columns: 10rem auto;
+  grid-template-columns: 12rem auto;
   overflow: hidden;
-  /* padding: auto; */
 }
-.MainContent{
+
+.MainContent {
   width: 97%;
   height: 90%;
   margin-top: 10vh;
 }
+
+/* Responsive for screens smaller than 1200px */
 @media screen and (max-width: 1200px) {
   .AppGlass {
     grid-template-columns: 20% auto;
-    overflow-y: auto; /* Changed to auto for better scrolling behavior */
+    overflow-y: auto; /* Improved scrolling behavior */
+    gap: 30px; /* Reduce the gap between columns */
+  }
+
+  .MainContent {
+    margin-top: 5vh; /* Adjust margin for smaller screens */
+    width: 95%;
+    height: 85%;
   }
 }
 
+/* Responsive for screens smaller than 768px */
 @media screen and (max-width: 768px) {
+  .App {
+    width: 100vw;
+    padding: 0 10px; /* Add padding for better mobile view */
+  }
+
   .AppGlass {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Single column layout */
+    grid-template-rows: auto 1fr; /* Adjust to place content below the sidebar */
+    height: 100%;
+    width: 100%;
+    gap: 20px; /* Further reduce the gap for smaller screens */
+  }
+
+  .MainContent {
+    width: 100%;
+    height: auto;
+    margin-top: 0;
+  }
+}
+
+/* Responsive for screens smaller than 480px (mobile) */
+@media screen and (max-width: 480px) {
+  .App {
+    width: 100vw;
+    padding: 0 5px; /* Further reduce padding for small devices */
+  }
+
+  .AppGlass {
+    gap: 10px; /* Minimal gap for very small screens */
+    border-radius: 1rem; /* Smaller border radius for mobile */
+  }
+
+  .MainContent {
+    margin-top: 0;
+    width: 100%;
+    padding: 0 10px; /* Add padding to main content */
   }
 }
