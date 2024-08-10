@@ -17,5 +17,6 @@
 {
     .MainDash{
         align-items: center;
+        margin-left: 10vw;
     }
 }

@@ -61,11 +61,12 @@
 .container-table{
   position: relative;
   max-width: 1200px;
-  width: 90%;
-  /* background:var(--gray); */
+  width: 100%;
+  background: #fff;
   padding: 25px;
   border-radius: 8px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  color: #707070;
 }
 .header-container {
   display: flex;
@@ -157,7 +158,11 @@
     width: 100%;
     margin-top: 2rem;
   }
-}
+  .container-table{
+    width: 100%;
+    /* background: #000; */
+  }
+  }
 
 
 @media screen and (max-width: 768px) {
