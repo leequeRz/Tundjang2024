@@ -61,7 +61,7 @@
 .container-table{
   position: relative;
   max-width: 1200px;
-  width: 100%;
+  width: 85%;
   background: #fff;
   padding: 25px;
   border-radius: 8px;
@@ -155,22 +155,24 @@
 
 @media screen and (max-width: 1200px) {
   .Table {
-    width: 100%;
+    width: 90%;
     margin-top: 2rem;
   }
-  .container-table{
-    width: 100%;
-    /* background: #000; */
-  }
+
   }
 
+  
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 900px) {
   .Table{
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
+  }
+  .container-table{
+    width: 100%;
+    /* background: #000; */
   }
 }
