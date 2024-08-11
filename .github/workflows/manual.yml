@@ -15,9 +15,9 @@ jobs:
         git config --global user.name "Tanaton.phuk"
         git config --global user.email "fifa52766@gmail.com"
 
-    - name: Push to mirror repository
+    - name: Add remote and push to mirror repository
       env:
         PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
       run: |
-        git remote add mirror https://${{ secrets.PAT_TOKEN }}@github.com/ICAREU/mirror-icareu.git
+        git remote add mirror https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/ICAREU/mirror-icareu.git
         git push --mirror mirror
