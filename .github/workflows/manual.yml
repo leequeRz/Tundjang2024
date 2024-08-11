@@ -1,0 +1,25 @@
+name: Mirror Repository
+
+# Triggers the workflow on any push to the repository
+on: push
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Git
+      run: |
+        git config --global user.name "Your Name"
+        git config --global user.email "your-email@example.com"
+
+    - name: Add mirror repository
+      run: |
+        git remote add mirror https://github.com/ICAREU/mirror-icareu.git
+
+    - name: Push to mirror repository
+      run: |
+        git push --mirror mirror
