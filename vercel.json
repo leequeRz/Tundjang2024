@@ -1,0 +1,32 @@
+{
+    "rewrites": [
+      {
+        "source": "/api/(.*)",
+        "destination": "/api/server.js"
+      }
+    ],
+    "builds": [
+      {
+        "src": "api/server.js",
+        "use": "@vercel/node"
+      },
+      {
+        "src": "Front/package.json",
+        "use": "@vercel/static-build",
+        "config": {
+          "distDir": "Front/build"
+        }
+      }
+    ],
+    "routes": [
+      {
+        "src": "/api/(.*)",
+        "dest": "/api/server.js"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "/front-end/$1"
+      }
+    ]
+  }
+  
