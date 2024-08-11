@@ -19,5 +19,5 @@ jobs:
       env:
         PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
       run: |
-        git remote add mirror https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/ICAREU/mirror-icareu.git
+        git remote add mirror https://x-access-token:${{ secrets.PAT_TOKEN }}git@github.com:ICAREU/mirror-icareu.git
         git push --mirror mirror
