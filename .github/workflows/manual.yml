@@ -1,6 +1,5 @@
 name: Mirror Repository
 
-# Triggers the workflow on any push to the repository
 on: push
 
 jobs:
@@ -10,16 +9,15 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-
+      
     - name: Set up Git
       run: |
         git config --global user.name "Tanaton.phuk"
         git config --global user.email "fifa52766@gmail.com"
 
-    - name: Add mirror repository
-      run: |
-        git remote add mirror https://github.com/ICAREU/mirror-icareu.git
-
     - name: Push to mirror repository
+      env:
+        PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
       run: |
+        git remote add mirror https://${{ secrets.PAT_TOKEN }}@github.com/ICAREU/mirror-icareu.git
         git push --mirror mirror
