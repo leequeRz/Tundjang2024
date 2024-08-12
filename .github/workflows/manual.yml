@@ -1,23 +1,41 @@
 name: Mirror Repository
 
-on: push
+on: 
+  push:
+    branches:
+      - main
 
 jobs:
   mirror:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout source repository
       uses: actions/checkout@v2
 
-    - name: Set up Git
+    - name: Push to destination repository
       run: |
-        git config --global user.name "Tanaton.phuk"
         git config --global user.email "fifa52766@gmail.com"
+        git config --global user.name "Tanaton.phuk"
+        git clone https://ICAREU:${{ secrets.PAT }}@github.com/ICAREU/mirror-icareu.git
+        cd mirror-icareu
+        git remote add ${{ env.ORIGINAL_REPO_NAME }} https://fifa0095@github.com/fifa0095/${{ env.ORIGINAL_REPO_NAME }}.git
+        git remote update
+        git merge ${{ env.ORIGINAL_REPO_NAME }}/main
+        git push origin main
 
-    - name: Add remote and push to mirror repository
-      env:
-        PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-      run: |
-        git remote add mirror https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/ICAREU/mirror-icareu.git
-        git push --mirror mirror
+          env:
+        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        ORIGINAL_REPO_NAME: ${{ github.event.repository.name }}
+           
+    # - name: Set up Git
+    #   run: |
+    #     git config --global user.name "Tanaton.phuk"
+    #     git config --global user.email "fifa52766@gmail.com"
+
+    # - name: Add remote and push to mirror repository
+    #   env:
+    #     PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+    #   run: |
+    #     git remote add mirror https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/ICAREU/mirror-icareu.git
+    #     git push --mirror mirror
