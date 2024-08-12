@@ -1,32 +1,48 @@
-name: Mirror Repository
+# @format
 
-on: 
+name: Sync Repos
+
+on:
   push:
     branches:
       - main
 
 jobs:
-  mirror:
+  sync:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout source repository
-      uses: actions/checkout@v2
+      # Step 1: Checkout the source repository (original repo)
+      - name: Checkout source repository
+        uses: actions/checkout@v2
 
-    - name: Push to destination repository
-      run: |
-        git config --global user.email "fifa52766@gmail.com"
-        git config --global user.name "Tanaton.phuk"
-        git clone https://ICAREU:${{ secrets.PAT }}@github.com/ICAREU/mirror-icareu.git
-        cd mirror-icareu
-        git remote add ${{ env.ORIGINAL_REPO_NAME }} https://fifa0095@github.com/fifa0095/${{ env.ORIGINAL_REPO_NAME }}.git
-        git remote update
-        git merge ${{ env.ORIGINAL_REPO_NAME }}/main
-        git push origin main
+      # Step 2: Push to the destination repository
+      - name: Push to destination repository
+        run: |
+          # Configure the Git user
+          git config --global user.email "nurseproject8@gmail.com"
+          git config --global user.name "ICAREU"
+          
+          # Clone the destination repository
+          git clone https://ICAREU:${{ secrets.PAT_TOKEN }}@github.com/ICAREU/mirror-icareu.git
+          
+          # Navigate into the destination repository
+          cd mirror-icareu
+          
+          # Add the original repository as a remote
+          git remote add ResponsiveWeb https://Tanaton.phuk:${{ secrets.PAT_TOKEN }}@github.com/fifa0095/ResponsiveWeb-TackingPatient-for-Nurse.git
+          
+          # Update the remotes to fetch the latest changes
+          git remote update
+          
+          # Merge the main branch from the original repository into the destination repository
+          git merge ResponsiveWeb/main
+          
+          # Push the merged changes to the destination repository's main branch
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 
-          env:
-        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-        ORIGINAL_REPO_NAME: ${{ github.event.repository.name }}
            
     # - name: Set up Git
     #   run: |
