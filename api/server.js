@@ -46,7 +46,7 @@ app.post('/api/webhook', async (req, res) => {
             try {
 
                 if (userStates[userId]) delete userStates[userId];
-                const imageUrl = await axios.get('http://localhost:3000/api/v1/line/general-info');
+                const imageUrl = await axios.get('https://icareu.vercel.app/api/v1/line/general-info');
                 // const imageUrl = response.data; // Assuming the API returns a URL of an image
                 responseMessage = { type: 'image', originalContentUrl: imageUrl, previewImageUrl: imageUrl };
               // const imageUrl = 'https://www.prydwen.gg/static/4d91060488554694e8c1ec47c078db4a/b26e2/17_card.webp'
@@ -96,7 +96,7 @@ app.post('/api/webhook', async (req, res) => {
             // Process the HN (you might want to perform some validation here)
             console.log(`Received HN: ${hnCode} from user ${userId}`);
 
-            const patient = await axios.get('http://localhost:3000/api/v1/patients/get', {
+            const patient = await axios.get('https://icareu.vercel.app/api/v1/patients/get', {
               params: {
                 HN: hnCode
               }
@@ -117,7 +117,7 @@ app.post('/api/webhook', async (req, res) => {
               });
             }else{
 
-              const response = await axios.get('http://localhost:3000/api/v1/patients/record', {
+              const response = await axios.get('https://icareu.vercel.app/api/v1/patients/record', {
                 params: {
                   HN: hnCode
                 }
