@@ -69,6 +69,7 @@ body {
 .form .column {
   display: flex;
   column-gap: 15px;
+  flex-wrap: wrap; /* Ensures columns wrap on smaller screens */
 }
 
 .form .gender-box {
@@ -86,7 +87,7 @@ body {
 .gender {
   display: flex;
   align-items: center;
-  column-gap: 50px;
+  column-gap: 20px; /* Reduced gap for better fitting on smaller screens */
   flex-wrap: wrap;
 }
 
@@ -113,12 +114,13 @@ body {
 }
 
 .select-box select {
-  height: 100%;
+  height: 50px; /* Set fixed height for better consistency */
   width: 100%;
   outline: none;
-  border: none;
+  border: 1px solid #ddd; /* Add border for consistency */
   color: #707070;
   font-size: 1rem;
+  border-radius: 6px;
 }
 
 .form button {
@@ -133,18 +135,193 @@ body {
   transition: all 0.2s ease;
   background: rgb(36, 196, 202);
 }
+/* New Class Names Styles */
 
-.form button:hover {
-  background: rgb(36, 196, 202);
+/* BT - Body Temperature */
+.BT {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
 }
 
-/* Responsive */
+.BT input {
+  accent-color: rgb(36, 196, 202);
+}
+
+.BT label {
+  color: #707070;
+}
+
+/* br - Breathing Rate */
+.br {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}
+
+.br input {
+  accent-color: rgb(36, 196, 202);
+}
+
+.br label {
+  color: #707070;
+}
+
+/* hr - Heart Rate */
+.hr {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}
+
+.hr input {
+  accent-color: rgb(36, 196, 202);
+}
+
+.hr label {
+  color: #707070;
+}
+
+/* rr - Respiratory Rate */
+.rr {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}
+
+.rr input {
+  accent-color: rgb(36, 196, 202);
+}
+
+.rr label {
+  color: #707070;
+}
+
+/* o2sat - Oxygen Saturation */
+.o2sat {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}
+
+.o2sat input {
+  accent-color: rgb(36, 196, 202);
+}
+
+.o2sat label {
+  color: #707070;
+}
+
+/* address - Address Section */
+.address {
+  margin-top: 20px;
+}
+
+.address input,
+.address .select-box {
+  margin-top: 15px;
+}
+
+.address .select-box select {
+  height: 50px;
+  width: 100%;
+  outline: none;
+  border: 1px solid #ddd;
+  color: #707070;
+  font-size: 1rem;
+  border-radius: 6px;
+}
+
+/* select-box - Select Box Styling */
+.select-box select {
+  height: 50px; /* Consistent height for select boxes */
+  width: 100%;
+  outline: none;
+  border: 1px solid #ddd;
+  color: #707070;
+  font-size: 1rem;
+  border-radius: 6px;
+}
+
+.form button:hover {
+  background: rgb(28, 168, 174); /* Slightly darker on hover */
+}
+/* Adjust .column to align labels to the left and evenly space the items */
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Space between items */
+}
+
+.column label {
+  font-weight: 500; /* Adjust label font weight for better visibility */
+  margin-bottom: 5px; /* Space between label and content */
+}
+
+.column .input-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.column .gender-option,
+.column .gender {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between; /* Space out items evenly */
+  gap: 10px; /* Space between items in the row */
+}
+
+.column .gender input,
+.column .gender label {
+  cursor: pointer;
+}
+
+.column .gender input {
+  accent-color: rgb(36, 196, 202);
+}
+
+.column .gender label {
+  color: #707070;
+}
+
+/* Adjust the .address section to be consistent with the column layout */
+.address {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.address .select-box {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.address input,
+.address .select-box {
+  width: 100%;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 800px) {
+  .form .column {
+    flex-direction: column;
+    row-gap: 20px; /* Space between rows for better readability */
+  }
+}
+
 @media screen and (max-width: 500px) {
   .form .column {
-    flex-wrap: wrap;
+    flex-direction: column;
   }
   .gender-option,
   .gender {
     row-gap: 15px;
+    column-gap: 10px; /* Reduce column gap on smaller screens */
+  }
+  .select-box select {
+    height: 45px; /* Adjust height for smaller screens */
   }
 }

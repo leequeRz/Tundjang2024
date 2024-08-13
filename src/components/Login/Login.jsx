@@ -5,23 +5,46 @@ import avatar from "../../imgs/avatar.svg";
 import blob from "../../imgs/blob.svg";
 import bg from "../../imgs/bg.svg";
 
-const Login = () => {
+const Login = ({ setIsLoggedIn }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Simple authentication for demonstration
-    if (username === 'admin' && password === 'password') {
-      navigate("/main");
-    } else {
-      alert("Invalid credentials");
+    setError('');
+
+    try {
+      const response = await fetch('http://localhost:3000/api/v1/users/login', {
+        method: 'POST',
+        headers: {
+          'Accept': 'text/plain',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.text(); // Use .text() instead of .json() for text/plain response
+        if (data === "success") { // Check if response is "success"
+          // Save the token or user data to localStorage or context if needed
+          localStorage.setItem('token', 'someToken'); // Example of saving a token
+          setIsLoggedIn(true); // Update the login state
+          navigate("/main");
+        } else {
+          setError('Invalid credentials');
+        }
+      } else {
+        setError('Something went wrong. Please try again later.');
+      }
+    } catch (error) {
+      setError('Something went wrong. Please try again later.');
     }
   };
 
   return (
-    <div>
+    <div className="login-container">
       <img className="wave" src={blob} alt="background" />
       <div className="container">
         <div className="img">
@@ -32,15 +55,21 @@ const Login = () => {
             <div className="iconpage">
               <img src={avatar} alt="avatar" />
             </div>
-            <br />
-            <h3 className="c" id="login">Login</h3>
+            <h3 className="login-title">Login</h3>
+            {error && <p className="error-message">{error}</p>}
             <div className="input-div one">
               <div className="i">
                 <i className="fas fa-user"></i>
               </div>
               <div className="div">
                 <h5>Username</h5>
-                <input type="text" className="input" value={username} onChange={(e) => setUsername(e.target.value)} />
+                <input
+                  type="text"
+                  className="input"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
               </div>
             </div>
             <div className="input-div">
@@ -49,11 +78,16 @@ const Login = () => {
               </div>
               <div className="div">
                 <h5>Password</h5>
-                <input type="password" className="input" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <input
+                  type="password"
+                  className="input"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
               </div>
             </div>
             <input type="submit" className="btn" value="Login" />
-            <div className="line"></div>
           </form>
         </div>
       </div>

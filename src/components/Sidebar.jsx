@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import "./Sidebar.css";
 import Logo from "../imgs/logo.png";
-import { UilSignOutAlt } from "@iconscout/react-unicons";
+// import { UilSignOutAlt } from "@iconscout/react-unicons";
 import { SidebarData } from "../Data/Data";
 import { UilBars } from "@iconscout/react-unicons";
 import { motion } from "framer-motion";
 
-const Sidebar = ({ setSelectedSidebarItem }) => {
+const Sidebar = ({ setSelectedSidebarItem, onLogout }) => {
   const [selected, setSelected] = useState(0);
   const [expanded, setExpanded] = useState(true);
 
@@ -18,8 +18,6 @@ const Sidebar = ({ setSelectedSidebarItem }) => {
       left: '-60%',
     },
   };
-
-  console.log(window.innerWidth);
 
   return (
     <>
@@ -38,28 +36,29 @@ const Sidebar = ({ setSelectedSidebarItem }) => {
         {/* logo */}
         <div className="logo">
           <img src={Logo} alt="logo" />
-          {/* <img src="../imgs/logo2" alt="logo" /> */}
           <span>
             I<span>CARE</span>U
           </span>
         </div>
 
         <div className="menu">
-          {SidebarData.map((item, index) => {
-            return (
-              <div
-                className={selected === index ? "menuItem active" : "menuItem"}
-                key={index}
-                onClick={() => {
+          {SidebarData.map((item, index) => (
+            <div
+              className={selected === index ? "menuItem active" : "menuItem"}
+              key={index}
+              onClick={() => {
+                if (item.heading === "Logout") {
+                  onLogout();
+                } else {
                   setSelected(index);
                   setSelectedSidebarItem(item.heading);
-                }}
-              >
-                <item.icon />
-                <span>{item.heading}</span>
-              </div>
-            );
-          })}
+                }
+              }}
+            >
+              <item.icon />
+              <span>{item.heading}</span>
+            </div>
+          ))}
         </div>
       </motion.div>
     </>
