@@ -20,10 +20,32 @@ const rows = [
   // Add more rows as needed
 ];
 
+// Mock Record Data (Replace with real API data)
+const recordsData = {
+  'HN001': [
+    { timestamp: '2024-08-09 08:30 AM', detail: 'Record 1 for HN001' },
+    { timestamp: '2024-08-10 09:00 AM', detail: 'Record 2 for HN001' },
+  ],
+  'HN002': [
+    { timestamp: '2024-08-09 02:15 PM', detail: 'Record 1 for HN002' },
+    { timestamp: '2024-08-10 03:30 PM', detail: 'Record 2 for HN002' },
+  ],
+  // Add more record data as needed
+};
+
 const TableComponent = ({ setSelectedSidebarItem }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [expandedRows, setExpandedRows] = useState([]);
   const rowsPerPage = 15;
+
+  const handleRowClick = (hospitalNumber) => {
+    if (expandedRows.includes(hospitalNumber)) {
+      setExpandedRows(expandedRows.filter((hn) => hn !== hospitalNumber));
+    } else {
+      setExpandedRows([...expandedRows, hospitalNumber]);
+    }
+  };
 
   // Filter and paginate data
   const filteredRows = rows.filter(row =>
@@ -98,21 +120,47 @@ const TableComponent = ({ setSelectedSidebarItem }) => {
           </TableHead>
           <TableBody>
             {paddedRows.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell>{row.hospitalNumber || 'No data'}</TableCell>
-                <TableCell>{row.name || 'No data'}</TableCell>
-                <TableCell>{row.date || 'No data'}</TableCell>
-                <TableCell className={getColorByTime(row.time)}>{row.time || 'No data'}</TableCell>
-                <TableCell>
-                  {row.name ? (
-                    <button onClick={() => alert(`Details for ${row.name}`)}>
-                      Show Details
-                    </button>
-                  ) : (
-                    <button disabled>No Details</button>
-                  )}
-                </TableCell>
-              </TableRow>
+              <>
+                <TableRow key={index} onClick={() => handleRowClick(row.hospitalNumber)}>
+                  <TableCell>{row.hospitalNumber || 'No data'}</TableCell>
+                  <TableCell>{row.name || 'No data'}</TableCell>
+                  <TableCell>{row.date || 'No data'}</TableCell>
+                  <TableCell className={getColorByTime(row.time)}>{row.time || 'No data'}</TableCell>
+                  <TableCell>
+                    {row.name ? (
+                      <button onClick={() => handleRowClick(row.hospitalNumber)}>
+                        Show Details
+                      </button>
+                    ) : (
+                      <button disabled>No Details</button>
+                    )}
+                  </TableCell>
+                </TableRow>
+                {expandedRows.includes(row.hospitalNumber) && (
+                  <TableRow key={`${index}-subrow`}>
+                    <TableCell colSpan={5}>
+                      <div className="sub-row">
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Timestamp</TableCell>
+                              <TableCell>Detail</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {recordsData[row.hospitalNumber]?.map((record, subIndex) => (
+                              <TableRow key={subIndex}>
+                                <TableCell>{record.timestamp}</TableCell>
+                                <TableCell>{record.detail}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </>
             ))}
           </TableBody>
         </Table>
