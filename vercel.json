@@ -5,7 +5,7 @@
   ],
   "functions": {
     "api/*.js": {
-      "maxDuration": 15 
+      "maxDuration": 60 
     }
   }
 }
