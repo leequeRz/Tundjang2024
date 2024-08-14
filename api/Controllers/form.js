@@ -322,7 +322,7 @@ const readfile = async (req, res) => {
     await randomFile.makePublic();
     const url = randomFile.publicUrl();
 
-    res.status(200).send(url);
+    res.status(200).json({ imageUrl: url });
   } catch (error) {
     console.error('Error reading file', error);
     res.status(500).send({ error: error.message });

@@ -46,7 +46,8 @@ app.post('/api/webhook', async (req, res) => {
             try {
 
                 if (userStates[userId]) delete userStates[userId];
-                const imageUrl = await axios.get('https://icareu.vercel.app/api/v1/line/general-info');
+                const resImg = await axios.get('https://icareu.vercel.app/api/v1/line/general-info');
+                const imageUrl = resImg.data.imageUrl;
                 // const imageUrl = response.data; // Assuming the API returns a URL of an image
                 responseMessage = { type: 'image', originalContentUrl: imageUrl, previewImageUrl: imageUrl };
               // const imageUrl = 'https://www.prydwen.gg/static/4d91060488554694e8c1ec47c078db4a/b26e2/17_card.webp'
@@ -138,7 +139,7 @@ app.post('/api/webhook', async (req, res) => {
               // Sort the records by timestamp in descending order and get the latest one
               const latestRecord = records.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0];
               let foodIntakeStr = ' '
-              if( latestRecord.food_intake === unll || latestRecord.food_intake === 'undefined')
+              if( latestRecord.food_intake === null || latestRecord.food_intake === 'undefined')
               foodIntakeStr = latestRecord.food_intake.length > 0 ? latestRecord.food_intake.join(', ') : ' ';
   
               const latestRecordMessage = `
