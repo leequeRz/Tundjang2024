@@ -2,5 +2,10 @@
   "version": 2,
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/server.js" }
-  ]
+  ],
+  "functions": {
+    "api/*.js": {
+      "maxDuration": 15 
+    }
+  }
 }
