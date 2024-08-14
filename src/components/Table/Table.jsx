@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Table.css';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,41 +8,61 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-// Mock Data
-const createData = (name, hospitalNumber, date, time) => {
-  return { name, hospitalNumber, date, time };
-};
-
-const rows = [
-  createData('Jane Cooper', 'HN001', '2024-08-09', '08:30 AM'),
-  createData('Floyd Miles', 'HN002', '2024-08-09', '02:15 PM'),
-  createData('Ronald Richards', 'HN003', '2024-08-09', '07:45 PM'),
-  // Add more rows as needed
-];
-
 const TableComponent = ({ setSelectedSidebarItem }) => {
+  const [patients, setPatients] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [expandedRows, setExpandedRows] = useState([]);
   const rowsPerPage = 15;
 
+  useEffect(() => {
+    fetch('http://localhost:3000/api/v1/patients/get')
+      .then(response => response.json())
+      .then(data => setPatients(data))
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
+  const handleRowClick = (hn) => {
+    if (expandedRows.includes(hn)) {
+      setExpandedRows(expandedRows.filter((rowHn) => rowHn !== hn));
+    } else {
+      setExpandedRows([...expandedRows, hn]);
+    }
+  };
+
+  // Calculate age based on DOB
+  const calculateAge = (dob) => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
   // Filter and paginate data
-  const filteredRows = rows.filter(row =>
+  const filteredRows = patients.filter(row =>
     row.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    row.hospitalNumber.toLowerCase().includes(searchTerm.toLowerCase())
+    row.surname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    row.HN.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = filteredRows.slice(indexOfFirstRow, indexOfLastRow);
 
-  // Add empty rows if there are less than rowsPerPage rows
   const paddedRows = [
     ...currentRows,
     ...Array(Math.max(rowsPerPage - currentRows.length, 0)).fill({
+      HN: '',
+      prefix: '',
       name: '',
-      hospitalNumber: '',
-      date: '',
-      time: ''
+      surname: '',
+      gender: '',
+      DOB: '',
+      lastUpdate: ''
     })
   ];
 
@@ -54,25 +74,17 @@ const TableComponent = ({ setSelectedSidebarItem }) => {
     }
   };
 
-  const getColorByTime = (value) => {
-    if (value.includes('AM')) return 'morning';
-    if (value.includes('PM') && parseInt(value.split(':')[0], 10) < 6)
-      return 'afternoon';
-    return 'evening';
-  };
-
   return (
     <div className="container-table">
       <div className="header-container">
         <div className="header-left">
-          <div className="header-title">All Customers</div>
-          <div className="header-link">Active Members</div>
+          <div className="header-title">All Patients</div>
         </div>
         <div className="header-right">
           <input
             type="text"
             className="search-input"
-            placeholder="Search by Name or Hospital Number"
+            placeholder="Search by Name, Surname or HN"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -89,30 +101,61 @@ const TableComponent = ({ setSelectedSidebarItem }) => {
         <Table className="Table">
           <TableHead>
             <TableRow>
-              <TableCell>Hospital Number</TableCell>
-              <TableCell>Customer Name</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Time</TableCell>
+              <TableCell>HN</TableCell>
+              <TableCell>Prefix</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Surname</TableCell>
+              <TableCell>Gender</TableCell>
+              <TableCell>Age</TableCell> {/* Changed from DOB to Age */}
+              <TableCell>Last Update</TableCell>
               <TableCell>Details</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {paddedRows.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell>{row.hospitalNumber || 'No data'}</TableCell>
-                <TableCell>{row.name || 'No data'}</TableCell>
-                <TableCell>{row.date || 'No data'}</TableCell>
-                <TableCell className={getColorByTime(row.time)}>{row.time || 'No data'}</TableCell>
-                <TableCell>
-                  {row.name ? (
-                    <button onClick={() => alert(`Details for ${row.name}`)}>
-                      Show Details
-                    </button>
-                  ) : (
-                    <button disabled>No Details</button>
-                  )}
-                </TableCell>
-              </TableRow>
+              <React.Fragment key={index}>
+                <TableRow onClick={() => handleRowClick(row.HN)}>
+                  <TableCell>{row.HN || ''}</TableCell>
+                  <TableCell>{row.prefix || ''}</TableCell>
+                  <TableCell>{row.name || ''}</TableCell>
+                  <TableCell>{row.surname || ''}</TableCell>
+                  <TableCell>{row.gender || ''}</TableCell>
+                  <TableCell>{row.DOB ? calculateAge(row.DOB) : ''}</TableCell>
+                  <TableCell>{row.lastUpdate || ''}</TableCell>
+                  <TableCell>
+                    {row.HN ? (
+                      <button onClick={() => handleRowClick(row.HN)}>
+                        Show Details
+                      </button>
+                    ) : (
+                      <button disabled>No Details</button>
+                    )}
+                  </TableCell>
+                </TableRow>
+                {expandedRows.includes(row.HN) && (
+                  <TableRow key={`${index}-subrow`}>
+                    <TableCell colSpan={8}>
+                      <div className="sub-row">
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Timestamp</TableCell>
+                              <TableCell>Detail</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {/* Replace with actual record data */}
+                            <TableRow>
+                              <TableCell>Sample Timestamp</TableCell>
+                              <TableCell>Sample Detail</TableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </React.Fragment>
             ))}
           </TableBody>
         </Table>
