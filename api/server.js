@@ -50,18 +50,24 @@ app.post('/api/webhook', async (req, res) => {
                 // const imageUrl = response.data; // Assuming the API returns a URL of an image
                 responseMessage = { type: 'image', originalContentUrl: imageUrl, previewImageUrl: imageUrl };
               // const imageUrl = 'https://www.prydwen.gg/static/4d91060488554694e8c1ec47c078db4a/b26e2/17_card.webp'
+                console.log('message->> ', responseMessage)
 
               return await axios.post('https://api.line.me/v2/bot/message/reply', {
                 replyToken,
-                messages: [
-                  { type: 'image', originalContentUrl: imageUrl, previewImageUrl: imageUrl  } // Send response back to LINE
-                ]
+                messages: [responseMessage]
               }, {
                 headers: { Authorization: `Bearer ${lineConfig.channelAccessToken}` }
               });
 
             } catch (error) {
-              responseMessage = 'Failed to fetch data';
+              console.error('Error sending image:', error); // Log any error
+              responseMessage = { type: 'text', text: 'Failed to fetch data' };
+              await axios.post('https://api.line.me/v2/bot/message/reply', {
+                replyToken,
+                messages: [responseMessage]
+              }, {
+                headers: { Authorization: `Bearer ${lineConfig.channelAccessToken}` }
+              });
             }
           } else if (messageText === 'ติดต่อ') {
             if (userStates[userId]) delete userStates[userId];
@@ -71,7 +77,7 @@ app.post('/api/webhook', async (req, res) => {
                 altText: 'Contact us',
                 template: {
                   type: 'buttons',
-                  text: 'ติดต่อได้ที่ ' + phoneNumber + ' (เวลาราชการ)',
+                  text: 'ติดต่อได้ที่ ' + phoneNumber + ' (เวลาราชการเท่านั้น)',
                   actions: [
                     {
                       type: 'uri',
@@ -124,7 +130,7 @@ app.post('/api/webhook', async (req, res) => {
               });
   
               console.log(response.data);
-              if( response.data == null) 
+              if( response.data != null) 
               {
 
                 const records = response.data;
@@ -165,7 +171,7 @@ app.post('/api/webhook', async (req, res) => {
                 headers: { Authorization: `Bearer ${lineConfig.channelAccessToken}` }
               });
 
-            }
+              }
 
             }
             
