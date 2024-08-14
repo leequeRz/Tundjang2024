@@ -49,7 +49,7 @@ app.post('/api/webhook', async (req, res) => {
                 const resImg = await axios.get('https://icareu.vercel.app/api/v1/line/general-info');
                 const imageUrl = resImg.data.imageUrl;
                 // const imageUrl = response.data; // Assuming the API returns a URL of an image
-                responseMessage = { type: 'image', originalContentUrl: imageUrl, previewImageUrl: imageUrl };
+                const responseMessage = { type: 'image', originalContentUrl: imageUrl, previewImageUrl: imageUrl };
               // const imageUrl = 'https://www.prydwen.gg/static/4d91060488554694e8c1ec47c078db4a/b26e2/17_card.webp'
                 console.log('message->> ', responseMessage)
 
@@ -62,7 +62,7 @@ app.post('/api/webhook', async (req, res) => {
 
             } catch (error) {
               console.error('Error sending image:', error); // Log any error
-              responseMessage = { type: 'text', text: 'Failed to fetch data' };
+              const responseMessage = { type: 'text', text: 'เกิดข้อผิดพลาดในขณะนี้ กรุณาลองใหม่อีกครั้ง ขออภัยในความไม่สะดวกค่ะ' };
               await axios.post('https://api.line.me/v2/bot/message/reply', {
                 replyToken,
                 messages: [responseMessage]
@@ -139,7 +139,7 @@ app.post('/api/webhook', async (req, res) => {
               // Sort the records by timestamp in descending order and get the latest one
               const latestRecord = records.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0];
               let foodIntakeStr = ' '
-              if( latestRecord.food_intake === null || latestRecord.food_intake === 'undefined')
+              if( latestRecord.food_intake == null || latestRecord.food_intake == 'undefined')
               foodIntakeStr = latestRecord.food_intake.length > 0 ? latestRecord.food_intake.join(', ') : ' ';
   
               const latestRecordMessage = `
