@@ -53,13 +53,14 @@ app.post('/api/webhook', async (req, res) => {
               // const imageUrl = 'https://www.prydwen.gg/static/4d91060488554694e8c1ec47c078db4a/b26e2/17_card.webp'
                 console.log('message->> ', responseMessage)
 
-              return await axios.post('https://api.line.me/v2/bot/message/reply', {
+              await axios.post('https://api.line.me/v2/bot/message/reply', {
                 replyToken,
                 messages: [responseMessage]
               }, {
                 headers: { Authorization: `Bearer ${lineConfig.channelAccessToken}` }
               });
 
+              res.status(200).end();
             } catch (error) {
               console.error('Error sending image:', error); // Log any error
               const responseMessage = { type: 'text', text: 'เกิดข้อผิดพลาดในขณะนี้ กรุณาลองใหม่อีกครั้ง ขออภัยในความไม่สะดวกค่ะ' };
@@ -69,6 +70,7 @@ app.post('/api/webhook', async (req, res) => {
               }, {
                 headers: { Authorization: `Bearer ${lineConfig.channelAccessToken}` }
               });
+              res.status(200).end();
             }
           } else if (messageText === 'ติดต่อ') {
             if (userStates[userId]) delete userStates[userId];
