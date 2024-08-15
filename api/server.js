@@ -60,7 +60,7 @@ app.post('/api/webhook', async (req, res) => {
                 headers: { Authorization: `Bearer ${lineConfig.channelAccessToken}` }
               });
 
-              res.status(200).end();
+              return res.status(200).end();
             } catch (error) {
               console.error('Error sending image:', error); // Log any error
               const responseMessage = { type: 'text', text: 'เกิดข้อผิดพลาดในขณะนี้ กรุณาลองใหม่อีกครั้ง ขออภัยในความไม่สะดวกค่ะ' };
@@ -70,7 +70,7 @@ app.post('/api/webhook', async (req, res) => {
               }, {
                 headers: { Authorization: `Bearer ${lineConfig.channelAccessToken}` }
               });
-              res.status(200).end();
+              return res.status(200).end();
             }
           } else if (messageText === 'ติดต่อ') {
             if (userStates[userId]) delete userStates[userId];
@@ -197,10 +197,13 @@ app.post('/api/webhook', async (req, res) => {
   
  
         }
+        else{
+          return res.status(200).end();
+        }
       }
   
       // Respond to LINE to confirm receipt
-      res.status(200).send('Webhook received');
+      return res.status(200).send('Webhook received');
     } catch (error) {
       console.error('Error handling webhook:', error);
       res.status(500).end();
