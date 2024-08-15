@@ -91,12 +91,14 @@ app.post('/api/webhook', async (req, res) => {
                 }
               };
 
-              return await axios.post('https://api.line.me/v2/bot/message/reply', {
+              await axios.post('https://api.line.me/v2/bot/message/reply', {
                 replyToken,
                 messages: [responseMessage]
               }, {
                 headers: { Authorization: `Bearer ${lineConfig.channelAccessToken}` }
               });
+
+              return res.status(200).end();
 
           } else if (userStates[userId] && userStates[userId] === 'awaitingHN') {
             // User has responded with their HN
@@ -116,7 +118,7 @@ app.post('/api/webhook', async (req, res) => {
 
             if(patientData == 'undefined' || patientData == null)
             {
-              return await axios.post('https://api.line.me/v2/bot/message/reply', {
+              await axios.post('https://api.line.me/v2/bot/message/reply', {
                 replyToken,
                 messages: [
                   { type: 'text', text: 'ขออภัยค่ะ ไม่พบข้อมูลประวัติผู้ป่วย หรือรหัสประจำตัวผู้ป่วยไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง' } // Confirm receipt of the HN
@@ -124,6 +126,7 @@ app.post('/api/webhook', async (req, res) => {
               }, {
                 headers: { Authorization: `Bearer ${lineConfig.channelAccessToken}` }
               });
+              return res.status(200).end();
             }else{
 
               const response = await axios.get('https://icareu.vercel.app/api/v1/patients/record', {
@@ -174,8 +177,24 @@ app.post('/api/webhook', async (req, res) => {
                 headers: { Authorization: `Bearer ${lineConfig.channelAccessToken}` }
               });
 
-              }
+              return res.status(200).end();
 
+              }else{
+
+                delete userStates[userId];
+  
+                const responseMessage = { type: 'text', text: 'เกิดข้อผิดพลาดในขณะนี้ กรุณาลองใหม่อีกครั้ง ขออภัยในความไม่สะดวกค่ะ' };
+
+                // Send confirmation message
+                await axios.post('https://api.line.me/v2/bot/message/reply', {
+                  replyToken,
+                  messages: [ responseMessage]
+                }, {
+                  headers: { Authorization: `Bearer ${lineConfig.channelAccessToken}` }
+                });
+
+                return res.status(200).end();
+              }
             }
             
 
