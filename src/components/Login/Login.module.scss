@@ -1,0 +1,111 @@
+/* Variables */
+$font-family: "Poppins", sans-serif;
+$primary-color: #38d39f;
+$button-color: #0c986c;
+
+/* Reset padding, margin, and box-sizing */
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+/* General body styling */
+body {
+	font-family: $font-family;
+	overflow: hidden;
+	background-color: $primary-color;
+}
+
+/* Background wave styling */
+.wave {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	height: 100%;
+	z-index: -1;
+}
+
+/* Background image styling */
+.img {
+	display: flex;
+	justify-content: center; /* Center horizontally */
+	align-items: center; /* Center vertically */
+	width: 100%;
+	img {
+		max-width: 700px; /* Set a maximum width to avoid oversized images */
+		height: auto; /* Maintain aspect ratio */
+	}
+}
+
+/* Login content container */
+.loginContent {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+
+	form {
+		width: 360px;
+	}
+
+	img {
+		height: 200px;
+	}
+
+	.loginTitle {
+		margin: 15px 0;
+		color: #333;
+		text-transform: uppercase;
+	}
+}
+
+/* Line divider styling */
+.line {
+	display: block;
+	width: 100%;
+	height: 3px;
+	border-radius: 25px;
+	outline: none;
+	border: none;
+	background-image: linear-gradient(
+		to right,
+		#ffffff,
+		rgb(36, 196, 202),
+		#ffffff
+	);
+	background-size: 100%;
+	font-size: 1.2rem;
+	color: #fff;
+	font-family: $font-family;
+	text-transform: uppercase;
+	margin: 4rem 0;
+	transition: 0.5s;
+}
+
+/* Button styling */
+.btn {
+	display: block;
+	width: 100%;
+	height: 50px;
+	border-radius: 25px;
+	outline: none;
+	border: none;
+	background-image: linear-gradient(
+		to right,
+		$button-color,
+		rgb(36, 196, 202),
+		#0d5c76
+	);
+	background-size: 200%;
+	font-size: 1.2rem;
+	color: #fff;
+	font-family: $font-family;
+	text-transform: uppercase;
+	margin: 1rem 0;
+	cursor: pointer;
+	transition: 0.5s;
+
+	&:hover {
+		background-position: right;
+	}
+}
