@@ -1,28 +1,22 @@
 const crypto = require("crypto");
 const { db } = require("../config/firebaseConfig");
+const logger = require("../log/logger");
+const { checkField } = require("../utils");
 
 const multer = require("multer");
-
-function checkfield(requiredFields, req) {
-	for (const field of requiredFields) {
-		if (!req.body[field]) {
-			return res.status(400).json({
-				message: `Missing required field: ${field}`,
-			});
-		}
-	}
-}
 
 function hashData(data) {
 	return crypto.createHash("sha512").update(data).digest("hex");
 }
 
-//create new user
+// Create new user
 const create = async (req, res) => {
 	try {
 		const requiredFields = ["password", "username", "user_type"];
 
-		checkfield(requiredFields, req);
+		if (!checkField(requiredFields, req, res)) {
+			return;
+		}
 
 		const userData = {
 			username: req.body.username,
@@ -30,58 +24,72 @@ const create = async (req, res) => {
 			user_type: req.body.user_type,
 		};
 
-		const response = await db
-			.collection("users")
-			.doc(req.body.username)
-			.create(userData);
+		await db.collection("users").doc(req.body.username).create(userData);
 
+		logger.info(`User created successfully: ${req.body.username}`); // Log success
 		res.status(200).send("Register user success");
 	} catch (error) {
+		logger.error(`Error creating user ${req.body.username}: ${error.message}`); // Log error
 		res.status(500).send(error.message);
 	}
 };
 
-//log in user
+// Log in user
 const login = async (req, res) => {
 	try {
 		const requiredFields = ["username", "password"];
 
-		checkfield(requiredFields, req);
-		console.log(req.body);
+		if (!checkField(requiredFields, req, res)) {
+			return;
+		}
+
+		const { username, password } = req.body;
 
 		const checkLogin = await db
 			.collection("users")
-			.where("username", "==", req.body.username)
-			.where("password", "==", hashData(req.body.password))
+			.where("username", "==", username)
+			.where("password", "==", hashData(password))
 			.get();
 
 		if (checkLogin.empty) {
+			logger.warn(`Login attempt failed for username: ${username}`);
 			return res.status(401).send("Wrong username or password");
 		}
 
-		console.log(checkLogin.docs.values());
-
+		logger.info(`User logged in successfully: ${username}`);
 		res.status(200).send("success");
 	} catch (error) {
+		logger.error(
+			`Error logging in user ${req.body.username}: ${error.message}`
+		);
 		res.status(500).send(error.message);
 	}
 };
-//edit user
-const edit = async (req, res) => {};
 
-//delete user
+// Edit user
+const edit = async (req, res) => {
+	// Add implementation for editing user and integrate logging similarly
+};
+
+// Delete user
 const del = async (req, res) => {
 	try {
 		const requiredFields = ["username", "password"];
-		checkfield(requiredFields, req);
+
+		if (!checkField(requiredFields, req, res)) {
+			return;
+		}
 
 		await db
 			.collection("users")
 			.where("username", "==", req.body.username)
 			.where("password", "==", hashData(req.body.password))
 			.delete();
+
+		logger.info(`User deleted successfully: ${req.body.username}`); // Log success
 		res.status(200).send("delete success");
 	} catch (error) {
+		logger.error(`Error deleting user ${req.body.username}: ${error.message}`); // Log error
 		res.status(500).send(error.message);
 	}
 };

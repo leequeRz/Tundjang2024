@@ -1,0 +1,21 @@
+2024-08-16T18:54:47.724Z [warn]: Missing required field: username
+2024-08-16T19:01:59.988Z [warn]: Missing required field: username
+2024-08-16T19:02:35.545Z [info]: [object Object]
+2024-08-16T19:02:35.547Z [warn]: Missing required field: username
+2024-08-16T19:02:48.414Z [info]: [object Object]
+2024-08-16T19:02:48.416Z [warn]: Missing required field: username
+2024-08-16T19:03:05.639Z [error]: Error logging in user undefined: Converting circular structure to JSON
+    --> starting at object with constructor 'Socket'
+    |     property 'parser' -> object with constructor 'HTTPParser'
+    --- property 'socket' closes the circle
+2024-08-16T19:03:32.673Z [warn]: Missing required field: username
+2024-08-16T19:04:07.368Z [warn]: Missing required field: username
+2024-08-16T19:04:22.277Z [warn]: Missing required field: username
+2024-08-16T19:07:35.448Z [error]: Error occurred: Unexpected token u in JSON at position 1
+2024-08-16T19:07:42.779Z [error]: Error occurred: Unexpected token u in JSON at position 1
+2024-08-16T19:08:14.187Z [error]: Error occurred: Unexpected token u in JSON at position 1
+2024-08-16T19:09:06.245Z [warn]: Missing required field: username
+2024-08-16T19:11:29.366Z [warn]: Login attempt failed for username: johndoe
+2024-08-16T19:12:48.140Z [info]: User logged in successfully: johndoe
+2024-08-16T19:40:16.464Z [warn]: Missing required field: password
+2024-08-16T19:40:36.888Z [info]: User logged in successfully: johndoe

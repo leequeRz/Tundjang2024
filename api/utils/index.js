@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const { admin } = require("../config/firebaseConfig");
+const logger = require("../log/logger");
 const Timestamp = admin.firestore.Timestamp;
 
 const firestoreTimestampToDateInUTCPlus7 = (
@@ -42,15 +43,18 @@ const dateToFirestoreTimestamp = (dateString) => {
 	return Timestamp.fromDate(date);
 };
 
-const checkField = (requiredFields, req, res) => {
+function checkField(requiredFields, req, res) {
 	for (const field of requiredFields) {
 		if (!req.body[field]) {
-			return res.status(400).json({
+			logger.warn(`Missing required field: ${field}`);
+			res.status(400).json({
 				message: `Missing required field: ${field}`,
 			});
+			return false;
 		}
 	}
-};
+	return true;
+}
 
 const hashData = (data) => {
 	return crypto.createHash("sha512").update(data).digest("hex");

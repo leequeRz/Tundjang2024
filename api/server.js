@@ -3,6 +3,8 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerSpecs = require("./config/swaggerConfig");
 const routes = require("./routes");
 const cors = require("cors");
+const morganMiddleware = require("./log/morgan");
+const logger = require("./log/logger");
 require("dotenv").config();
 
 const app = express();
@@ -10,12 +12,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(morganMiddleware);
 
 // Serve Swagger documentation
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // Use API routes
 app.use("/api/v1", routes);
+
+app.use((err, req, res, next) => {
+	logger.error(`Error occurred: ${err.message}`);
+	res.status(500).send("Internal Server Error");
+});
 
 app.post("/api/webhook", require("./utils/lineWebhookHandler"));
 

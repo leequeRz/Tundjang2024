@@ -31,17 +31,29 @@ const {
  *             properties:
  *               HN:
  *                 type: string
+ *                 description: Hospital Number (HN) of the patient.
+ *                 example: 'AI12345'
  *               prefix:
  *                 type: string
+ *                 description: Prefix of the patient's name (e.g., Mr., Mrs.).
+ *                 example: 'Mr.'
  *               name:
  *                 type: string
+ *                 description: First name of the patient.
+ *                 example: 'John'
  *               surname:
  *                 type: string
+ *                 description: Surname of the patient.
+ *                 example: 'Doe'
  *               gender:
  *                 type: string
+ *                 description: Gender of the patient.
+ *                 example: 'Male'
  *               DOB:
  *                 type: string
  *                 format: date
+ *                 description: Date of birth of the patient.
+ *                 example: '1990-01-01'
  *             required:
  *               - HN
  *               - prefix
@@ -71,6 +83,7 @@ router.post("/patient", AddPatient);
  *         required: true
  *         schema:
  *           type: string
+ *           example: "AI123456"
  *         description: Hospital Number (HN) of the patient.
  *     requestBody:
  *       required: true
@@ -81,15 +94,25 @@ router.post("/patient", AddPatient);
  *             properties:
  *               prefix:
  *                 type: string
+ *                 description: Prefix of the patient's name (e.g., Mr., Mrs.).
+ *                 example: 'Mr.'
  *               name:
  *                 type: string
+ *                 description: First name of the patient.
+ *                 example: 'John'
  *               surname:
  *                 type: string
+ *                 description: Surname of the patient.
+ *                 example: 'Doe'
  *               gender:
  *                 type: string
+ *                 description: Gender of the patient.
+ *                 example: 'Male'
  *               DOB:
  *                 type: string
  *                 format: date
+ *                 description: Date of birth of the patient, must be in "YYYY-MM-DD" format.
+ *                 example: '1990-01-01'
  *             required:
  *               - prefix
  *               - name
@@ -117,7 +140,9 @@ router.put("/patient/:HN", EditPatient);
  *         name: HN
  *         schema:
  *           type: string
- *         description: Hospital Number (HN) of the patient.
+ *           example: "AI123456"
+ *           nullable: true
+ *         description: Hospital Number (HN) of the patient. If not provided, the endpoint returns the latest updated patients.
  *     responses:
  *       200:
  *         description: Patient data retrieved successfully
@@ -130,19 +155,38 @@ router.put("/patient/:HN", EditPatient);
  *                 properties:
  *                   id:
  *                     type: string
+ *                     description: The document ID of the patient in Firestore.
+ *                     example: abc123
  *                   HN:
  *                     type: string
+ *                     description: Hospital Number of the patient.
+ *                     example: 12345
  *                   prefix:
  *                     type: string
+ *                     description: Prefix of the patient's name.
+ *                     example: Mr.
  *                   name:
  *                     type: string
+ *                     description: First name of the patient.
+ *                     example: John
  *                   surname:
  *                     type: string
+ *                     description: Surname of the patient.
+ *                     example: Doe
  *                   gender:
  *                     type: string
+ *                     description: Gender of the patient.
+ *                     example: Male
  *                   DOB:
  *                     type: string
  *                     format: date
+ *                     description: Date of birth of the patient.
+ *                     example: 1990-01-01
+ *                   lastUpdate:
+ *                     type: string
+ *                     format: date-time
+ *                     description: The timestamp of the last update for the patient record.
+ *                     example: 2024-08-08T12:34:56Z
  *       500:
  *         description: Internal server error
  */
@@ -162,6 +206,7 @@ router.get("/patient/:HN", FindPatient);
  *         required: true
  *         schema:
  *           type: string
+ *           example: "AI123456"
  *         description: Hospital Number (HN) of the patient.
  *     responses:
  *       200:

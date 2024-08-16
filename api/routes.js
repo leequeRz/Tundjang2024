@@ -5,8 +5,8 @@ const userRoutes = require("./routes/userRoutes");
 
 const router = express.Router();
 
-router.use("/patients", patientRoutes);
-router.use("/records", recordRoutes);
-router.use("/users", userRoutes);
+router.use(patientRoutes);
+router.use(recordRoutes);
+router.use(userRoutes);
 
 module.exports = router;

@@ -1,178 +1,12 @@
 const { db } = require("../config/firebaseConfig");
-const { checkField, firestoreTimestampToDateInUTCPlus7 } = require("../utils");
+const {
+	checkField,
+	firestoreTimestampToDateInUTCPlus7,
+	dateToFirestoreTimestamp,
+} = require("../utils");
+const logger = require("../log/logger"); // Import the logger
 
 // AddRecord for adding a new record
-/**
- * @swagger
- * tags:
- *   name: Records
- *   description: Operations related to patient records
- */
-
-/**
- * @swagger
- * /patient/{HN}/record:
- *   post:
- *     summary: Add a new record for a patient
- *     description: Adds a new record with various health parameters for the patient identified by the Hospital Number (HN).
- *     tags:
- *       - Records
- *     parameters:
- *       - in: path
- *         name: HN
- *         required: true
- *         schema:
- *           type: string
- *         description: Hospital Number (HN) of the patient.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               BT:
- *                 type: number
- *                 description: Body Temperature
- *               BP:
- *                 type: string
- *                 description: Blood Pressure
- *               HR:
- *                 type: number
- *                 description: Heart Rate
- *               RR:
- *                 type: number
- *                 description: Respiratory Rate
- *               O2sat:
- *                 type: number
- *                 description: Oxygen Saturation
- *               conscious:
- *                 type: string
- *                 description: Consciousness level
- *               breath_pattern:
- *                 type: string
- *                 description: Breath pattern
- *               eat_method:
- *                 type: string
- *                 description: Eating method
- *               food_type:
- *                 type: string
- *                 description: Type of food
- *               food_intake:
- *                 type: string
- *                 description: Food intake
- *               sleep:
- *                 type: string
- *                 description: Sleep details
- *               excretion:
- *                 type: string
- *                 description: Excretion details
- *               extra_symptoms:
- *                 type: string
- *                 description: Extra symptoms (optional)
- *               extra_food:
- *                 type: string
- *                 description: Extra food (optional)
- *               notes:
- *                 type: string
- *                 description: Additional notes (optional)
- *     responses:
- *       200:
- *         description: Record added successfully, returns the document ID
- *         content:
- *           text/plain:
- *             schema:
- *               type: string
- *               example: rec_20240816123456
- *       400:
- *         description: Missing required parameter or field
- *       500:
- *         description: Internal server error
- */
-
-/**
- * @swagger
- * /patient/{HN}/record:
- *   get:
- *     summary: Retrieve records for a specific patient
- *     description: Retrieves all records for the patient identified by the Hospital Number (HN).
- *     tags:
- *       - Records
- *     parameters:
- *       - in: path
- *         name: HN
- *         required: true
- *         schema:
- *           type: string
- *         description: Hospital Number (HN) of the patient.
- *     responses:
- *       200:
- *         description: Records retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: string
- *                     description: Record ID
- *                   timestamp:
- *                     type: string
- *                     format: date-time
- *                     description: Timestamp of the record
- *                   BT:
- *                     type: number
- *                     description: Body Temperature
- *                   BP:
- *                     type: string
- *                     description: Blood Pressure
- *                   HR:
- *                     type: number
- *                     description: Heart Rate
- *                   RR:
- *                     type: number
- *                     description: Respiratory Rate
- *                   O2sat:
- *                     type: number
- *                     description: Oxygen Saturation
- *                   conscious:
- *                     type: string
- *                     description: Consciousness level
- *                   breath_pattern:
- *                     type: string
- *                     description: Breath pattern
- *                   eat_method:
- *                     type: string
- *                     description: Eating method
- *                   food_type:
- *                     type: string
- *                     description: Type of food
- *                   food_intake:
- *                     type: string
- *                     description: Food intake
- *                   sleep:
- *                     type: string
- *                     description: Sleep details
- *                   excretion:
- *                     type: string
- *                     description: Excretion details
- *                   extra_symptoms:
- *                     type: string
- *                     description: Extra symptoms (optional)
- *                   extra_food:
- *                     type: string
- *                     description: Extra food (optional)
- *                   notes:
- *                     type: string
- *                     description: Additional notes (optional)
- *       400:
- *         description: Missing required parameter: HN
- *       500:
- *         description: Internal server error
- */
-
 const AddRecord = async (req, res) => {
 	try {
 		const requiredFields = [
@@ -189,7 +23,9 @@ const AddRecord = async (req, res) => {
 			"sleep",
 			"excretion",
 		];
-		checkField(requiredFields, req, res);
+		if (!checkField(requiredFields, req, res)) {
+			return;
+		}
 
 		const { HN } = req.params;
 		if (!HN) {
@@ -227,94 +63,15 @@ const AddRecord = async (req, res) => {
 			.doc(docId)
 			.set(recordData);
 
+		logger.info(`Record added for patient ${HN} with ID ${docId}`); // Log success
 		res.status(200).send(docId);
 	} catch (error) {
+		logger.error(`Error adding record for patient ${HN}: ${error.message}`); // Log error
 		res.status(500).send(error.message);
 	}
 };
 
 // EditRecord for updating a specific record
-/**
- * @swagger
- * /patient/{HN}/record/{docId}:
- *   post:
- *     summary: Update a specific record
- *     description: Updates a specific record identified by the document ID for the patient identified by the Hospital Number (HN).
- *     tags:
- *       - Records
- *     parameters:
- *       - in: path
- *         name: HN
- *         required: true
- *         schema:
- *           type: string
- *         description: Hospital Number (HN) of the patient.
- *       - in: path
- *         name: docId
- *         required: true
- *         schema:
- *           type: string
- *         description: Document ID of the record to be updated.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               BT:
- *                 type: number
- *                 description: Body Temperature
- *               BP:
- *                 type: string
- *                 description: Blood Pressure
- *               HR:
- *                 type: number
- *                 description: Heart Rate
- *               RR:
- *                 type: number
- *                 description: Respiratory Rate
- *               O2sat:
- *                 type: number
- *                 description: Oxygen Saturation
- *               conscious:
- *                 type: string
- *                 description: Consciousness level
- *               breath_pattern:
- *                 type: string
- *                 description: Breath pattern
- *               eat_method:
- *                 type: string
- *                 description: Eating method
- *               food_type:
- *                 type: string
- *                 description: Type of food
- *               food_intake:
- *                 type: string
- *                 description: Food intake
- *               sleep:
- *                 type: string
- *                 description: Sleep details
- *               excretion:
- *                 type: string
- *                 description: Excretion details
- *               extra_symptoms:
- *                 type: string
- *                 description: Extra symptoms (optional)
- *               extra_food:
- *                 type: string
- *                 description: Extra food (optional)
- *               notes:
- *                 type: string
- *                 description: Additional notes (optional)
- *     responses:
- *       200:
- *         description: Record updated successfully
- *       400:
- *         description: Missing required parameters or fields
- *       500:
- *         description: Internal server error
- */
 const EditRecord = async (req, res) => {
 	try {
 		const { HN, docId } = req.params;
@@ -330,14 +87,17 @@ const EditRecord = async (req, res) => {
 			.doc(docId)
 			.update(updateData);
 
+		logger.info(`Record updated for patient ${HN} with ID ${docId}`); // Log success
 		res.status(200).send("Edit success");
 	} catch (error) {
+		logger.error(
+			`Error updating record for patient ${HN} with ID ${docId}: ${error.message}`
+		); // Log error
 		res.status(500).send(error.message);
 	}
 };
 
 // DelRecord for deleting a specific record
-
 const DelRecord = async (req, res) => {
 	try {
 		const { HN, docId } = req.params;
@@ -352,8 +112,12 @@ const DelRecord = async (req, res) => {
 			.doc(docId)
 			.delete();
 
+		logger.info(`Record deleted for patient ${HN} with ID ${docId}`); // Log success
 		res.status(200).send("Delete success");
 	} catch (error) {
+		logger.error(
+			`Error deleting record for patient ${HN} with ID ${docId}: ${error.message}`
+		); // Log error
 		res.status(500).send(error.message);
 	}
 };
@@ -384,8 +148,12 @@ const GetRecord = async (req, res) => {
 			records.push({ id: doc.id, ...data });
 		});
 
+		logger.info(`Records retrieved for patient ${HN}`); // Log success
 		res.status(200).json(records);
 	} catch (error) {
+		logger.error(
+			`Error retrieving records for patient ${HN}: ${error.message}`
+		); // Log error
 		res.status(500).send(error.message);
 	}
 };

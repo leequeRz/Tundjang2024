@@ -1,0 +1,8 @@
+2024-08-16T18:54:47.734Z [error]: Error logging in user undefined: Value for argument "value" is not a valid query constraint. Cannot use "undefined" as a Firestore value. If you want to ignore undefined values, enable `ignoreUndefinedProperties`.
+2024-08-16T19:03:05.639Z [error]: Error logging in user undefined: Converting circular structure to JSON
+    --> starting at object with constructor 'Socket'
+    |     property 'parser' -> object with constructor 'HTTPParser'
+    --- property 'socket' closes the circle
+2024-08-16T19:07:35.448Z [error]: Error occurred: Unexpected token u in JSON at position 1
+2024-08-16T19:07:42.779Z [error]: Error occurred: Unexpected token u in JSON at position 1
+2024-08-16T19:08:14.187Z [error]: Error occurred: Unexpected token u in JSON at position 1

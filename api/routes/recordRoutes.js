@@ -29,6 +29,7 @@ const {
  *         required: true
  *         schema:
  *           type: string
+ *           example: "AI123456"
  *         description: Hospital Number (HN) of the patient.
  *     requestBody:
  *       required: true
@@ -37,51 +38,77 @@ const {
  *           schema:
  *             type: object
  *             properties:
+ *               id:
+ *                 type: string
+ *                 description: Record ID
+ *                 example: "rec_Fri Aug 09 2024 14:39:25 GMT+0700 (เวลาอินโดจีน)"
+ *               timestamp:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Timestamp of the record in UTC+7.
+ *                 example: "2024-08-11T14:39:25.853Z"
  *               BT:
  *                 type: number
  *                 description: Body Temperature
+ *                 example: "ไม่มีไข้"
  *               BP:
  *                 type: string
  *                 description: Blood Pressure
+ *                 example: "ปกติ"
  *               HR:
  *                 type: number
  *                 description: Heart Rate
+ *                 example: "ปกติ"
  *               RR:
  *                 type: number
  *                 description: Respiratory Rate
+ *                 example: "ปกติ"
  *               O2sat:
  *                 type: number
  *                 description: Oxygen Saturation
+ *                 example: "ปกติ"
  *               conscious:
  *                 type: string
  *                 description: Consciousness level
+ *                 example: "ตื่น รู้สึกตัวดี"
  *               breath_pattern:
  *                 type: string
  *                 description: Breath pattern
+ *                 example: "หายใจปกติ"
  *               eat_method:
  *                 type: string
  *                 description: Eating method
+ *                 example: "รับประทานเองได้"
  *               food_type:
  *                 type: string
  *                 description: Type of food
+ *                 example: "อาหารปกติ"
  *               food_intake:
- *                 type: string
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ["ข้าว", "ผลไม้"]
  *                 description: Food intake
  *               sleep:
  *                 type: string
  *                 description: Sleep details
+ *                 example: "นอนหลับได้"
  *               excretion:
  *                 type: string
  *                 description: Excretion details
+ *                 example: "ดี"
  *               extra_symptoms:
  *                 type: string
  *                 description: Extra symptoms (optional)
+ *                 example: "มีไข้, ไอ"
  *               extra_food:
  *                 type: string
  *                 description: Extra food (optional)
+ *                 example: "ผักบด"
  *               notes:
  *                 type: string
  *                 description: Additional notes (optional)
+ *                 example: "ไม่มีอาการผิดปกติ"
  *     responses:
  *       200:
  *         description: Record added successfully, returns the document ID
@@ -89,7 +116,7 @@ const {
  *           text/plain:
  *             schema:
  *               type: string
- *               example: rec_20240816123456
+ *               example: 'rec_Fri Aug 09 2024 14:39:25 GMT+0700 (เวลาอินโดจีน)'
  *       400:
  *         description: Missing required parameter or field
  *       500:
@@ -112,13 +139,15 @@ router.post("/patient/:HN/record", AddRecord);
  *         required: true
  *         schema:
  *           type: string
+ *           example: "AI123456"
  *         description: Hospital Number (HN) of the patient.
  *       - in: path
  *         name: docId
  *         required: true
  *         schema:
  *           type: string
- *         description: Document ID of the record to be updated.
+ *           example: "rec_Fri Aug 09 2024 14:39:25 GMT+0700 (เวลาอินโดจีน)"
+ *         description: Document ID of the record to be deleted.
  *     requestBody:
  *       required: true
  *       content:
@@ -126,51 +155,77 @@ router.post("/patient/:HN/record", AddRecord);
  *           schema:
  *             type: object
  *             properties:
+ *               id:
+ *                 type: string
+ *                 description: Record ID
+ *                 example: "rec_Fri Aug 09 2024 14:39:25 GMT+0700 (เวลาอินโดจีน)"
+ *               timestamp:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Timestamp of the record in UTC+7.
+ *                 example: "2024-08-11T14:39:25.853Z"
  *               BT:
  *                 type: number
  *                 description: Body Temperature
+ *                 example: "ไม่มีไข้"
  *               BP:
  *                 type: string
  *                 description: Blood Pressure
+ *                 example: "ปกติ"
  *               HR:
  *                 type: number
  *                 description: Heart Rate
+ *                 example: "ปกติ"
  *               RR:
  *                 type: number
  *                 description: Respiratory Rate
+ *                 example: "ปกติ"
  *               O2sat:
  *                 type: number
  *                 description: Oxygen Saturation
+ *                 example: "ปกติ"
  *               conscious:
  *                 type: string
  *                 description: Consciousness level
+ *                 example: "ตื่น รู้สึกตัวดี"
  *               breath_pattern:
  *                 type: string
  *                 description: Breath pattern
+ *                 example: "หายใจปกติ"
  *               eat_method:
  *                 type: string
  *                 description: Eating method
+ *                 example: "รับประทานเองได้"
  *               food_type:
  *                 type: string
  *                 description: Type of food
+ *                 example: "อาหารปกติ"
  *               food_intake:
- *                 type: string
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ["ข้าว", "ผลไม้"]
  *                 description: Food intake
  *               sleep:
  *                 type: string
  *                 description: Sleep details
+ *                 example: "นอนหลับได้"
  *               excretion:
  *                 type: string
  *                 description: Excretion details
+ *                 example: "ดี"
  *               extra_symptoms:
  *                 type: string
  *                 description: Extra symptoms (optional)
+ *                 example: "มีไข้, ไอ"
  *               extra_food:
  *                 type: string
  *                 description: Extra food (optional)
+ *                 example: "ผักบด"
  *               notes:
  *                 type: string
  *                 description: Additional notes (optional)
+ *                 example: "ไม่มีอาการผิดปกติ"
  *     responses:
  *       200:
  *         description: Record updated successfully
@@ -196,12 +251,14 @@ router.put("/patient/:HN/record/:docId", EditRecord);
  *         required: true
  *         schema:
  *           type: string
+ *           example: "AI123456"
  *         description: Hospital Number (HN) of the patient.
  *       - in: path
  *         name: docId
  *         required: true
  *         schema:
  *           type: string
+ *           example: 'rec_Fri Aug 09 2024 14:39:25 GMT+0700 (เวลาอินโดจีน)'
  *         description: Document ID of the record to be deleted.
  *     responses:
  *       200:
@@ -228,6 +285,7 @@ router.delete("/patient/:HN/record/:docId", DelRecord);
  *         required: true
  *         schema:
  *           type: string
+ *           example: "AI123456"
  *         description: Hospital Number (HN) of the patient.
  *     responses:
  *       200:
@@ -242,55 +300,74 @@ router.delete("/patient/:HN/record/:docId", DelRecord);
  *                   id:
  *                     type: string
  *                     description: Record ID
+ *                     example: "rec_Fri Aug 09 2024 14:39:25 GMT+0700 (เวลาอินโดจีน)"
  *                   timestamp:
  *                     type: string
  *                     format: date-time
- *                     description: Timestamp of the record
+ *                     description: Timestamp of the record in UTC+7.
+ *                     example: "2024-08-11T14:39:25.853Z"
  *                   BT:
  *                     type: number
  *                     description: Body Temperature
+ *                     example: "ไม่มีไข้"
  *                   BP:
  *                     type: string
  *                     description: Blood Pressure
+ *                     example: "ปกติ"
  *                   HR:
  *                     type: number
  *                     description: Heart Rate
+ *                     example: "ปกติ"
  *                   RR:
  *                     type: number
  *                     description: Respiratory Rate
+ *                     example: "ปกติ"
  *                   O2sat:
  *                     type: number
  *                     description: Oxygen Saturation
+ *                     example: "ปกติ"
  *                   conscious:
  *                     type: string
  *                     description: Consciousness level
+ *                     example: "ตื่น รู้สึกตัวดี"
  *                   breath_pattern:
  *                     type: string
  *                     description: Breath pattern
+ *                     example: "หายใจปกติ"
  *                   eat_method:
  *                     type: string
  *                     description: Eating method
+ *                     example: "รับประทานเองได้"
  *                   food_type:
  *                     type: string
  *                     description: Type of food
+ *                     example: "อาหารปกติ"
  *                   food_intake:
- *                     type: string
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                     example: ["ข้าว", "ผลไม้"]
  *                     description: Food intake
  *                   sleep:
  *                     type: string
  *                     description: Sleep details
+ *                     example: "นอนหลับได้"
  *                   excretion:
  *                     type: string
  *                     description: Excretion details
+ *                     example: "ดี"
  *                   extra_symptoms:
  *                     type: string
  *                     description: Extra symptoms (optional)
+ *                     example: "มีไข้, ไอ"
  *                   extra_food:
  *                     type: string
  *                     description: Extra food (optional)
+ *                     example: "ผักบด"
  *                   notes:
  *                     type: string
  *                     description: Additional notes (optional)
+ *                     example: "ไม่มีอาการผิดปกติ"
  *       400:
  *         description: Missing required parameter HN
  *       500:

@@ -27,12 +27,15 @@ const { login, create, edit, del } = require("../controllers/userController");
  *               username:
  *                 type: string
  *                 description: Username of the new user
+ *                 example: "johndoe"
  *               password:
  *                 type: string
  *                 description: Password for the new user
+ *                 example: "securepassword123"
  *               user_type:
  *                 type: string
  *                 description: Type of user (e.g., admin, regular)
+ *                 example: "admin"
  *     responses:
  *       200:
  *         description: User successfully registered
@@ -60,10 +63,12 @@ router.post("/users/register", create);
  *             properties:
  *               username:
  *                 type: string
- *                 description: Username of the user
+ *                 description: Username of the organization account.
+ *                 example: "johndoe"
  *               password:
  *                 type: string
- *                 description: Password for the user
+ *                 description: Password of the organization account.
+ *                 example: "securepassword123"
  *     responses:
  *       200:
  *         description: Login successful
@@ -91,13 +96,16 @@ router.post("/users/login", login);
  *             properties:
  *               username:
  *                 type: string
- *                 description: Username of the user to be updated
+ *                 description: Username of the organization account.
+ *                 example: "johndoe"
  *               password:
  *                 type: string
- *                 description: New password for the user
+ *                 description: Password of the organization account.
+ *                 example: "securepassword123"
  *               user_type:
  *                 type: string
  *                 description: New type of user (e.g., admin, regular)
+ *                 example: "admin"
  *     responses:
  *       200:
  *         description: User successfully updated
@@ -125,10 +133,12 @@ router.put("/users/update", edit);
  *             properties:
  *               username:
  *                 type: string
- *                 description: Username of the user to be deleted
+ *                 description: Username of the organization account.
+ *                 example: "johndoe"
  *               password:
  *                 type: string
- *                 description: Password for the user
+ *                 description: Password of the organization account.
+ *                 example: "securepassword123"
  *     responses:
  *       200:
  *         description: User successfully deleted
