@@ -1,57 +1,95 @@
-import React, { useState, useEffect } from "react";
-import "./Table.css";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import React, { useState, useEffect, useMemo } from "react";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	Paper,
+	Typography,
+	Box,
+	InputBase,
+	Button,
+	Pagination as MuiPagination,
+} from "@mui/material";
+import { Search as SearchIcon } from "@mui/icons-material";
+import PatientRow from "./PatientRow";
+import PatientPopup from "./PatientPopup";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
+// Main TableComponent
 const TableComponent = ({ setSelectedSidebarItem }) => {
-	const [patients, setPatients] = useState([]);
+	const [editingPatient, setEditingPatient] = useState(null);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);
 	const [expandedRows, setExpandedRows] = useState([]);
+	const [isPopupOpen, setIsPopupOpen] = useState(false);
 	const rowsPerPage = 15;
 
-	useEffect(() => {
-		fetch("http://localhost:3000/api/v1/patients/get")
-			.then((response) => response.json())
-			.then((data) => setPatients(data))
-			.catch((error) => console.error("Error fetching data:", error));
-	}, []);
+	const queryClient = useQueryClient();
+
+	const {
+		data: patients = [],
+		isLoading,
+		error,
+	} = useQuery(["patients"], async () => {
+		const response = await fetch("http://localhost:3000/api/v1/patients/get");
+		if (!response.ok) throw new Error("Error fetching data");
+		return response.json();
+	});
+
+	const deleteMutation = useMutation({
+		mutationFn: async (HN) => {
+			const response = await fetch(
+				`http://localhost:3000/api/v1/patients/delete/${HN}`,
+				{
+					method: "DELETE",
+				}
+			);
+			if (!response.ok) throw new Error("Error deleting patient");
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries(["patients"]);
+		},
+	});
+
+	const handleDelete = (HN) => {
+		deleteMutation.mutate(HN);
+	};
+
+	const handleEdit = (patient) => {
+		setEditingPatient(patient);
+		setIsPopupOpen(true);
+	};
+
+	const handleOpenPopup = () => {
+		setEditingPatient(null);
+		setIsPopupOpen(true);
+	};
+
+	const handleClosePopup = () => {
+		setIsPopupOpen(false);
+	};
 
 	const handleRowClick = (hn) => {
-		if (expandedRows.includes(hn)) {
-			setExpandedRows(expandedRows.filter((rowHn) => rowHn !== hn));
-		} else {
-			setExpandedRows([...expandedRows, hn]);
-		}
+		setExpandedRows((prev) =>
+			prev.includes(hn) ? prev.filter((rowHn) => rowHn !== hn) : [...prev, hn]
+		);
 	};
 
-	// Calculate age based on DOB
-	const calculateAge = (dob) => {
-		const birthDate = new Date(dob);
-		const today = new Date();
-		let age = today.getFullYear() - birthDate.getFullYear();
-		const monthDiff = today.getMonth() - birthDate.getMonth();
-		if (
-			monthDiff < 0 ||
-			(monthDiff === 0 && today.getDate() < birthDate.getDate())
-		) {
-			age--;
-		}
-		return age;
+	const handlePageChange = (event, value) => {
+		setCurrentPage(value);
 	};
 
-	// Filter and paginate data
-	const filteredRows = patients.filter(
-		(row) =>
-			row.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			row.surname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			row.HN.toLowerCase().includes(searchTerm.toLowerCase())
-	);
+	const filteredRows = useMemo(() => {
+		return patients.filter(
+			(row) =>
+				row.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+				row.surname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+				row.HN.toLowerCase().includes(searchTerm.toLowerCase())
+		);
+	}, [patients, searchTerm]);
 
 	const indexOfLastRow = currentPage * rowsPerPage;
 	const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -70,125 +108,120 @@ const TableComponent = ({ setSelectedSidebarItem }) => {
 		}),
 	];
 
-	const handlePageChange = (direction) => {
-		if (direction === "next" && indexOfLastRow < filteredRows.length) {
-			setCurrentPage(currentPage + 1);
-		} else if (direction === "prev" && currentPage > 1) {
-			setCurrentPage(currentPage - 1);
-		}
-	};
-
 	return (
-		<div className="container-table">
-			<div className="header-container">
-				<div className="header-left">
-					<div className="header-title">All Patients</div>
-				</div>
-				<div className="header-right">
-					<input
-						type="text"
-						className="search-input"
-						placeholder="Search by Name, Surname or HN"
-						value={searchTerm}
-						onChange={(e) => setSearchTerm(e.target.value)}
-					/>
-					<button
-						className="new-pt-button"
-						onClick={() => setSelectedSidebarItem("Form")}
+		<Box sx={{ p: 2 }}>
+			<Box
+				sx={{
+					display: "flex",
+					justifyContent: "space-between",
+					alignItems: "center",
+					mb: 2,
+				}}
+			>
+				<Typography variant="h6" component="div">
+					All Patients
+				</Typography>
+				<Box sx={{ display: "flex", alignItems: "center" }}>
+					<Box
+						sx={{
+							display: "flex",
+							alignItems: "center",
+							backgroundColor: "background.paper",
+							borderRadius: 1,
+							p: 0.5,
+						}}
 					>
-						New PT
-					</button>
-				</div>
-			</div>
+						<SearchIcon sx={{ mr: 1 }} />
+						<InputBase
+							placeholder="Search by Name, Surname or HN"
+							value={searchTerm}
+							onChange={(e) => setSearchTerm(e.target.value)}
+							sx={{ width: { xs: 200, sm: 300 } }}
+						/>
+					</Box>
+					<Button
+						variant="contained"
+						color="primary"
+						sx={{ ml: 2 }}
+						onClick={handleOpenPopup}
+					>
+						New Patient
+					</Button>
+					<PatientPopup
+						open={isPopupOpen}
+						onClose={handleClosePopup}
+						patientData={editingPatient}
+					/>
+				</Box>
+			</Box>
 
 			<TableContainer component={Paper}>
-				<Table className="Table">
+				<Table>
 					<TableHead>
 						<TableRow>
-							<TableCell>HN</TableCell>
-							<TableCell>Prefix</TableCell>
-							<TableCell>Name</TableCell>
-							<TableCell>Surname</TableCell>
-							<TableCell>Gender</TableCell>
-							<TableCell>Age</TableCell> {/* Changed from DOB to Age */}
-							<TableCell>Last Update</TableCell>
-							<TableCell>Details</TableCell>
+							{[
+								{ label: "HN", key: "HN" },
+								{ label: "Prefix", key: "Prefix" },
+								{ label: "Name", key: "Name" },
+								{ label: "Surname", key: "Surname" },
+								{ label: "Gender", key: "Gender" },
+								{ label: "Age", key: "Age" },
+								{ label: "Last Update", key: "Last Update" },
+								{ label: "", key: "Details" },
+							].map(({ label, key }) => (
+								<TableCell
+									key={key}
+									sx={{
+										fontWeight: "bold", // Make text bold
+										fontSize: "1.05rem", // Increase font size
+										backgroundColor: "#f5f5f5", // Light background color for headers
+									}}
+								>
+									{label}
+								</TableCell>
+							))}
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{paddedRows.map((row, index) => (
-							<React.Fragment key={index}>
-								<TableRow onClick={() => handleRowClick(row.HN)}>
-									<TableCell>{row.HN || ""}</TableCell>
-									<TableCell>{row.prefix || ""}</TableCell>
-									<TableCell>{row.name || ""}</TableCell>
-									<TableCell>{row.surname || ""}</TableCell>
-									<TableCell>{row.gender || ""}</TableCell>
-									<TableCell>{row.DOB ? calculateAge(row.DOB) : ""}</TableCell>
-									<TableCell>{row.lastUpdate || ""}</TableCell>
-									<TableCell>
-										{row.HN ? (
-											<button onClick={() => handleRowClick(row.HN)}>
-												Show Details
-											</button>
-										) : (
-											<button disabled>No Details</button>
-										)}
-									</TableCell>
-								</TableRow>
-								{expandedRows.includes(row.HN) && (
-									<TableRow key={`${index}-subrow`}>
-										<TableCell colSpan={8}>
-											<div className="sub-row">
-												<Table size="small">
-													<TableHead>
-														<TableRow>
-															<TableCell>Timestamp</TableCell>
-															<TableCell>Detail</TableCell>
-														</TableRow>
-													</TableHead>
-													<TableBody>
-														{/* Replace with actual record data */}
-														<TableRow>
-															<TableCell>Sample Timestamp</TableCell>
-															<TableCell>Sample Detail</TableCell>
-														</TableRow>
-													</TableBody>
-												</Table>
-											</div>
-										</TableCell>
-									</TableRow>
-								)}
-							</React.Fragment>
+							<PatientRow
+								key={index}
+								row={row}
+								isExpanded={expandedRows.includes(row.HN)}
+								handleRowClick={handleRowClick}
+								onEdit={handleEdit}
+								onDelete={handleDelete}
+							/>
 						))}
 					</TableBody>
 				</Table>
 			</TableContainer>
 
 			{filteredRows.length > rowsPerPage && (
-				<div className="pagination">
-					<span>
-						Showing data {indexOfFirstRow + 1} to{" "}
+				<Box
+					sx={{
+						display: "flex",
+						justifyContent: "space-between",
+						alignItems: "center",
+						mt: 2,
+					}}
+				>
+					<Typography>
+						Showing {indexOfFirstRow + 1} to{" "}
 						{Math.min(indexOfLastRow, filteredRows.length)} of{" "}
 						{filteredRows.length} entries
-					</span>
-					<div className="pagination-controls">
-						<button
-							onClick={() => handlePageChange("prev")}
-							disabled={currentPage === 1}
-						>
-							{"<"}
-						</button>
-						<button
-							onClick={() => handlePageChange("next")}
-							disabled={indexOfLastRow >= filteredRows.length}
-						>
-							{">"}
-						</button>
-					</div>
-				</div>
+					</Typography>
+					<MuiPagination
+						count={Math.ceil(filteredRows.length / rowsPerPage)}
+						page={currentPage}
+						onChange={handlePageChange}
+						color="primary"
+						showFirstButton
+						showLastButton
+					/>
+				</Box>
 			)}
-		</div>
+		</Box>
 	);
 };
 

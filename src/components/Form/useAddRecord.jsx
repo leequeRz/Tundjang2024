@@ -4,7 +4,10 @@ import axios from "axios";
 const useAddRecord = () => {
 	return useMutation({
 		mutationFn: async (data) => {
-			const response = await axios.post("/patients/record", data);
+			const response = await axios.post(
+				"http://localhost:3000/patients/record",
+				data
+			);
 			return response.data;
 		},
 		onSuccess: (data) => {

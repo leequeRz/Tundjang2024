@@ -19,53 +19,43 @@ import { getCurrentShift } from "../../utils/form";
 const Form = () => {
 	const currentDate = new Date().toLocaleDateString();
 	const { mutate } = useAddRecord();
+	const [form, setForm] = useState({
+		HN: "Test Hn", // Hospital Number
+		BT: "ไม่มีไข้",
+		BP: "ปกติ",
+		HR: "ปกติ",
+		RR: "ปกติ",
+		O2sat: "ปกติ",
+		conscious: "ตื่น รู้สึกตัวดี",
+		breath_pattern: "หายใจปกติ",
+		eat_method: "รับประทานเองได้",
+		food_type: "นมแม่",
+		food_intake: [""],
+		sleep: "", // Sleep pattern
+		excretion: "", // Excretion
+		extra_symptoms: "", // Additional symptoms
+		extra_food: "ตามปกติ", // Additional food info
+		notes: "", // Additional notes
+		shift: "", // Define shift state
+	});
 
-	// State for managing form values
-	const [hn, setHn] = useState(""); // Hospital Number
-	const [bt, setBt] = useState("ไม่มีไข้");
-	const [bp, setBp] = useState("ปกติ");
-	const [hr, setHr] = useState("ปกติ");
-	const [rr, setRr] = useState("ปกติ");
-	const [o2sat, setO2sat] = useState("ปกติ");
-	const [conscious, setConscious] = useState("ตื่น รู้สึกตัวดี");
-	const [breathing, setBreathing] = useState("หายใจปกติ");
-	const [eating, setEating] = useState("รับประทานเองได้");
-	const [food, setFood] = useState("นมแม่");
-	const [eatingBehavior, setEatingBehavior] = useState("ตามปกติ");
-	const [extraSymptoms, setExtraSymptoms] = useState(""); // Additional symptoms
-	const [extraFood, setExtraFood] = useState(""); // Additional food info
-	const [sleep, setSleep] = useState(""); // Sleep pattern
-	const [excretion, setExcretion] = useState(""); // Excretion
-	const [notes, setNotes] = useState(""); // Additional notes
-	const [shift, setShift] = useState(""); // Define shift state
+	const handleFormChange = (e) => {
+		setForm((prev) => ({
+			...prev,
+			[e.target.name]: e.target.value,
+		}));
+	};
 
 	useEffect(() => {
-		setShift(getCurrentShift()); // Set default shift based on current time
+		setForm((prev) => ({
+			...prev,
+			shift: getCurrentShift(),
+		}));
 	}, []);
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-
-		const data = {
-			HN: hn,
-			BT: bt,
-			BP: bp,
-			HR: hr,
-			RR: rr,
-			O2sat: o2sat,
-			conscious: conscious,
-			breath_pattern: breathing,
-			eat_method: eating,
-			food_type: food,
-			food_intake: [food],
-			sleep: sleep,
-			excretion: excretion,
-			extra_symptoms: extraSymptoms,
-			extra_food: extraFood,
-			notes: notes,
-		};
-
-		mutate(data);
+		mutate(form);
 	};
 
 	return (
@@ -84,8 +74,8 @@ const Form = () => {
 						row
 						aria-label="shift"
 						name="shift"
-						value={shift}
-						onChange={(e) => setShift(e.target.value)}
+						value={form.shift}
+						onChange={handleFormChange}
 					>
 						<FormControlLabel
 							value="morning-shift"
@@ -110,7 +100,7 @@ const Form = () => {
 					<Grid item xs={12} sm={6}>
 						<TextField
 							label="HN"
-							value="Auto-filled HN"
+							value={form.HN}
 							InputProps={{ readOnly: true }}
 							fullWidth
 							disabled
@@ -155,40 +145,35 @@ const Form = () => {
 					{[
 						{
 							label: "อุณหภูมิ (BT)",
-							name: "bt",
-							value: bt,
+							name: "BT",
+							value: form.BT,
 							options: ["ไม่มีไข้", "ไข้ต่ำ", "ไข้สูง"],
-							setValue: setBt,
 						},
 						{
 							label: "ความดันโลหิต (BP)",
-							name: "bp",
-							value: bp,
+							name: "BP",
+							value: form.BP,
 							options: ["ปกติ", "ต่ำ", "สูง"],
-							setValue: setBp,
 						},
 						{
 							label: "อัตราการเต้นของหัวใจ (HR)",
-							name: "hr",
-							value: hr,
+							name: "HR",
+							value: form.HR,
 							options: ["ปกติ", "ช้า", "เร็ว"],
-							setValue: setHr,
 						},
 						{
 							label: "อัตราการหายใจ (RR)",
-							name: "rr",
-							value: rr,
+							name: "RR",
+							value: form.RR,
 							options: ["ปกติ", "ช้า", "เร็ว"],
-							setValue: setRr,
 						},
 						{
 							label: "ค่าออกซิเจนในเลือด (O2sat)",
-							name: "o2sat",
-							value: o2sat,
+							name: "O2sat",
+							value: form.O2sat,
 							options: ["ปกติ", "ต่ำ"],
-							setValue: setO2sat,
 						},
-					].map(({ label, name, value, options, setValue }) => (
+					].map(({ label, name, value, options }) => (
 						<Grid item xs={12} sm={6} key={name}>
 							<FormControl component="fieldset">
 								<FormLabel component="legend" required>
@@ -198,8 +183,8 @@ const Form = () => {
 									row
 									aria-label={name}
 									name={name}
-									value={value}
-									onChange={(e) => setValue(e.target.value)}
+									value={form[name]}
+									onChange={handleFormChange}
 								>
 									{options.map((option) => (
 										<FormControlLabel
@@ -231,8 +216,8 @@ const Form = () => {
 								row
 								aria-label="conscious"
 								name="conscious"
-								value={conscious}
-								onChange={(e) => setConscious(e.target.value)}
+								value={form.conscious}
+								onChange={handleFormChange}
 							>
 								{[
 									"ตื่น รู้สึกตัวดี",
@@ -259,10 +244,10 @@ const Form = () => {
 							</FormLabel>
 							<RadioGroup
 								row
-								aria-label="breathing"
-								name="breathing"
-								value={breathing}
-								onChange={(e) => setBreathing(e.target.value)}
+								aria-label="breath_pattern"
+								name="breath_pattern"
+								value={form.breath_pattern}
+								onChange={handleFormChange}
 							>
 								{["หายใจปกติ", "หายใจช้า", "หายใจเร็ว หายใจหอบเหนื่อย"].map(
 									(option) => (
@@ -280,11 +265,12 @@ const Form = () => {
 
 					<Grid item xs={12}>
 						<TextField
+							name="extra_symptoms"
 							label="อาการเพิ่มเติม"
-							value={extraSymptoms}
+							value={form.extra_symptoms}
 							placeholder="พิมพ์อาการเพิ่มเติมที่นี่"
 							fullWidth
-							onChange={(e) => setExtraSymptoms(e.target.value)}
+							onChange={handleFormChange}
 						/>
 					</Grid>
 				</Grid>
@@ -301,10 +287,10 @@ const Form = () => {
 							</FormLabel>
 							<RadioGroup
 								row
-								aria-label="eating"
-								name="eating"
-								value={eating}
-								onChange={(e) => setEating(e.target.value)}
+								aria-label="eat_method"
+								name="eat_method"
+								value={form.eat_method}
+								onChange={handleFormChange}
 							>
 								{["รับประทานเองได้", "ใส่สายยางให้อาหาร"].map((option) => (
 									<FormControlLabel
@@ -325,10 +311,10 @@ const Form = () => {
 							</FormLabel>
 							<RadioGroup
 								row
-								aria-label="food"
-								name="food"
-								value={food}
-								onChange={(e) => setFood(e.target.value)}
+								aria-label="food_type"
+								name="food_type"
+								value={form.food_type}
+								onChange={handleFormChange}
 							>
 								{["นมแม่", "นมผสม", "อาหารแข็ง", "อาหารอื่นๆ"].map((option) => (
 									<FormControlLabel
@@ -349,10 +335,10 @@ const Form = () => {
 							</FormLabel>
 							<RadioGroup
 								row
-								aria-label="eating-behavior"
-								name="eating-behavior"
-								value={eatingBehavior}
-								onChange={(e) => setEatingBehavior(e.target.value)}
+								aria-label="extra_food"
+								name="extra_food"
+								value={form.extra_food}
+								onChange={handleFormChange}
 							>
 								{["ตามปกติ", "รับประทานน้อย", "ไม่รับประทาน"].map((option) => (
 									<FormControlLabel
@@ -369,10 +355,11 @@ const Form = () => {
 					<Grid item xs={12}>
 						<TextField
 							label="การนอนหลับ"
-							value={sleep}
+							name="sleep"
+							value={form.sleep}
 							placeholder="พิมพ์การนอนหลับที่นี่"
 							fullWidth
-							onChange={(e) => setSleep(e.target.value)}
+							onChange={handleFormChange}
 						/>
 					</Grid>
 				</Grid>
@@ -383,12 +370,13 @@ const Form = () => {
 				</Typography>
 				<TextField
 					placeholder="พิมพ์หมายเหตุเพิ่มเติมที่นี่"
-					value={notes}
+					name="notes"
+					value={form.notes}
 					multiline
 					rows={4}
 					fullWidth
 					margin="normal"
-					onChange={(e) => setNotes(e.target.value)}
+					onChange={handleFormChange}
 				/>
 
 				<Box marginTop={2}>

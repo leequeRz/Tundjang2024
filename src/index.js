@@ -1,4 +1,4 @@
-import React from "react";
+import { React, StrictMode } from "react";
 import ReactDOM from "react-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./App";
@@ -10,7 +10,9 @@ const queryClient = new QueryClient();
 ReactDOM.render(
 	<QueryClientProvider client={queryClient}>
 		<ThemeProvider theme={theme}>
-			<App />
+			<StrictMode>
+				<App />
+			</StrictMode>
 		</ThemeProvider>
 	</QueryClientProvider>,
 	document.getElementById("root")
