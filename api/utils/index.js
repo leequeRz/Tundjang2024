@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 const { admin } = require("../config/firebaseConfig");
-const logger = require("../log/logger");
+const logger = require("../config/logger");
 const Timestamp = admin.firestore.Timestamp;
 
 const firestoreTimestampToDateInUTCPlus7 = (

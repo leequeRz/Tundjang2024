@@ -3,8 +3,8 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerSpecs = require("./config/swaggerConfig");
 const routes = require("./routes");
 const cors = require("cors");
-const morganMiddleware = require("./log/morgan");
-const logger = require("./log/logger");
+const morganMiddleware = require("./middleware/morganMiddleware");
+const logger = require("./config/logger");
 require("dotenv").config();
 
 const app = express();
