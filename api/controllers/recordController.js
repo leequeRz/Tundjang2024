@@ -95,7 +95,7 @@ const EditRecord = logRequest(
 				.update(updateData);
 
 			logger.info(`Record updated for patient ${HN} with ID ${docId}`); // Log success
-			res.status(200).send("Edit success");
+			res.status(200).send({ message: "Edit success" });
 		} catch (error) {
 			logger.error(
 				`Error updating record for patient ${HN} with ID ${docId}: ${error.message}`
@@ -122,7 +122,7 @@ const DelRecord = logRequest(
 				.delete();
 
 			logger.info(`Record deleted for patient ${HN} with ID ${docId}`); // Log success
-			res.status(200).send("Delete success");
+			res.status(200).send({ message: "Delete success" });
 		} catch (error) {
 			logger.error(
 				`Error deleting record for patient ${HN} with ID ${docId}: ${error.message}`

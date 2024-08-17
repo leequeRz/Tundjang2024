@@ -29,7 +29,7 @@ const AddPatient = logRequest(
 			await db.collection("patients").doc(req.body.HN).create(req.body);
 
 			logger.info(`Patient added: ${req.body.HN}`); // Log the addition of a patient
-			res.status(200).send("success");
+			res.status(200).send({ message: "success" });
 		} catch (error) {
 			logger.error(`Error adding patient: ${error.message}`); // Log the error
 			res.status(500).send(error.message);
@@ -50,7 +50,7 @@ const EditPatient = logRequest(
 			await db.collection("patients").doc(HN).update(req.body);
 
 			logger.info(`Patient updated: ${HN}`); // Log the update of a patient
-			res.status(200).send("success");
+			res.status(200).send({ message: "success" });
 		} catch (error) {
 			logger.error(`Error updating patient ${HN}: ${error.message}`); // Log the error
 			res.status(500).send(error.message);
@@ -61,7 +61,7 @@ const EditPatient = logRequest(
 const FindPatient = logRequest(
 	timeExecution(async (req, res) => {
 		try {
-			const { HN } = req.params;
+			const HN = req.query.HN;
 			let snapshot;
 
 			if (!HN) {
@@ -100,7 +100,7 @@ const DelPatient = logRequest(
 
 			await db.collection("patients").doc(HN).delete();
 			logger.info(`Patient deleted: ${HN}`); // Log the deletion of a patient
-			res.status(200).send("Patient deleted successfully");
+			res.status(200).send({ message: "Patient deleted successfully" });
 		} catch (error) {
 			logger.error(`Error deleting patient ${HN}: ${error.message}`); // Log the error
 			res.status(500).send(error.message);

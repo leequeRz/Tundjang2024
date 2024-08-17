@@ -136,13 +136,12 @@ router.put("/patient/:HN", EditPatient);
  *     tags:
  *       - Patients
  *     parameters:
- *       - in: path
+ *       - in: query
  *         name: HN
  *         schema:
  *           type: string
- *           example: "AI123456"
- *           nullable: true
- *         description: Hospital Number (HN) of the patient. If not provided, the endpoint returns the latest updated patients.
+ *         required: false
+ *         description: Hospital Number (HN) of the patient. If not provided, returns all patients.
  *     responses:
  *       200:
  *         description: Patient data retrieved successfully
@@ -190,7 +189,7 @@ router.put("/patient/:HN", EditPatient);
  *       500:
  *         description: Internal server error
  */
-router.get("/patient/:HN", FindPatient);
+router.get("/patient", FindPatient);
 
 /**
  * @swagger

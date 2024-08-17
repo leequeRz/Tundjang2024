@@ -32,7 +32,7 @@ const create = logRequest(
 			await db.collection("users").doc(req.body.username).create(userData);
 
 			logger.info(`User created successfully: ${req.body.username}`); // Log success
-			res.status(200).send("Register user success");
+			res.status(200).send({ message: "Register user success" });
 		} catch (error) {
 			logger.error(
 				`Error creating user ${req.body.username}: ${error.message}`
@@ -66,7 +66,7 @@ const login = logRequest(
 			}
 
 			logger.info(`User logged in successfully: ${username}`);
-			res.status(200).send("success");
+			res.status(200).send({ message: "success" });
 		} catch (error) {
 			logger.error(
 				`Error logging in user ${req.body.username}: ${error.message}`
@@ -100,7 +100,7 @@ const del = logRequest(
 				.delete();
 
 			logger.info(`User deleted successfully: ${req.body.username}`); // Log success
-			res.status(200).send("delete success");
+			res.status(200).send({ message: "delete success" });
 		} catch (error) {
 			logger.error(
 				`Error deleting user ${req.body.username}: ${error.message}`

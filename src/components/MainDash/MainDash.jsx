@@ -1,5 +1,5 @@
 import React from "react";
-import TableComponent from "../Table/Table";
+import TableComponent from "../Table/PatientTable";
 import "./MainDash.css";
 
 const MainDash = ({ setSelectedSidebarItem }) => {

@@ -1,89 +1,42 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
 	Dialog,
 	DialogActions,
 	DialogContent,
 	DialogContentText,
 	DialogTitle,
-	TextField,
 	Button,
-	FormControl,
-	InputLabel,
-	Select,
-	MenuItem,
 	Grid,
 } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
+import { usePatientForm } from "../../hooks/usePatientForm";
+import { FormField, SelectField } from "./FormComponents";
 
 const PatientPopup = ({ open, onClose, patientData }) => {
-	const [formData, setFormData] = useState({
-		HN: "",
-		prefix: "",
-		name: "",
-		surname: "",
-		gender: "",
-		DOB: "",
-	});
+	const { formData, handleChange, handleSubmit, isSubmitting } = usePatientForm(
+		patientData,
+		onClose
+	);
 
-	const mutation = useMutation({
-		mutationFn: async (patient) => {
-			const url = patientData
-				? `http://localhost:3000/api/v1/patients/${patient.HN}`
-				: `http://localhost:3000/api/v1/patients/create`;
-			const method = patientData ? "PUT" : "POST";
-			const response = await fetch(url, {
-				method,
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(patient),
-			});
-
-			if (!response.ok) {
-				throw new Error(`Error ${patientData ? "updating" : "adding"} patient`);
-			}
-			return response.json();
+	const formFields = [
+		{ name: "HN", label: "Hospital Name", disabled: !!patientData, sm: 12 },
+		{
+			name: "prefix",
+			label: "Prefix",
+			type: "select",
+			options: ["Mr.", "Mrs.", "Ms."],
+			sm: 2,
 		},
-		onSuccess: () => {
-			onClose(); // Close the dialog after successful submission
+		{ name: "name", label: "Name", sm: 5 },
+		{ name: "surname", label: "Surname", sm: 5 },
+		{
+			name: "gender",
+			label: "Gender",
+			type: "select",
+			options: ["Male", "Female", "Other"],
+			sm: 6,
 		},
-		onError: (error) => {
-			console.error("Error:", error);
-		},
-	});
-
-	useEffect(() => {
-		if (patientData) {
-			setFormData({
-				HN: patientData.HN || "",
-				prefix: patientData.prefix || "",
-				name: patientData.name || "",
-				surname: patientData.surname || "",
-				gender: patientData.gender || "",
-				DOB: patientData.DOB || "",
-			});
-		} else {
-			setFormData({
-				HN: "",
-				prefix: "",
-				name: "",
-				surname: "",
-				gender: "",
-				DOB: "",
-			});
-		}
-	}, [patientData]);
-
-	const handleChange = (e) => {
-		setFormData({
-			...formData,
-			[e.target.name]: e.target.value,
-		});
-	};
-
-	const handleSubmit = () => {
-		mutation.mutate(formData);
-	};
+		{ name: "DOB", label: "DOB", type: "date", sm: 6 },
+	];
 
 	return (
 		<Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -96,83 +49,31 @@ const PatientPopup = ({ open, onClose, patientData }) => {
 					patient.
 				</DialogContentText>
 				<Grid container spacing={2}>
-					<Grid item xs={12}>
-						<TextField
-							margin="dense"
-							label="Hospital Name"
-							name="HN"
-							fullWidth
-							variant="outlined"
-							value={formData.HN}
-							onChange={handleChange}
-							disabled={!!patientData} // Disable HN field if updating
-						/>
-					</Grid>
-					<Grid item xs={12} sm={2}>
-						<FormControl fullWidth margin="dense">
-							<InputLabel>Prefix</InputLabel>
-							<Select
-								name="prefix"
-								value={formData.prefix}
-								onChange={handleChange}
-								variant="outlined"
-							>
-								<MenuItem value="Mr.">Mr.</MenuItem>
-								<MenuItem value="Mrs.">Mrs.</MenuItem>
-								<MenuItem value="Ms.">Ms.</MenuItem>
-							</Select>
-						</FormControl>
-					</Grid>
-					<Grid item xs={12} sm={5}>
-						<TextField
-							margin="dense"
-							label="Name"
-							name="name"
-							fullWidth
-							variant="outlined"
-							value={formData.name}
-							onChange={handleChange}
-						/>
-					</Grid>
-					<Grid item xs={12} sm={5}>
-						<TextField
-							margin="dense"
-							label="Surname"
-							name="surname"
-							fullWidth
-							variant="outlined"
-							value={formData.surname}
-							onChange={handleChange}
-						/>
-					</Grid>
-					<Grid item xs={12} sm={6}>
-						<FormControl fullWidth margin="dense">
-							<InputLabel>Gender</InputLabel>
-							<Select
-								name="gender"
-								value={formData.gender}
-								onChange={handleChange}
-								variant="outlined"
-							>
-								<MenuItem value="Male">Male</MenuItem>
-								<MenuItem value="Female">Female</MenuItem>
-								<MenuItem value="Other">Other</MenuItem>
-							</Select>
-						</FormControl>
-					</Grid>
-					<Grid item xs={12} sm={6}>
-						<TextField
-							margin="dense"
-							label="DOB"
-							name="DOB"
-							type="date"
-							fullWidth
-							variant="outlined"
-							InputLabelProps={{ shrink: true }}
-							value={formData.DOB}
-							onChange={handleChange}
-						/>
-					</Grid>
+					{formFields.map((field) => (
+						<Grid item xs={12} sm={field.sm} key={field.name}>
+							{field.type === "select" ? (
+								<SelectField
+									name={field.name}
+									label={field.label}
+									value={formData[field.name]}
+									onChange={handleChange}
+									options={field.options}
+									fullWidth
+								/>
+							) : (
+								<FormField
+									InputLabelProps={{ shrink: true }}
+									name={field.name}
+									label={field.label}
+									value={formData[field.name]}
+									onChange={handleChange}
+									type={field.type || "text"}
+									disabled={field.disabled}
+									fullWidth
+								/>
+							)}
+						</Grid>
+					))}
 				</Grid>
 			</DialogContent>
 			<DialogActions>
@@ -181,9 +82,9 @@ const PatientPopup = ({ open, onClose, patientData }) => {
 					variant="contained"
 					onClick={handleSubmit}
 					color="primary"
-					disabled={mutation.isLoading}
+					disabled={isSubmitting}
 				>
-					{mutation.isLoading
+					{isSubmitting
 						? patientData
 							? "Updating..."
 							: "Adding..."

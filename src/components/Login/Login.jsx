@@ -3,7 +3,7 @@ import { TextField, Button, Typography, Container, Grid } from "@mui/material";
 import avatar from "../../imgs/avatar.svg";
 import bg from "../../imgs/bg.svg";
 import styles from "./Login.module.scss";
-import { useLoginForm } from "./useLoginForm";
+import { useLoginForm } from "../../hooks/useLoginForm";
 
 const Login = ({ setIsLoggedIn }) => {
 	const { credentials, error, handleInputChange, handleLogin, isLoading } =

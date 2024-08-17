@@ -13,8 +13,8 @@ import {
 	Box,
 	Grid,
 } from "@mui/material";
-import useAddRecord from "./useAddRecord";
-import { getCurrentShift } from "../../utils/form";
+import useAddRecord from "../../hooks/useAddRecord";
+import { getCurrentShift } from "../../utils/helper";
 
 const Form = () => {
 	const currentDate = new Date().toLocaleDateString();
