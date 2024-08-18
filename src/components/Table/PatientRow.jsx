@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
 	TableRow,
+	TableCell,
 	Tooltip,
 	IconButton,
 	Dialog,
@@ -13,27 +10,29 @@ import {
 	DialogContentText,
 	DialogTitle,
 	Button,
+	CircularProgress,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { calculateAge } from "../../utils/helper";
+import usePatientRecord from "../../hooks/usePatientRecord";
+import PatientRecordRow from "./PatientRecordRow";
 
-// PatientRow Component
 const PatientRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
 	const { HN, prefix, name, surname, gender, DOB, lastUpdate } = row;
 	const [isDialogOpen, setDialogOpen] = useState(false);
 	const [patientToDelete, setPatientToDelete] = useState(null);
 
+	const { record, isLoading } = usePatientRecord(HN);
+
 	const isHNPresent = !!HN;
 
-	// Handle opening the delete confirmation dialog
 	const handleDeleteClick = (e) => {
 		e.stopPropagation();
 		setPatientToDelete(HN);
 		setDialogOpen(true);
 	};
 
-	// Confirm deletion
 	const confirmDelete = () => {
 		onDelete(patientToDelete);
 		setDialogOpen(false);
@@ -74,30 +73,19 @@ const PatientRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
 				</TableCell>
 			</TableRow>
 			{isExpanded && (
-				<TableRow>
-					<TableCell colSpan={8}>
-						<div className="sub-row">
-							<Table size="small">
-								<TableHead>
-									<TableRow>
-										<TableCell>Timestamp</TableCell>
-										<TableCell>Detail</TableCell>
-									</TableRow>
-								</TableHead>
-								<TableBody>
-									{/* Replace with actual record data */}
-									<TableRow>
-										<TableCell>Sample Timestamp</TableCell>
-										<TableCell>Sample Detail</TableCell>
-									</TableRow>
-								</TableBody>
-							</Table>
-						</div>
-					</TableCell>
-				</TableRow>
+				<>
+					{isLoading ? (
+						<TableRow>
+							<TableCell colSpan={8} align="center">
+								<CircularProgress />
+							</TableCell>
+						</TableRow>
+					) : (
+						<PatientRecordRow record={record} />
+					)}
+				</>
 			)}
 
-			{/* Confirmation Dialog */}
 			<Dialog open={isDialogOpen} onClose={() => setDialogOpen(false)}>
 				<DialogTitle>Confirm Deletion</DialogTitle>
 				<DialogContent>

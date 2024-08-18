@@ -22,12 +22,14 @@ export const useLoginForm = (setIsLoggedIn) => {
 				body: JSON.stringify(credentials),
 			});
 
+			console.log(response);
+
 			if (!response.ok) {
 				throw new Error("Something went wrong. Please try again later.");
 			}
 
-			const data = await response.text();
-			if (data !== "success") {
+			const data = await response.json();
+			if (data.message !== "success") {
 				throw new Error("Invalid credentials");
 			}
 

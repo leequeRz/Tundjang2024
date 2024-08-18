@@ -1,5 +1,5 @@
 // Table.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
 	Box,
 	Typography,
@@ -12,7 +12,6 @@ import {
 import { usePatients } from "../../context/patientContext";
 import { usePagination } from "../../hooks/usePagination";
 import { useSearch } from "../../hooks/useSearch";
-import { useDeletePatient } from "../../hooks/useDeletePatient";
 import SearchBar from "./SearchBar";
 import TableHeader from "./TableHeader";
 import PatientRow from "./PatientRow";
@@ -20,24 +19,20 @@ import PaginationFooter from "./PaginationFooter";
 import PatientPopup from "./PatientPopup";
 
 const TableComponent = () => {
-	const { patients, isLoading, error, fetchPatients } = usePatients();
+	const { patients, isLoading, error, deletePatient } = usePatients();
 	const [isPopupOpen, setIsPopupOpen] = useState(false);
 	const [editingPatient, setEditingPatient] = useState(null);
 	const [expandedRows, setExpandedRows] = useState([]);
-
-	const deleteMutation = useDeletePatient();
-
-	useEffect(() => {
-		fetchPatients();
-	}, []);
 
 	const { searchTerm, setSearchTerm, filteredItems } = useSearch(patients, [
 		"name",
 		"surname",
 		"HN",
 	]);
-	const { currentItems, currentPage, totalPages, handlePageChange } =
-		usePagination(filteredItems, 15);
+	const { currentItems, currentPage, handlePageChange } = usePagination(
+		filteredItems,
+		15
+	);
 
 	const handleEdit = (patient) => {
 		setEditingPatient(patient);
@@ -45,7 +40,7 @@ const TableComponent = () => {
 	};
 
 	const handleDelete = (HN) => {
-		deleteMutation.mutate(HN);
+		deletePatient(HN);
 	};
 
 	const handleRowClick = (hn) => {
@@ -74,7 +69,9 @@ const TableComponent = () => {
 						variant="contained"
 						color="primary"
 						sx={{ ml: 2 }}
-						onClick={() => setIsPopupOpen(true)}
+						onClick={() => {
+							setEditingPatient(null, setIsPopupOpen(true));
+						}}
 					>
 						New Patient
 					</Button>
