@@ -56,6 +56,19 @@ function checkField(requiredFields, req, res) {
 	return true;
 }
 
+function checkParam(requiredParams, req, res) {
+	for (const param of requiredParams) {
+		if (!req.params[param] && !req.query[param]) {
+			logger.warn(`Missing required parameter: ${param}`);
+			res.status(400).json({
+				message: `Missing required parameter: ${param}`,
+			});
+			return false;
+		}
+	}
+	return true;
+}
+
 const hashData = (data) => {
 	return crypto.createHash("sha512").update(data).digest("hex");
 };
@@ -64,5 +77,6 @@ module.exports = {
 	firestoreTimestampToDateInUTCPlus7,
 	dateToFirestoreTimestamp,
 	checkField,
+	checkParam,
 	hashData,
 };

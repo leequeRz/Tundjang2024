@@ -1,6 +1,7 @@
 const { db } = require("../config/firebaseConfig");
 const {
 	checkField,
+	checkParam,
 	dateToFirestoreTimestamp,
 	firestoreTimestampToDateInUTCPlus7,
 } = require("../utils");
@@ -40,8 +41,16 @@ const AddPatient = logRequest(
 const EditPatient = logRequest(
 	timeExecution(async (req, res) => {
 		try {
+			const requiredParams = ["HN"];
+			if (!checkParam(requiredParams, req, res)) {
+				return;
+			}
+			console.log(req.params);
+
 			const { HN } = req.params;
+
 			const requiredFields = ["prefix", "name", "surname", "gender", "DOB"];
+
 			if (!checkField(requiredFields, req, res)) {
 				return;
 			}
@@ -52,7 +61,7 @@ const EditPatient = logRequest(
 			logger.info(`Patient updated: ${HN}`); // Log the update of a patient
 			res.status(200).send({ message: "success" });
 		} catch (error) {
-			logger.error(`Error updating patient ${HN}: ${error.message}`); // Log the error
+			logger.error(`Error updating patient: ${error.message}`); // Log the error
 			res.status(500).send(error.message);
 		}
 	})
@@ -91,18 +100,18 @@ const FindPatient = logRequest(
 const DelPatient = logRequest(
 	timeExecution(async (req, res) => {
 		try {
-			const { HN } = req.params;
-			if (!HN) {
-				return res
-					.status(400)
-					.json({ message: "Missing required parameter: HN" });
+			const requiredParams = ["HN"];
+			if (!checkParam(requiredParams, req, res)) {
+				return;
 			}
+
+			const { HN } = req.params;
 
 			await db.collection("patients").doc(HN).delete();
 			logger.info(`Patient deleted: ${HN}`); // Log the deletion of a patient
 			res.status(200).send({ message: "Patient deleted successfully" });
 		} catch (error) {
-			logger.error(`Error deleting patient ${HN}: ${error.message}`); // Log the error
+			logger.error(`Error deleting patient: ${error.message}`); // Log the error
 			res.status(500).send(error.message);
 		}
 	})

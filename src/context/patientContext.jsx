@@ -59,11 +59,7 @@ export const PatientProvider = ({ children }) => {
 				body: JSON.stringify(patient),
 			});
 			if (!response.ok) throw new Error("Error adding patient");
-			const result = await response.json();
-			return {
-				...patient,
-				message: result.message,
-			};
+			return patient;
 		},
 		{
 			onSuccess: (newPatient) => {
@@ -93,11 +89,7 @@ export const PatientProvider = ({ children }) => {
 				}
 			);
 			if (!response.ok) throw new Error("Error updating patient");
-			const result = await response.json();
-			return {
-				...patient,
-				message: result.message,
-			};
+			return patient;
 		},
 		{
 			onSuccess: (updatedPatient) => {

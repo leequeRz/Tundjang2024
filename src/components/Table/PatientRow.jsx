@@ -81,7 +81,7 @@ const PatientRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
 							</TableCell>
 						</TableRow>
 					) : (
-						<PatientRecordRow record={record} />
+						<PatientRecordRow patient={row} record={record} />
 					)}
 				</>
 			)}
