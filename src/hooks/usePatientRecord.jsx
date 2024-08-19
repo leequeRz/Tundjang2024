@@ -15,13 +15,13 @@ const usePatientRecord = (HN) => {
 		data: record,
 		isLoading,
 		isError,
-	} = useQuery(["patientRecord", HN], fetchPatientRecord, {
-		enabled: !!HN, // Only run if HN is present
-		staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
-		cacheTime: 30 * 60 * 1000, // Keep data in cache for 30 minutes
-		onSuccess: (data) => {
-			queryClient.setQueryData(["patientRecord", HN], data);
-		},
+		refetch,
+	} = useQuery({
+		queryKey: ["patientRecord", HN],
+		queryFn: fetchPatientRecord,
+		enabled: !!HN,
+		staleTime: 5 * 60 * 1000,
+		cacheTime: 30 * 60 * 1000,
 	});
 
 	return { record, isLoading, isError };

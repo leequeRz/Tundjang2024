@@ -5,11 +5,18 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
-	Button,
+	Tooltip,
+	IconButton,
+	CircularProgress,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import PatientRecordPopup from "./PatientRecordPopup"; // Adjust the path as needed
+import { usePatientRecords } from "../../context/patientRecordContext";
+import { useSelectedItem } from "../../context/mainContentContext";
+import DeleteConfirmationDialog from "../Dialog/DeleteConfirmationDialog";
 
-const PatientRecordRow = ({ patient, record }) => {
+const PatientRecordRow = ({ patient }) => {
 	const [isPopupOpen, setPopupOpen] = useState(false);
 	const [patientRecord, setPatientRecord] = useState({
 		id: "",
@@ -30,9 +37,82 @@ const PatientRecordRow = ({ patient, record }) => {
 		conscious: "",
 		timestamp: "",
 	});
+	const [isDialogOpen, setDialogOpen] = useState(false);
+	const [recordToDelete, setRecordToDelete] = useState({
+		HN: patient.HN,
+		docId: null,
+	});
+	const { useFetchRecords, setCurrentEditRecord, deleteRecord } =
+		usePatientRecords();
+
+	const { setSelectedSidebarItem } = useSelectedItem();
+
+	const handleDeleteClick = (e, docId) => {
+		e.stopPropagation();
+		setRecordToDelete((prev) => ({ HN: prev.HN, docId: docId }));
+		setDialogOpen(true);
+	};
+
+	const handleEditClick = (e, HN, docId) => {
+		e.stopPropagation();
+		setCurrentEditRecord({ HN: HN, docId: docId });
+		setSelectedSidebarItem("Form");
+	};
+
+	const confirmDelete = () => {
+		deleteRecord(recordToDelete);
+		setDialogOpen(false);
+	};
 
 	const openPopup = () => setPopupOpen(true);
 	const closePopup = () => setPopupOpen(false);
+
+	// Fetch records for the given patient HN
+	const PatientRecordsDisplay = () => {
+		const {
+			data: records = [],
+			isLoading,
+			isError,
+		} = useFetchRecords(patient.HN);
+
+		if (isLoading) return <CircularProgress />;
+		if (isError) return <div>Error loading records</div>;
+
+		return records.map((entry) => (
+			<TableRow
+				key={entry.timestamp}
+				onClick={() => {
+					setPatientRecord(entry);
+					openPopup();
+				}}
+			>
+				<TableCell>{entry.timestamp}</TableCell>
+				<TableCell>{entry.detail}</TableCell>
+				<TableCell>
+					<Tooltip title="Edit Patient">
+						<IconButton
+							onClick={(e) => {
+								handleEditClick(e, patient.HN, entry.id);
+							}}
+							color="primary"
+						>
+							<EditIcon />
+						</IconButton>
+					</Tooltip>
+					<Tooltip title="Delete Patient">
+						<IconButton
+							onClick={(e) => {
+								handleDeleteClick(e, entry.id);
+							}}
+							color="error"
+						>
+							<DeleteIcon />
+						</IconButton>
+					</Tooltip>
+				</TableCell>
+			</TableRow>
+		));
+	};
 
 	return (
 		<>
@@ -48,30 +128,7 @@ const PatientRecordRow = ({ patient, record }) => {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{record.map((entry) => (
-									<TableRow
-										key={entry.timestamp}
-										onClick={() => {
-											setPatientRecord(entry);
-											openPopup();
-										}}
-									>
-										<TableCell>{entry.timestamp}</TableCell>
-										<TableCell>{entry.detail}</TableCell>
-										<TableCell>
-											<Button
-												variant="contained"
-												color="primary"
-												onClick={() => {
-													setPatientRecord(entry);
-													openPopup();
-												}}
-											>
-												View Details
-											</Button>
-										</TableCell>
-									</TableRow>
-								))}
+								<PatientRecordsDisplay />
 							</TableBody>
 						</Table>
 					</div>
@@ -83,6 +140,13 @@ const PatientRecordRow = ({ patient, record }) => {
 				onClose={closePopup}
 				patient={patient}
 				record={patientRecord}
+			/>
+			<DeleteConfirmationDialog
+				isOpen={isDialogOpen}
+				onClose={() => setDialogOpen(false)}
+				onConfirm={confirmDelete}
+				title="Confirm Deletion"
+				contentText={`Are you sure you want to delete the record with id: ${recordToDelete.docId}?`}
 			/>
 		</>
 	);

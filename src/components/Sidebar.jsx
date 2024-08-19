@@ -5,10 +5,12 @@ import Logo from "../imgs/logo.png";
 import { SidebarData } from "../Data/Data";
 import { UilBars } from "@iconscout/react-unicons";
 import { motion } from "framer-motion";
+import { useSelectedItem } from "../context/mainContentContext";
 
-const Sidebar = ({ setSelectedSidebarItem, onLogout }) => {
-	const [selected, setSelected] = useState(0);
+const Sidebar = ({ onLogout }) => {
 	const [expanded, setExpanded] = useState(true);
+
+	const { selectedSidebarItem, setSelectedSidebarItem } = useSelectedItem();
 
 	const sidebarVariants = {
 		true: {
@@ -44,13 +46,16 @@ const Sidebar = ({ setSelectedSidebarItem, onLogout }) => {
 				<div className="menu">
 					{SidebarData.map((item, index) => (
 						<div
-							className={selected === index ? "menuItem active" : "menuItem"}
+							className={
+								selectedSidebarItem === item.heading
+									? "menuItem active"
+									: "menuItem"
+							}
 							key={index}
 							onClick={() => {
 								if (item.heading === "Logout") {
 									onLogout();
 								} else {
-									setSelected(index);
 									setSelectedSidebarItem(item.heading);
 								}
 							}}

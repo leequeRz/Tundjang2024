@@ -1,29 +1,16 @@
 import React, { useState } from "react";
-import {
-	TableRow,
-	TableCell,
-	Tooltip,
-	IconButton,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogContentText,
-	DialogTitle,
-	Button,
-	CircularProgress,
-} from "@mui/material";
+import { TableRow, TableCell, Tooltip, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { calculateAge } from "../../utils/helper";
-import usePatientRecord from "../../hooks/usePatientRecord";
+
 import PatientRecordRow from "./PatientRecordRow";
+import DeleteConfirmationDialog from "../Dialog/DeleteConfirmationDialog";
 
 const PatientRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
 	const { HN, prefix, name, surname, gender, DOB, lastUpdate } = row;
 	const [isDialogOpen, setDialogOpen] = useState(false);
 	const [patientToDelete, setPatientToDelete] = useState(null);
-
-	const { record, isLoading } = usePatientRecord(HN);
 
 	const isHNPresent = !!HN;
 
@@ -72,34 +59,15 @@ const PatientRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
 					</Tooltip>
 				</TableCell>
 			</TableRow>
-			{isExpanded && (
-				<>
-					{isLoading ? (
-						<TableRow>
-							<TableCell colSpan={8} align="center">
-								<CircularProgress />
-							</TableCell>
-						</TableRow>
-					) : (
-						<PatientRecordRow patient={row} record={record} />
-					)}
-				</>
-			)}
+			{isExpanded && <PatientRecordRow patient={row} />}
 
-			<Dialog open={isDialogOpen} onClose={() => setDialogOpen(false)}>
-				<DialogTitle>Confirm Deletion</DialogTitle>
-				<DialogContent>
-					<DialogContentText>
-						Are you sure you want to delete the patient with HN: {HN}?
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-					<Button variant="contained" color="error" onClick={confirmDelete}>
-						Delete
-					</Button>
-				</DialogActions>
-			</Dialog>
+			<DeleteConfirmationDialog
+				isOpen={isDialogOpen}
+				onClose={() => setDialogOpen(false)}
+				onConfirm={confirmDelete}
+				title="Confirm Deletion"
+				contentText={`Are you sure you want to delete the patient with HN: ${HN}?`}
+			/>
 		</>
 	);
 };

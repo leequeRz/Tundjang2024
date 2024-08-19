@@ -2,6 +2,7 @@ const { db } = require("../config/firebaseConfig");
 const {
 	checkField,
 	firestoreTimestampToDateInUTCPlus7,
+	checkParam,
 	dateToFirestoreTimestamp,
 } = require("../utils");
 const logger = require("../config/logger"); // Import the logger
@@ -31,11 +32,12 @@ const AddRecord = logRequest(
 			if (!checkField(requiredFields, req, res)) {
 				return;
 			}
+			const requiredParams = ["HN"];
+			if (!checkParam(requiredParams, req, res)) {
+				return;
+			}
 
 			const { HN } = req.params;
-			if (!HN) {
-				return res.status(400).send("Missing required parameter: HN");
-			}
 
 			const current_time = admin.firestore.Timestamp.now();
 			const recordData = {
@@ -71,7 +73,7 @@ const AddRecord = logRequest(
 			logger.info(`Record added for patient ${HN} with ID ${docId}`); // Log success
 			res.status(200).send(docId);
 		} catch (error) {
-			logger.error(`Error adding record for patient ${HN}: ${error.message}`); // Log error
+			logger.error(`Error adding record for patient: ${error.message}`); // Log error
 			res.status(500).send(error.message);
 		}
 	})
@@ -81,10 +83,11 @@ const AddRecord = logRequest(
 const EditRecord = logRequest(
 	timeExecution(async (req, res) => {
 		try {
-			const { HN, docId } = req.params;
-			if (!HN || !docId) {
-				return res.status(400).send("Missing required parameters: HN or docId");
+			const requiredParams = ["HN", "docId"];
+			if (!checkParam(requiredParams, req, res)) {
+				return;
 			}
+			const { HN, docId } = req.params;
 
 			const updateData = req.body;
 			await db
@@ -97,9 +100,7 @@ const EditRecord = logRequest(
 			logger.info(`Record updated for patient ${HN} with ID ${docId}`); // Log success
 			res.status(200).send({ message: "Edit success" });
 		} catch (error) {
-			logger.error(
-				`Error updating record for patient ${HN} with ID ${docId}: ${error.message}`
-			); // Log error
+			logger.error(`Error updating record for patient: ${error.message}`); // Log error
 			res.status(500).send(error.message);
 		}
 	})
@@ -109,10 +110,11 @@ const EditRecord = logRequest(
 const DelRecord = logRequest(
 	timeExecution(async (req, res) => {
 		try {
-			const { HN, docId } = req.params;
-			if (!HN || !docId) {
-				return res.status(400).send("Missing required parameters: HN or docId");
+			const requiredParams = ["HN", "docId"];
+			if (!checkParam(requiredParams, req, res)) {
+				return;
 			}
+			const { HN, docId } = req.params;
 
 			await db
 				.collection("patients")
@@ -124,9 +126,7 @@ const DelRecord = logRequest(
 			logger.info(`Record deleted for patient ${HN} with ID ${docId}`); // Log success
 			res.status(200).send({ message: "Delete success" });
 		} catch (error) {
-			logger.error(
-				`Error deleting record for patient ${HN} with ID ${docId}: ${error.message}`
-			); // Log error
+			logger.error(`Error deleting record for patient: ${error.message}`); // Log error
 			res.status(500).send(error.message);
 		}
 	})
@@ -136,11 +136,12 @@ const DelRecord = logRequest(
 const GetRecord = logRequest(
 	timeExecution(async (req, res) => {
 		try {
-			const { HN } = req.params;
-
-			if (!HN) {
-				return res.status(400).send("Missing required parameter: HN");
+			const requiredParams = ["HN"];
+			if (!checkParam(requiredParams, req, res)) {
+				return;
 			}
+
+			const { HN } = req.params;
 
 			const snapshot = await db
 				.collection("patients")
@@ -151,10 +152,12 @@ const GetRecord = logRequest(
 			snapshot.forEach((doc) => {
 				const data = doc.data();
 				if (data.timestamp) {
+					console.log("1", data.timestamp);
 					data.timestamp = firestoreTimestampToDateInUTCPlus7(
 						data.timestamp,
 						"date"
 					);
+					console.log("2", data.timestamp);
 				}
 				records.push({ id: doc.id, ...data });
 			});
@@ -162,9 +165,7 @@ const GetRecord = logRequest(
 			logger.info(`Records retrieved for patient ${HN}`); // Log success
 			res.status(200).json(records);
 		} catch (error) {
-			logger.error(
-				`Error retrieving records for patient ${HN}: ${error.message}`
-			); // Log error
+			logger.error(`Error retrieving records for patient: ${error.message}`); // Log error
 			res.status(500).send(error.message);
 		}
 	})

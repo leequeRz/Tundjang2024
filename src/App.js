@@ -10,9 +10,12 @@ import MainDash from "./components/MainDash/MainDash";
 import Form from "./components/Form/Form";
 import Sidebar from "./components/Sidebar";
 import Login from "./components/Login/Login";
+import {
+	SelectedItemProvider,
+	useSelectedItem,
+} from "./context/mainContentContext";
 
 function App() {
-	const [selectedSidebarItem, setSelectedSidebarItem] = useState("Dashboard");
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 	useEffect(() => {
@@ -44,19 +47,14 @@ function App() {
 						path="/main"
 						element={
 							isLoggedIn ? (
-								<div className="AppGlass">
-									<Sidebar
-										setSelectedSidebarItem={setSelectedSidebarItem}
-										onLogout={handleLogout}
-									/>
-									<div className="MainContent">
-										{selectedSidebarItem === "Dashboard" ? (
-											<MainDash />
-										) : (
-											<Form />
-										)}
+								<SelectedItemProvider>
+									<div className="AppGlass">
+										<Sidebar onLogout={handleLogout} />
+										<div className="MainContent">
+											<MainContent />
+										</div>
 									</div>
-								</div>
+								</SelectedItemProvider>
 							) : (
 								<Navigate to="/login" />
 							)
@@ -67,6 +65,19 @@ function App() {
 			</div>
 		</Router>
 	);
+}
+
+function MainContent() {
+	const { selectedSidebarItem } = useSelectedItem();
+
+	switch (selectedSidebarItem) {
+		case "Dashboard":
+			return <MainDash />;
+		case "Form":
+			return <Form />;
+		default:
+			return <MainDash />;
+	}
 }
 
 export default App;

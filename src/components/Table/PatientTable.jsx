@@ -12,7 +12,7 @@ import {
 import { usePatients } from "../../context/patientContext";
 import { usePagination } from "../../hooks/usePagination";
 import { useSearch } from "../../hooks/useSearch";
-import SearchBar from "./SearchBar";
+import SearchBar from "../SearchBar";
 import TableHeader from "./TableHeader";
 import PatientRow from "./PatientRow";
 import PaginationFooter from "./PaginationFooter";
