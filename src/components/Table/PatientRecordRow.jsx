@@ -86,8 +86,8 @@ const PatientRecordRow = ({ patient }) => {
 					openPopup();
 				}}
 			>
-				<TableCell>{entry.timestamp}</TableCell>
-				<TableCell>{entry.detail}</TableCell>
+				<TableCell>{entry.id}</TableCell>
+				<TableCell>{entry.notes}</TableCell>
 				<TableCell>
 					<Tooltip title="Edit Patient">
 						<IconButton

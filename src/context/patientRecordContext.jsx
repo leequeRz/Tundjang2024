@@ -68,10 +68,10 @@ export const PatientRecordProvider = ({ children }) => {
 			return response.json();
 		},
 		{
-			onSuccess: (newRecord, { HN }) => {
+			onSuccess: (newRecord, { HN, record }) => {
 				queryClient.setQueryData(["patientRecords", HN], (oldRecords = []) => [
 					...oldRecords,
-					newRecord,
+					{ ...record, id: newRecord.data },
 				]);
 			},
 			onError: (error) => {

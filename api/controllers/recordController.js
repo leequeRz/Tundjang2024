@@ -10,6 +10,7 @@ const {
 	logRequest,
 	timeExecution,
 } = require("../middleware/performanceMiddleware");
+const { admin } = require("../config/firebaseConfig");
 
 // AddRecord for adding a new record
 const AddRecord = logRequest(
@@ -40,6 +41,7 @@ const AddRecord = logRequest(
 			const { HN } = req.params;
 
 			const current_time = admin.firestore.Timestamp.now();
+
 			const recordData = {
 				timestamp: current_time,
 				BT: req.body.BT,
@@ -70,10 +72,10 @@ const AddRecord = logRequest(
 				.doc(docId)
 				.set(recordData);
 
-			logger.info(`Record added for patient ${HN} with ID ${docId}`); // Log success
-			res.status(200).send(docId);
+			logger.info(`Record added for patient ${HN} with ID ${docId}`);
+			res.status(200).send({ message: "success", data: docId });
 		} catch (error) {
-			logger.error(`Error adding record for patient: ${error.message}`); // Log error
+			logger.error(`Error adding record for patient: ${error.message}`);
 			res.status(500).send(error.message);
 		}
 	})
@@ -89,7 +91,11 @@ const EditRecord = logRequest(
 			}
 			const { HN, docId } = req.params;
 
-			const updateData = req.body;
+			const updateData = {
+				...req.body,
+				timestamp: admin.firestore.Timestamp.now(),
+			};
+
 			await db
 				.collection("patients")
 				.doc(HN)
@@ -152,20 +158,18 @@ const GetRecord = logRequest(
 			snapshot.forEach((doc) => {
 				const data = doc.data();
 				if (data.timestamp) {
-					console.log("1", data.timestamp);
 					data.timestamp = firestoreTimestampToDateInUTCPlus7(
 						data.timestamp,
 						"date"
 					);
-					console.log("2", data.timestamp);
 				}
 				records.push({ id: doc.id, ...data });
 			});
 
-			logger.info(`Records retrieved for patient ${HN}`); // Log success
+			logger.info(`Records retrieved for patient ${HN}`);
 			res.status(200).json(records);
 		} catch (error) {
-			logger.error(`Error retrieving records for patient: ${error.message}`); // Log error
+			logger.error(`Error retrieving records for patient: ${error.message}`);
 			res.status(500).send(error.message);
 		}
 	})

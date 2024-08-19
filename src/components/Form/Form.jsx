@@ -12,6 +12,8 @@ import {
 	Button,
 	Box,
 	Grid,
+	Snackbar,
+	Alert,
 } from "@mui/material";
 import { getCurrentShift, calculateAge } from "../../utils/helper";
 import SearchFilterBar from "../SearchFilterBar";
@@ -52,6 +54,8 @@ const BREATH_PATTERN_OPTIONS = [
 	"หายใจเร็ว หายใจหอบเหนื่อย",
 ];
 const EAT_METHOD_OPTIONS = ["รับประทานเองได้", "ใส่สายยางให้อาหาร"];
+const SLEEP_OPTIONS = ["นอนหลับได้", "นอนไม่หลับ", "หลับๆ ตื่นๆ"];
+const EXCRETION_OPTIONS = ["ถ่ายดี", "ท้องเสีย", "ท้องผูก"];
 const FOOD_TYPE_OPTIONS = ["นมแม่", "นมผสม", "อาหารแข็ง", "อาหารอื่นๆ"];
 const EXTRA_FOOD_OPTIONS = ["ตามปกติ", "รับประทานน้อย", "ไม่รับประทาน"];
 
@@ -66,23 +70,28 @@ const initialFormState = {
 	eat_method: "รับประทานเองได้",
 	food_type: "นมแม่",
 	food_intake: [""],
-	sleep: "",
-	excretion: "",
+	sleep: "นอนหลับได้",
+	excretion: "ถ่ายดี",
 	extra_symptoms: "",
 	extra_food: "ตามปกติ",
 	notes: "",
-	shift: "",
+	shift: getCurrentShift(),
 };
 
 const Form = () => {
 	const currentDate = new Date().toLocaleDateString();
 	const [formHeader, setFormHeader] = useState({
 		HN: "",
-		name_surname: "",
+		"name surname": "",
 		sex: "",
 		age: "",
 	});
 	const [form, setForm] = useState(initialFormState);
+	const [alert, setAlert] = useState({
+		open: false,
+		severity: "success",
+		message: "",
+	});
 
 	const { patients } = usePatients();
 	const {
@@ -93,7 +102,9 @@ const Form = () => {
 		updateRecord,
 	} = usePatientRecords();
 
+	console.log(currentEditRecord.HN);
 	const { data: records = [] } = useFetchRecords(currentEditRecord.HN);
+	console.log(records);
 
 	const generateLabel = useCallback(
 		(item) => `${item.name} ${item.surname} (${item.HN})`,
@@ -135,7 +146,7 @@ const Form = () => {
 			if (selectedPatient) {
 				setFormHeader({
 					HN: selectedPatient.HN,
-					name_surname: `${selectedPatient.name} ${selectedPatient.surname}`,
+					"name surname": `${selectedPatient.name} ${selectedPatient.surname}`,
 					sex: selectedPatient.gender,
 					age: calculateAge(selectedPatient.DOB),
 				});
@@ -162,13 +173,14 @@ const Form = () => {
 		[records, setCurrentEditRecord]
 	);
 
+	useEffect(() => {
+		handleSelectHNFilter(currentEditRecord.HN);
+		handleSelectRecordFilter(currentEditRecord.docId);
+	}, []);
+
 	const handleFormChange = useCallback((e) => {
 		const { name, value } = e.target;
 		setForm((prev) => ({ ...prev, [name]: value }));
-	}, []);
-
-	useEffect(() => {
-		setForm((prev) => ({ ...prev, shift: getCurrentShift() }));
 	}, []);
 
 	const handleSubmit = useCallback(
@@ -183,14 +195,36 @@ const Form = () => {
 				},
 			};
 
-			if (currentEditRecord.docId && currentEditRecord.docId != "create-new") {
-				updateRecord(recordData);
+			const options = {
+				onSuccess: () => {
+					setAlert({
+						open: true,
+						message: "Record successfully saved!",
+						severity: "success",
+					});
+				},
+				onError: () => {
+					setAlert({
+						open: true,
+						message: "An error occurred while saving the record.",
+						severity: "error",
+					});
+				},
+			};
+
+			if (currentEditRecord.docId && currentEditRecord.docId !== "create-new") {
+				updateRecord(recordData, options);
 			} else {
-				addRecord(recordData);
+				addRecord(recordData, options);
+				setForm(initialFormState);
 			}
 		},
 		[form, formHeader.HN, currentEditRecord.docId, addRecord, updateRecord]
 	);
+
+	const handleCloseAlert = () => {
+		setAlert({ ...alert, open: false });
+	};
 
 	const renderRadioGroup = useCallback(
 		({ label, name, value, options }) => (
@@ -223,19 +257,24 @@ const Form = () => {
 
 	return (
 		<Container maxWidth="md">
-			<Typography variant="h4" gutterBottom>
+			<Typography variant="h4" gutterBottom sx={{ marginY: 4 }}>
 				บันทึกอาการรายวัน ประจำวันที่ {currentDate}
 			</Typography>
 
 			<form onSubmit={handleSubmit}>
-				<SearchFilterBar
-					searchTerm={patientSearchTerm}
-					setSearchTerm={setPatientSearchTerm}
-					filterItems={filteredPatients}
-					onFilterSelected={handleSelectHNFilter}
-				/>
-
 				<Grid container spacing={2} margin="normal">
+					<Grid item xs={12} sm={12}>
+						<SearchFilterBar
+							searchTerm={patientSearchTerm}
+							setSearchTerm={setPatientSearchTerm}
+							selectedValue={currentEditRecord.HN}
+							filterItems={filteredPatients}
+							onFilterSelected={handleSelectHNFilter}
+							label="Patient HN"
+							placeholder="Search by HN name or surname"
+							required={true}
+						/>
+					</Grid>
 					{Object.entries(formHeader).map(([key, value]) => (
 						<Grid item xs={12} sm={6} key={key}>
 							<TextField
@@ -246,14 +285,19 @@ const Form = () => {
 							/>
 						</Grid>
 					))}
+					<Grid item xs={12} sm={12}>
+						<SearchFilterBar
+							searchTerm={recordSearchTerm}
+							setSearchTerm={setRecordSearchTerm}
+							selectedValue={currentEditRecord.docId}
+							filterItems={filteredRecords}
+							onFilterSelected={handleSelectRecordFilter}
+							label="Patient Record"
+							placeholder="Search by record id"
+							required={true}
+						/>
+					</Grid>
 				</Grid>
-
-				<SearchFilterBar
-					searchTerm={recordSearchTerm}
-					setSearchTerm={setRecordSearchTerm}
-					filterItems={filteredRecords}
-					onFilterSelected={handleSelectRecordFilter}
-				/>
 
 				<FormControl component="fieldset" margin="normal">
 					<FormLabel component="legend" required>
@@ -281,101 +325,133 @@ const Form = () => {
 					</RadioGroup>
 				</FormControl>
 
-				<Divider sx={{ marginY: "3rem" }} />
+				{formHeader.HN && (
+					<>
+						<Divider sx={{ marginY: "3rem" }} />
+						<Box
+							sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+						>
+							<Typography variant="body1">HN: {formHeader.HN}</Typography>
+							<Typography variant="body1">
+								Name: {formHeader["name surname"]}
+							</Typography>
+							<Typography variant="body1">Sex: {formHeader.sex}</Typography>
+							<Typography variant="body1">Age: {formHeader.age}</Typography>
+							<Typography variant="body1">Shift: {form.shift}</Typography>
+						</Box>
 
-				<Typography variant="h5" gutterBottom>
-					ส่วนที่ 1 สัญญาณชีพ
-				</Typography>
-				<Grid container spacing={2} marginBottom={2}>
-					{VITAL_SIGNS.map((vitalSign) =>
-						renderRadioGroup({ ...vitalSign, value: form[vitalSign.name] })
-					)}
-				</Grid>
+						<Typography variant="h5" gutterBottom>
+							ส่วนที่ 1 สัญญาณชีพ
+						</Typography>
+						<Grid container spacing={2} marginBottom={2}>
+							{VITAL_SIGNS.map((vitalSign) =>
+								renderRadioGroup({ ...vitalSign, value: form[vitalSign.name] })
+							)}
+						</Grid>
 
-				<Divider sx={{ marginY: "3rem" }} />
+						<Divider sx={{ marginY: "3rem" }} />
 
-				<Typography variant="h5" gutterBottom>
-					ส่วนที่ 2 อาการเบื้องต้น
-				</Typography>
-				<Grid container spacing={2} marginBottom={2}>
-					{renderRadioGroup({
-						label: "ระดับความรู้สึกตัว",
-						name: "conscious",
-						value: form.conscious,
-						options: CONSCIOUS_OPTIONS,
-					})}
-					{renderRadioGroup({
-						label: "ลักษณะการหายใจ",
-						name: "breath_pattern",
-						value: form.breath_pattern,
-						options: BREATH_PATTERN_OPTIONS,
-					})}
-					<Grid item xs={12}>
+						<Typography variant="h5" gutterBottom>
+							ส่วนที่ 2 อาการเบื้องต้น
+						</Typography>
+						<Grid container spacing={2} marginBottom={2}>
+							{renderRadioGroup({
+								label: "ระดับความรู้สึกตัว",
+								name: "conscious",
+								value: form.conscious,
+								options: CONSCIOUS_OPTIONS,
+							})}
+							{renderRadioGroup({
+								label: "ลักษณะการหายใจ",
+								name: "breath_pattern",
+								value: form.breath_pattern,
+								options: BREATH_PATTERN_OPTIONS,
+							})}
+							<Grid item xs={12}>
+								<TextField
+									name="extra_symptoms"
+									label="อาการเพิ่มเติม"
+									InputLabelProps={{ shrink: true }}
+									value={form.extra_symptoms}
+									placeholder="พิมพ์อาการเพิ่มเติมที่นี่"
+									fullWidth
+									onChange={handleFormChange}
+								/>
+							</Grid>
+						</Grid>
+
+						<Typography variant="h6" gutterBottom>
+							การรับประทานอาหาร
+						</Typography>
+						<Grid container spacing={2} marginBottom={2}>
+							{renderRadioGroup({
+								label: "รูปแบบการรับประทานอาหาร",
+								name: "eat_method",
+								value: form.eat_method,
+								options: EAT_METHOD_OPTIONS,
+							})}
+							{renderRadioGroup({
+								label: "อาหาร",
+								name: "food_type",
+								value: form.food_type,
+								options: FOOD_TYPE_OPTIONS,
+							})}
+							{renderRadioGroup({
+								label: "พฤติกรรมการรับประทานอาหาร",
+								name: "extra_food",
+								value: form.extra_food,
+								options: EXTRA_FOOD_OPTIONS,
+							})}
+							{renderRadioGroup({
+								label: "การนอนหลับ",
+								name: "sleep",
+								value: form.sleep,
+								options: SLEEP_OPTIONS,
+							})}
+							{renderRadioGroup({
+								label: "การขับถ่าย",
+								name: "excretion",
+								value: form.excretion,
+								options: EXCRETION_OPTIONS,
+							})}
+						</Grid>
+
+						<Typography variant="h6" gutterBottom>
+							หมายเหตุเพิ่มเติม
+						</Typography>
 						<TextField
-							name="extra_symptoms"
-							label="อาการเพิ่มเติม"
-							value={form.extra_symptoms}
-							placeholder="พิมพ์อาการเพิ่มเติมที่นี่"
+							placeholder="พิมพ์หมายเหตุเพิ่มเติมที่นี่"
+							name="notes"
+							value={form.notes}
+							multiline
+							rows={4}
 							fullWidth
+							margin="normal"
 							onChange={handleFormChange}
 						/>
-					</Grid>
-				</Grid>
 
-				<Typography variant="h6" gutterBottom>
-					การรับประทานอาหาร
-				</Typography>
-				<Grid container spacing={2} marginBottom={2}>
-					{renderRadioGroup({
-						label: "รูปแบบการรับประทานอาหาร",
-						name: "eat_method",
-						value: form.eat_method,
-						options: EAT_METHOD_OPTIONS,
-					})}
-					{renderRadioGroup({
-						label: "อาหาร",
-						name: "food_type",
-						value: form.food_type,
-						options: FOOD_TYPE_OPTIONS,
-					})}
-					{renderRadioGroup({
-						label: "พฤติกรรมการรับประทานอาหาร",
-						name: "extra_food",
-						value: form.extra_food,
-						options: EXTRA_FOOD_OPTIONS,
-					})}
-					<Grid item xs={12}>
-						<TextField
-							label="การนอนหลับ"
-							name="sleep"
-							value={form.sleep}
-							placeholder="พิมพ์การนอนหลับที่นี่"
-							fullWidth
-							onChange={handleFormChange}
-						/>
-					</Grid>
-				</Grid>
-
-				<Typography variant="h6" gutterBottom>
-					หมายเหตุเพิ่มเติม
-				</Typography>
-				<TextField
-					placeholder="พิมพ์หมายเหตุเพิ่มเติมที่นี่"
-					name="notes"
-					value={form.notes}
-					multiline
-					rows={4}
-					fullWidth
-					margin="normal"
-					onChange={handleFormChange}
-				/>
-
-				<Box marginTop={2}>
-					<Button type="submit" variant="contained" color="primary">
-						บันทึกข้อมูล
-					</Button>
-				</Box>
+						<Box marginTop={2}>
+							<Button type="submit" variant="contained" color="primary">
+								บันทึกข้อมูล
+							</Button>
+						</Box>
+					</>
+				)}
 			</form>
+			<Snackbar
+				open={alert.open}
+				autoHideDuration={6000}
+				onClose={handleCloseAlert}
+			>
+				<Alert
+					anchorOrigin={{ vertical: "top", horizontal: "center" }}
+					onClose={handleCloseAlert}
+					severity={alert.severity}
+					sx={{ width: "100%" }}
+				>
+					{alert.message}
+				</Alert>
+			</Snackbar>
 		</Container>
 	);
 };

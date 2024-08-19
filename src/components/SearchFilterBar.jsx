@@ -12,10 +12,17 @@ import { Search as SearchIcon } from "@mui/icons-material";
 const SearchFilterBar = ({
 	searchTerm,
 	setSearchTerm,
+	selectedValue,
 	filterItems,
 	onFilterSelected,
+	label = "Filter by",
+	searchLabel = "Filter by",
+	placeholder = "Search by",
+	required = false,
 }) => {
-	const [selectedFilter, setSelectedFilter] = React.useState(filterItems[0]);
+	const [selectedFilter, setSelectedFilter] = React.useState(
+		selectedValue || filterItems[0]
+	);
 
 	const handleFilterChange = (event) => {
 		const selectedValue = event.target.value;
@@ -30,14 +37,13 @@ const SearchFilterBar = ({
 				alignItems: "center",
 				backgroundColor: "background.paper",
 				borderRadius: 1,
-				p: 0.5,
 			}}
 		>
 			<FormControl sx={{ minWidth: 240, mr: 2 }}>
-				<InputLabel>Filter By</InputLabel>
+				<InputLabel required={required}>{label}</InputLabel>
 				<Select
 					value={selectedFilter}
-					label="Filter By"
+					label={searchLabel}
 					onChange={handleFilterChange}
 				>
 					{filterItems.map((item) => (
@@ -50,7 +56,7 @@ const SearchFilterBar = ({
 
 			<SearchIcon sx={{ mr: 1 }} />
 			<InputBase
-				placeholder={`Search by `}
+				placeholder={placeholder}
 				value={searchTerm}
 				onChange={(e) => setSearchTerm(e.target.value)}
 				sx={{ width: { xs: 200, sm: 300 } }}
