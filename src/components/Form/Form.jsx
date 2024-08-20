@@ -139,8 +139,10 @@ const Form = () => {
 
 	const handleSelectHNFilter = useCallback(
 		(value) => {
-			setCurrentEditRecord({ HN: value, docId: null });
-			const selectedPatient = patients.find((patient) => patient.id === value);
+			setCurrentEditRecord({ HN: value.id, docId: null });
+			const selectedPatient = patients.find(
+				(patient) => patient.id === value.id
+			);
 			if (selectedPatient) {
 				setFormHeader({
 					HN: selectedPatient.HN.trim(),
@@ -172,7 +174,7 @@ const Form = () => {
 	);
 
 	useEffect(() => {
-		handleSelectHNFilter(currentEditRecord.HN);
+		handleSelectHNFilter({ id: currentEditRecord.HN });
 		handleSelectRecordFilter(currentEditRecord.docId);
 	}, []);
 
