@@ -102,9 +102,7 @@ const Form = () => {
 		updateRecord,
 	} = usePatientRecords();
 
-	console.log(currentEditRecord.HN);
-	const { data: records = [] } = useFetchRecords(currentEditRecord.HN);
-	console.log(records);
+	const { data: records = [] } = useFetchRecords(currentEditRecord.HN?.trim());
 
 	const generateLabel = useCallback(
 		(item) => `${item.name} ${item.surname} (${item.HN})`,
@@ -145,7 +143,7 @@ const Form = () => {
 			const selectedPatient = patients.find((patient) => patient.id === value);
 			if (selectedPatient) {
 				setFormHeader({
-					HN: selectedPatient.HN,
+					HN: selectedPatient.HN.trim(),
 					"name surname": `${selectedPatient.name} ${selectedPatient.surname}`,
 					sex: selectedPatient.gender,
 					age: calculateAge(selectedPatient.DOB),

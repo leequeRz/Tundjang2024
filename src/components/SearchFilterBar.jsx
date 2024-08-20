@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
 	Box,
 	InputBase,
@@ -20,14 +20,16 @@ const SearchFilterBar = ({
 	placeholder = "Search by",
 	required = false,
 }) => {
-	const [selectedFilter, setSelectedFilter] = React.useState(
-		selectedValue || filterItems[0]
+	const [selectedFilter, setSelectedFilter] = useState(
+		selectedValue?.id || filterItems[0].id
 	);
 
 	const handleFilterChange = (event) => {
-		const selectedValue = event.target.value;
-		setSelectedFilter(selectedValue);
-		onFilterSelected(selectedValue);
+		const selectedId = event.target.value;
+		setSelectedFilter(selectedId);
+
+		const selectedItem = filterItems.find((item) => item.id === selectedId);
+		onFilterSelected(selectedItem);
 	};
 
 	return (

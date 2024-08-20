@@ -8,10 +8,11 @@ import {
 	Tooltip,
 	IconButton,
 	CircularProgress,
+	Button,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import PatientRecordPopup from "./PatientRecordPopup"; // Adjust the path as needed
+import PatientRecordPopup from "./PatientRecordPopup";
 import { usePatientRecords } from "../../context/patientRecordContext";
 import { useSelectedItem } from "../../context/mainContentContext";
 import DeleteConfirmationDialog from "../Dialog/DeleteConfirmationDialog";
@@ -46,6 +47,12 @@ const PatientRecordRow = ({ patient }) => {
 		usePatientRecords();
 
 	const { setSelectedSidebarItem } = useSelectedItem();
+
+	const handleNewClick = (e, docId) => {
+		e.stopPropagation();
+		setCurrentEditRecord((prev) => ({ ...prev, HN: patient.HN }));
+		setSelectedSidebarItem("Form");
+	};
 
 	const handleDeleteClick = (e, docId) => {
 		e.stopPropagation();
@@ -124,7 +131,9 @@ const PatientRecordRow = ({ patient }) => {
 								<TableRow>
 									<TableCell>Timestamp</TableCell>
 									<TableCell>Detail</TableCell>
-									<TableCell>Actions</TableCell>
+									<TableCell>
+										<Button onClick={handleNewClick}>Add New Record</Button>
+									</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>

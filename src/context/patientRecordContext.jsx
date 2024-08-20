@@ -18,7 +18,7 @@ const useFetchRecords = (HN) => {
 	return useQuery(["patientRecords", HN], () => fetchPatientRecords(HN), {
 		staleTime: 5 * 60 * 1000,
 		cacheTime: 30 * 60 * 1000,
-		enabled: !!HN, // Only fetch records if HN is provided
+		enabled: !!HN,
 	});
 };
 
@@ -96,10 +96,10 @@ export const PatientRecordProvider = ({ children }) => {
 			return response.json();
 		},
 		{
-			onSuccess: (updatedRecord, { HN }) => {
+			onSuccess: (_, { HN, record }) => {
 				queryClient.setQueryData(["patientRecords", HN], (oldRecords = []) =>
-					oldRecords.map((record) =>
-						record.id === updatedRecord.id ? updatedRecord : record
+					oldRecords.map((record_) =>
+						record_.id === record.id ? record_ : record
 					)
 				);
 			},
