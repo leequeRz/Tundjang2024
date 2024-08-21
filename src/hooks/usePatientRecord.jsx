@@ -6,7 +6,7 @@ const usePatientRecord = (HN) => {
 
 	const fetchPatientRecord = async () => {
 		const { data } = await axios.get(
-			`http://localhost:3000/api/v1/patient/${HN}/record`
+			`https://icareu.vercel.app/api/v1/patient/${HN}/record`
 		);
 		return data;
 	};

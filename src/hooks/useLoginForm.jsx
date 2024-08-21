@@ -13,7 +13,7 @@ export const useLoginForm = (setIsLoggedIn) => {
 
 	const mutation = useMutation({
 		mutationFn: async (credentials) => {
-			const response = await fetch("http://localhost:3000/api/v1/users/login", {
+			const response = await fetch("https://icareu.vercel.app/api/v1/users/login", {
 				method: "POST",
 				headers: {
 					Accept: "text/plain",

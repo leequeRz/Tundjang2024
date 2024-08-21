@@ -1,9 +1,10 @@
 import React from "react";
 import { TextField, Button, Typography, Container, Grid } from "@mui/material";
 import avatar from "../../imgs/avatar.svg";
-import bg from "../../imgs/bg.svg";
+// import bg from "../../imgs/bg.svg";
 import styles from "./Login.module.scss";
 import { useLoginForm } from "../../hooks/useLoginForm";
+// import "./Login.css"
 
 const Login = ({ setIsLoggedIn }) => {
 	const { credentials, error, handleInputChange, handleLogin, isLoading } =
@@ -19,16 +20,11 @@ const Login = ({ setIsLoggedIn }) => {
 				columnSpacing={10}
 				rowSpacing={2}
 			>
-				<Grid item xs={8}>
-					<div className={styles.img}>
-						<img src={bg} alt="background" />
-					</div>
-				</Grid>
 				<Grid item xs={4}>
 					<div className={styles.loginContent}>
 						<form onSubmit={handleLogin}>
 							<div className={styles.iconPage}>
-								<img src={avatar} alt="avatar" />
+								<img src={avatar} justifyContent="space-evenly" alt="avatar" />
 							</div>
 							<Typography variant="h3" className={styles.loginTitle}>
 								Login

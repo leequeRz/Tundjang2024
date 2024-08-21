@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 const PatientContext = createContext();
 
 const fetchPatients = async () => {
-	const response = await fetch("http://localhost:3000/api/v1/patient");
+	const response = await fetch("https://icareu.vercel.app/api/v1/patient");
 	console.info("Fetching Patient");
 	if (!response.ok) throw new Error("Error fetching patients");
 	return response.json();
@@ -28,7 +28,7 @@ export const PatientProvider = ({ children }) => {
 	const deletePatient = useMutation(
 		async (HN) => {
 			const response = await fetch(
-				`http://localhost:3000/api/v1/patient/${HN}`,
+				`https://icareu.vercel.app/api/v1/patient/${HN}`,
 				{
 					method: "DELETE",
 				}
@@ -51,7 +51,7 @@ export const PatientProvider = ({ children }) => {
 	// Mutation to add a new patient
 	const addPatient = useMutation(
 		async (patient) => {
-			const response = await fetch("http://localhost:3000/api/v1/patient", {
+			const response = await fetch("https://icareu.vercel.app/api/v1/patient", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -79,7 +79,7 @@ export const PatientProvider = ({ children }) => {
 	const updatePatient = useMutation(
 		async (patient) => {
 			const response = await fetch(
-				`http://localhost:3000/api/v1/patient/${patient.HN}`,
+				`https://icareu.vercel.app/api/v1/patient/${patient.HN}`,
 				{
 					method: "PUT",
 					headers: {

@@ -7,7 +7,7 @@ const PatientRecordContext = createContext();
 // Fetch patient records function
 const fetchPatientRecords = async (HN) => {
 	const response = await fetch(
-		`http://localhost:3000/api/v1/patient/${HN}/record`
+		`https://icareu.vercel.app/api/v1/patient/${HN}/record`
 	);
 	if (!response.ok) throw new Error("Error fetching patient records");
 	return response.json();
@@ -32,7 +32,7 @@ export const PatientRecordProvider = ({ children }) => {
 	const deleteRecord = useMutation(
 		async ({ HN, docId }) => {
 			const response = await fetch(
-				`http://localhost:3000/api/v1/patient/${HN}/record/${docId}`,
+				`https://icareu.vercel.app/api/v1/patient/${HN}/record/${docId}`,
 				{
 					method: "DELETE",
 				}
@@ -55,7 +55,7 @@ export const PatientRecordProvider = ({ children }) => {
 	const addRecord = useMutation(
 		async ({ HN, record }) => {
 			const response = await fetch(
-				`http://localhost:3000/api/v1/patient/${HN}/record`,
+				`https://icareu.vercel.app/api/v1/patient/${HN}/record`,
 				{
 					method: "POST",
 					headers: {
@@ -83,7 +83,7 @@ export const PatientRecordProvider = ({ children }) => {
 	const updateRecord = useMutation(
 		async ({ HN, record }) => {
 			const response = await fetch(
-				`http://localhost:3000/api/v1/patient/${HN}/record/${record.id}`,
+				`https://icareu.vercel.app/api/v1/patient/${HN}/record/${record.id}`,
 				{
 					method: "PUT",
 					headers: {
