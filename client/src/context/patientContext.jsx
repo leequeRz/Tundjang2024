@@ -3,9 +3,15 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const PatientContext = createContext();
 
+const apiUrl =
+	process.env.NODE_ENV === "development" &&
+	process.env.REACT_APP_NODE_ENV === "development"
+		? process.env.REACT_APP_API_URL_DEV
+		: process.env.REACT_APP_API_URL_PROD;
+
 const fetchPatients = async () => {
-	const response = await fetch("https://icareu.vercel.app/api/v1/patient");
-	console.info("Fetching Patient");
+	const response = await fetch(`${apiUrl}/patient`);
+	console.log("Fetching Patient");
 	if (!response.ok) throw new Error("Error fetching patients");
 	return response.json();
 };
@@ -27,12 +33,9 @@ export const PatientProvider = ({ children }) => {
 	// Mutation to delete a patient
 	const deletePatient = useMutation(
 		async (HN) => {
-			const response = await fetch(
-				`https://icareu.vercel.app/api/v1/patient/${HN}`,
-				{
-					method: "DELETE",
-				}
-			);
+			const response = await fetch(`${apiUrl}/patient/${HN}`, {
+				method: "DELETE",
+			});
 			if (!response.ok) throw new Error("Failed to delete the patient");
 			return response.json();
 		},
@@ -51,7 +54,7 @@ export const PatientProvider = ({ children }) => {
 	// Mutation to add a new patient
 	const addPatient = useMutation(
 		async (patient) => {
-			const response = await fetch("https://icareu.vercel.app/api/v1/patient", {
+			const response = await fetch(`${apiUrl}/patient`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -78,16 +81,13 @@ export const PatientProvider = ({ children }) => {
 	// Mutation to update an existing patient
 	const updatePatient = useMutation(
 		async (patient) => {
-			const response = await fetch(
-				`https://icareu.vercel.app/api/v1/patient/${patient.HN}`,
-				{
-					method: "PUT",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(patient),
-				}
-			);
+			const response = await fetch(`${apiUrl}/patient/${patient.HN}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(patient),
+			});
 			if (!response.ok) throw new Error("Error updating patient");
 			return patient;
 		},

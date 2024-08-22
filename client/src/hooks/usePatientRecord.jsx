@@ -1,13 +1,17 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
+const apiUrl =
+	process.env.NODE_ENV === "development" &&
+	process.env.REACT_APP_NODE_ENV === "development"
+		? process.env.REACT_APP_API_URL_DEV
+		: process.env.REACT_APP_API_URL_PROD;
+
 const usePatientRecord = (HN) => {
 	const queryClient = useQueryClient();
 
 	const fetchPatientRecord = async () => {
-		const { data } = await axios.get(
-			`https://icareu.vercel.app/api/v1/patient/${HN}/record`
-		);
+		const { data } = await axios.get(`${apiUrl}/patient/${HN}/record`);
 		return data;
 	};
 

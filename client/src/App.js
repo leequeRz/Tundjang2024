@@ -14,9 +14,11 @@ import {
 	SelectedItemProvider,
 	useSelectedItem,
 } from "./context/mainContentContext";
+import useEnvironmentChecker from "./hooks/useEnvironmentChecker";
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	useEnvironmentChecker();
 
 	useEffect(() => {
 		// Check if the user is logged in by verifying the token in localStorage

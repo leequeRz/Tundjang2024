@@ -4,11 +4,15 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const PatientRecordContext = createContext();
 
+const apiUrl =
+	process.env.NODE_ENV === "development" &&
+	process.env.REACT_APP_NODE_ENV === "development"
+		? process.env.REACT_APP_API_URL_DEV
+		: process.env.REACT_APP_API_URL_PROD;
+
 // Fetch patient records function
 const fetchPatientRecords = async (HN) => {
-	const response = await fetch(
-		`https://icareu.vercel.app/api/v1/patient/${HN}/record`
-	);
+	const response = await fetch(`${apiUrl}/patient/${HN}/record`);
 	if (!response.ok) throw new Error("Error fetching patient records");
 	return response.json();
 };
@@ -31,12 +35,9 @@ export const PatientRecordProvider = ({ children }) => {
 
 	const deleteRecord = useMutation(
 		async ({ HN, docId }) => {
-			const response = await fetch(
-				`https://icareu.vercel.app/api/v1/patient/${HN}/record/${docId}`,
-				{
-					method: "DELETE",
-				}
-			);
+			const response = await fetch(`${apiUrl}/patient/${HN}/record/${docId}`, {
+				method: "DELETE",
+			});
 			if (!response.ok) throw new Error("Failed to delete the record");
 			return response.json();
 		},
@@ -54,16 +55,13 @@ export const PatientRecordProvider = ({ children }) => {
 
 	const addRecord = useMutation(
 		async ({ HN, record }) => {
-			const response = await fetch(
-				`https://icareu.vercel.app/api/v1/patient/${HN}/record`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(record),
-				}
-			);
+			const response = await fetch(`${apiUrl}/patient/${HN}/record`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(record),
+			});
 			if (!response.ok) throw new Error("Error adding record");
 			return response.json();
 		},
@@ -83,7 +81,7 @@ export const PatientRecordProvider = ({ children }) => {
 	const updateRecord = useMutation(
 		async ({ HN, record }) => {
 			const response = await fetch(
-				`https://icareu.vercel.app/api/v1/patient/${HN}/record/${record.id}`,
+				`${apiUrl}/patient/${HN}/record/${record.id}`,
 				{
 					method: "PUT",
 					headers: {

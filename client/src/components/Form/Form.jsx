@@ -174,6 +174,7 @@ const Form = () => {
 	);
 
 	useEffect(() => {
+		console.log(currentEditRecord);
 		handleSelectHNFilter({ id: currentEditRecord.HN });
 		handleSelectRecordFilter(currentEditRecord.docId);
 	}, []);

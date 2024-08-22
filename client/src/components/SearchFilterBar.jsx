@@ -21,7 +21,7 @@ const SearchFilterBar = ({
 	required = false,
 }) => {
 	const [selectedFilter, setSelectedFilter] = useState(
-		selectedValue?.id || filterItems[0].id
+		selectedValue?.id || selectedValue || null
 	);
 
 	const handleFilterChange = (event) => {

@@ -3,6 +3,12 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
+const apiUrl =
+	process.env.NODE_ENV === "development" &&
+	process.env.REACT_APP_NODE_ENV === "development"
+		? process.env.REACT_APP_API_URL_DEV
+		: process.env.REACT_APP_API_URL_PROD;
+
 export const useLoginForm = (setIsLoggedIn) => {
 	const [credentials, setCredentials] = useState({
 		username: "",
@@ -13,7 +19,7 @@ export const useLoginForm = (setIsLoggedIn) => {
 
 	const mutation = useMutation({
 		mutationFn: async (credentials) => {
-			const response = await fetch("https://icareu.vercel.app/api/v1/users/login", {
+			const response = await fetch(`${apiUrl}/users/login`, {
 				method: "POST",
 				headers: {
 					Accept: "text/plain",
@@ -21,8 +27,6 @@ export const useLoginForm = (setIsLoggedIn) => {
 				},
 				body: JSON.stringify(credentials),
 			});
-
-			console.log(response);
 
 			if (!response.ok) {
 				throw new Error("Something went wrong. Please try again later.");
