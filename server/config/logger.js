@@ -1,38 +1,36 @@
-// logger.js
-const winston = require("winston");
-const path = require("path");
 const fs = require("fs");
+const path = require("path");
+const { createLogger, format, transports } = require("winston");
 
-// Create log folder if it doesn't exist
-const logDirectory = path.join(__dirname, "../log");
-if (!fs.existsSync(logDirectory)) {
-	fs.mkdirSync(logDirectory);
+const logDir = path.join(__dirname, "log");
+
+// Create log directory if it does not exist and if in development
+if (process.env.NODE_ENV === "development") {
+	if (!fs.existsSync(logDir)) {
+		fs.mkdirSync(logDir, { recursive: true });
+	}
 }
 
-// Format timestamp for log file name
-const timestamp = new Date().toISOString().replace(/:/g, "-");
-const logFilename = path.join(logDirectory, `${timestamp}.log`);
-
-// Configure winston logger
-const logger = winston.createLogger({
+// Create a logger instance
+const logger = createLogger({
 	level: "info",
-	format: winston.format.combine(
-		winston.format.timestamp(),
-		winston.format.printf(({ timestamp, level, message }) => {
-			return `${timestamp} ${level}: ${message}`;
-		})
+	format: format.combine(
+		format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+		format.printf(
+			({ timestamp, level, message }) => `${timestamp} ${level}: ${message}`
+		)
 	),
 	transports: [
-		new winston.transports.Console({
-			format: winston.format.combine(
-				winston.format.colorize(),
-				winston.format.printf(({ timestamp, level, message }) => {
-					return `${timestamp} ${level}: ${message}`;
-				})
-			),
+		// Console transport for all environments
+		new transports.Console({
+			format: format.combine(format.colorize(), format.simple()),
 		}),
-		new winston.transports.File({ filename: logFilename }),
 	],
 });
+
+// Add file transport only in development
+if (process.env.NODE_ENV === "development") {
+	logger.add(new transports.File({ filename: path.join(logDir, "app.log") }));
+}
 
 module.exports = logger;
