@@ -70,13 +70,25 @@ const EditPatient = logRequest(
 const FindPatient = logRequest(
 	timeExecution(async (req, res) => {
 		try {
-			const HN = req.query.HN;
+			const { HN, DOB } = req.query;
 			let snapshot;
 
-			if (!HN) {
-				snapshot = await db.collection("patients").limit(15).get();
+			if (HN && DOB) {
+				// Search by both HN and DOB
+				snapshot = await db
+					.collection("patients")
+					.where("HN", "==", HN)
+					.where("DOB", "==", dateToFirestoreTimestamp(DOB))
+					.get();
+			} else if (HN) {
+				// Search by HN only
+				snapshot = await db
+					.collection("patients")
+					.where("HN", "==", HN)
+					.get();
 			} else {
-				snapshot = await db.collection("patients").where("HN", "==", HN).get();
+				// Return a limited list if no HN is provided
+				snapshot = await db.collection("patients").limit(15).get();
 			}
 
 			const patients = [];
