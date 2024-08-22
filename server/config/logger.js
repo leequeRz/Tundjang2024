@@ -1,36 +1,52 @@
-const fs = require("fs");
+// logger.js
+const winston = require("winston");
 const path = require("path");
-const { createLogger, format, transports } = require("winston");
+const fs = require("fs");
 
-const logDir = path.join(__dirname, "log");
+// Create log folder if it doesn't exist and in development mode
+const logDirectory = path.join(__dirname, "../log");
 
-// Create log directory if it does not exist and if in development
-if (process.env.NODE_ENV === "development") {
-	if (!fs.existsSync(logDir)) {
-		fs.mkdirSync(logDir, { recursive: true });
+if (
+	process.env.NODE_ENV === "development" ||
+	process.env.NODE_ENV === "local"
+) {
+	if (!fs.existsSync(logDirectory)) {
+		fs.mkdirSync(logDirectory);
 	}
 }
 
-// Create a logger instance
-const logger = createLogger({
-	level: "info",
-	format: format.combine(
-		format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-		format.printf(
-			({ timestamp, level, message }) => `${timestamp} ${level}: ${message}`
-		)
-	),
-	transports: [
-		// Console transport for all environments
-		new transports.Console({
-			format: format.combine(format.colorize(), format.simple()),
-		}),
-	],
-});
+// Format timestamp for log file name
+const timestamp = new Date().toISOString().replace(/:/g, "-");
+const logFilename = path.join(logDirectory, `${timestamp}.log`);
 
-// Add file transport only in development
-if (process.env.NODE_ENV === "development") {
-	logger.add(new transports.File({ filename: path.join(logDir, "app.log") }));
+// Configure winston logger
+const transports = [
+	new winston.transports.Console({
+		format: winston.format.combine(
+			winston.format.colorize(),
+			winston.format.printf(({ timestamp, level, message }) => {
+				return `${timestamp} ${level}: ${message}`;
+			})
+		),
+	}),
+];
+
+if (
+	process.env.NODE_ENV === "development" ||
+	process.env.NODE_ENV === "local"
+) {
+	transports.push(new winston.transports.File({ filename: logFilename }));
 }
+
+const logger = winston.createLogger({
+	level: "info",
+	format: winston.format.combine(
+		winston.format.timestamp(),
+		winston.format.printf(({ timestamp, level, message }) => {
+			return `${timestamp} ${level}: ${message}`;
+		})
+	),
+	transports,
+});
 
 module.exports = logger;
