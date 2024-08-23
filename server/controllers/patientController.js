@@ -73,6 +73,7 @@ const FindPatient = logRequest(
 			const { HN, DOB } = req.query;
 			let snapshot;
 
+			let convertedDOB = DOB;
 			if (DOB) {
 				let convertedDOB = DOB;
 				// If DOB is in DD/MM/YYYY format and B.E., convert it to A.D.
