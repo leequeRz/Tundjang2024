@@ -73,17 +73,13 @@ const FindPatient = logRequest(
 			const { HN, DOB } = req.query;
 			let snapshot;
 
-			let convertedDOB = DOB;
-			if (DOB) {
+
+			if (HN && DOB) {
 				let convertedDOB = DOB;
-				// If DOB is in DD/MM/YYYY format and B.E., convert it to A.D.
 				const [day, month, yearBE] = DOB.split("/").map(Number);
 				const yearAD = yearBE - 543;
 				convertedDOB = `${yearAD}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-			}
-	
-
-			if (HN && DOB) {
+				const correctDOB = dateToFirestoreTimestamp(convertedDOB);
 				// Search by both HN and DOB
 				snapshot = await db
 					.collection("patients")
