@@ -53,7 +53,7 @@ const handleGeneralInfoRequest = async (userId, replyToken, req, res) => {
 		// Use the readFile function from fileController.js
 		const readFileResponse = await readFile(req, res);
 
-		const imageUrl = readFileResponse.imageUrl;
+		const imageUrl = readFileResponse.body.imageUrl;
 		const responseMessage = {
 			type: "image",
 			originalContentUrl: imageUrl,
