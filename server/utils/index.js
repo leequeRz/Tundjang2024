@@ -42,7 +42,7 @@ const dateToFirestoreTimestamp = (dateString) => {
 	const utcDate = new Date(date.getTime() - 7 * 60 * 60 * 1000);
 
 	// Create Firestore Timestamp from JavaScript Date
-	return Timestamp.fromDate(date);
+	return Timestamp.fromDate(utcDate);
 };
 
 function checkField(requiredFields, req, res) {

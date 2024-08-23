@@ -111,7 +111,6 @@ const FindPatient = logRequest(
 			});
 
 			logger.info(`Patient(s) found: ${HN ? HN : "all patients"}`); 
-			logger.info(`Patient(s) found: ${HN ? HN : "all patients"}`); // Log the retrieval of patients
 			res.status(200).json(patients);
 		} catch (error) {
 			logger.error(`Error finding patient(s): ${error.message}`); // Log the error
