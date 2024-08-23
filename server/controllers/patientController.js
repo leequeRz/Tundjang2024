@@ -82,7 +82,7 @@ const FindPatient = logRequest(
 			}
 	
 
-			if (HN && convertedDOB) {
+			if (HN && DOB) {
 				// Search by both HN and DOB
 				snapshot = await db
 					.collection("patients")
