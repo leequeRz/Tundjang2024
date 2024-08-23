@@ -80,14 +80,15 @@ const FindPatient = logRequest(
 				const yearAD = yearBE - 543;
 				convertedDOB = `${yearAD}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 			}
-
+			const correctDOB = dateToFirestoreTimestamp(convertedDOB);
+			console.log("correct = ", correctDOB + "convert = ", convertedDOB);
 
 			if (HN && convertedDOB) {
 				// Search by both HN and DOB
 				snapshot = await db
 					.collection("patients")
 					.where("HN", "==", HN)
-					.where("DOB", "==", dateToFirestoreTimestamp(convertedDOB))
+					.where("DOB", "==", correctDOB)
 					.get();
 			} else if (HN) {
 				// Search by HN only
@@ -109,6 +110,7 @@ const FindPatient = logRequest(
 				patients.push({ id: doc.id, ...data });
 			});
 
+			logger.info(`Patient(s) found: ${HN ? HN : "all patients"}`); 
 			logger.info(`Patient(s) found: ${HN ? HN : "all patients"}`); // Log the retrieval of patients
 			res.status(200).json(patients);
 		} catch (error) {
