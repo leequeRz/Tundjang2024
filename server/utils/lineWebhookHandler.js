@@ -51,9 +51,9 @@ const handleGeneralInfoRequest = async (userId, replyToken, req, res) => {
 		delete userStates[userId];
 		
 		// Use the readFile function from fileController.js
-		const readFileResponse = await readFile(req, res);
+		const readFileResponse = await readFile();
 
-		const imageUrl = readFileResponse.body.imageUrl;
+		const imageUrl = readFileResponse.imageUrl;
 		const responseMessage = {
 			type: "image",
 			originalContentUrl: imageUrl,
