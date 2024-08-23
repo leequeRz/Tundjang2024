@@ -108,12 +108,20 @@ const handleContactRequest = async (userId, replyToken) => {
 const handleHNRequest = async (userId, replyToken, messageText) => {
 	try {
 		// Split the message text by newline to extract HN and DOB
-		const [hnCode, dob] = messageText.split('\n').map(line => line.trim());
+		const [hncodefault, dob] = messageText.split('\n').map(line => line.trim());
+		const hnCode = hncodefault.trim().toUpperCase();
 
 		// Prepare the request to the patient controller
-		const patientResponse = await FindPatient({
-			query: { HN: hnCode, DOB: dob },
-		});
+		// const patientResponse = await FindPatient({
+		// 	query: { HN: hnCode, DOB: dob },
+		// });
+
+		const patientResponse = await axios.get('https://icareu-api.vercel.app/api/v1/patient', {
+			params: {
+			  HN: hnCode,
+			  DOB: dob
+			}
+		  });
 
 		const patientData = patientResponse[0];
 
@@ -138,7 +146,9 @@ const handleHNRequest = async (userId, replyToken, messageText) => {
 		}
 
 		// Get patient records using the record controller
-		const recordsResponse = await GetRecord({ params: { HN: hnCode } });
+		// const recordsResponse = await GetRecord({ params: { HN: hnCode } });
+
+		const recordsResponse = await axios.get(`https://icareu-api.vercel.app/api/v1/patient/${hnCode}/record`);
 
 		// Process the records and format the response
 		if (recordsResponse.length > 0) {
