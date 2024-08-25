@@ -1,6 +1,6 @@
 import React from "react";
 import { TextField, Button, Typography, Container, Grid } from "@mui/material";
-import avatar from "../../imgs/avatar.svg";
+import Nurse from "../../imgs/Nurse.jpg";
 // import bg from "../../imgs/bg.svg";
 import styles from "./Login.module.scss";
 import { useLoginForm } from "../../hooks/useLoginForm";
@@ -23,8 +23,8 @@ const Login = ({ setIsLoggedIn }) => {
 				<Grid item xs={4}>
 					<div className={styles.loginContent}>
 						<form onSubmit={handleLogin}>
-							<div className={styles.iconPage}>
-								<img src={avatar} justifyContent="space-evenly" alt="avatar" />
+							<div className={styles.iconPage} style={justifyContent="space-evenly"}>
+								<img src={Nurse} alt="avatar" />
 							</div>
 							<Typography variant="h3" className={styles.loginTitle}>
 								Login
