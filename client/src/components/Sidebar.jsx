@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Sidebar.css";
-import Logo from "../imgs/logo.png";
+import Nurse from "../imgs/Nurse.jpg"; // Updated the image import
 // import { UilSignOutAlt } from "@iconscout/react-unicons";
 import { SidebarData } from "../Data/Data";
 import { UilBars } from "@iconscout/react-unicons";
@@ -37,7 +37,7 @@ const Sidebar = ({ onLogout }) => {
 			>
 				{/* logo */}
 				<div className="logo">
-					<img src={Logo} alt="logo" />
+				<img src={Nurse} alt="nurse logo" /> {/* Updated the image source */}
 					<span>
 						I<span>CARE</span>U
 					</span>
