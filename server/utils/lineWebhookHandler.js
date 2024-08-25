@@ -123,7 +123,7 @@ const handleHNRequest = async (userId, replyToken, messageText) => {
 			}
 		  });
 
-		const patientData = patientResponse[0];
+		const patientData = patientResponse.data[0];
 
 		if (!patientData) {
 			// If no patient found, send a reply indicating this
@@ -151,8 +151,8 @@ const handleHNRequest = async (userId, replyToken, messageText) => {
 		const recordsResponse = await axios.get(`https://icareu-api.vercel.app/api/v1/patient/${hnCode}/record`);
 
 		// Process the records and format the response
-		if (recordsResponse.length > 0) {
-			const latestRecord = recordsResponse.sort(
+		if (recordsResponse.data.length > 0) {
+			const latestRecord = recordsResponse.data.sort(
 				(a, b) => new Date(b.timestamp) - new Date(a.timestamp)
 			)[0];
 
@@ -168,38 +168,23 @@ ${patientData.prefix} ${patientData.name} ${patientData.surname} เพศ${pati
 อาการประจำวันนี้ ${new Date(latestRecord.timestamp).toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' })}
 
 1. สัญญาณชีพ : ${latestRecord.BT}, ความดันโลหิต: ${latestRecord.BP}, หัวใจเต้นเร็ว: ${latestRecord.HR}, หายใจเร็ว: ${latestRecord.RR}, ค่าออกซิเจน: ${latestRecord.O2sat}
-2. อาการเบื้องต้น : รู้สึกตัว: ${latestRecord.conscious}, หายใจ: ${latestRecord.breath_pattern}, กินอาหาร: ${latestRecord.eat_method} ไม่มีอาการแทรกซ้อน: ${latestRecord.extra_symptoms || "ไม่มี"}, นอนหลับดี: ${latestRecord.sleep}, ร้องไห้เวลาหิว: ${latestRecord.extra_food || "ไม่มี"}, ถ่าย: ${latestRecord.excretion || "ปกติ"}
-3. หมายเหตุ: ${latestRecord.notes + latestRecord.extra_symptoms + foodIntakeStr|| "ไม่มี"}
+2. อาการเบื้องต้น : รู้สึกตัว: ${latestRecord.conscious}, หายใจ: ${latestRecord.breath_pattern}, กินอาหาร: ${latestRecord.eat_method}  สามารถกิน${ foodIntakeStr || " "} ได้ เกี่ยวกับอาหารเพิ่มเติม: ${latestRecord.extra_food || "ไม่มี"},   ไม่มีอาการแทรกซ้อน: ${latestRecord.extra_symptoms || "ไม่มี"}, นอนหลับดี: ${latestRecord.sleep} , ถ่าย: ${latestRecord.excretion || "ปกติ"}
+3. หมายเหตุ:   ${ latestRecord.notes || " ไม่มี"}
             `.trim();
 
-			// const latestRecordMessage = `
-			// 	ข้อมูลล่าสุดของคุณ ${patientData.name} ${patientData.surname} รหัสประจำตัวผู้ป่วย ${hnCode}
-			// 	อัปเดตล่าสุดเมื่อ: ${new Date(latestRecord.timestamp).toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' })}
-			// 	ข้อมูลทั่วไป: อุณหภูมิ: ${latestRecord.BT} ความดันโลหิต: ${latestRecord.BP} อัตราการเต้นของหัวใจ: ${latestRecord.HR} อัตราการหายใจ: ${latestRecord.RR} ค่าออกซิเจนในเลือด: ${latestRecord.O2sat}
-			// 	อาการเบื้องต้น: 
-			// 	- ระดับความรู้สึกตัว: ${latestRecord.conscious}
-			// 	- ลักษณะการหายใจ: ${latestRecord.breath_pattern}
-			// 	- อาการเพิ่มเติม: ${latestRecord.extra_symptoms || "ไม่มี"}
-			// 	รูปแบบการรับประทานอาหาร:
-			// 	- ${latestRecord.eat_method}
-			// 	- ประเภทอาหาร: ${latestRecord.food_type} ${latestRecord.extra_food || " "}
-			// 	- ${foodIntakeStr}
-			// 	การนอนหลับ: ${latestRecord.sleep}
-			// 	การขับถ่าย: ${latestRecord.excretion}
-			// 	หมายเหตุ: ${latestRecord.notes || "N/A"}
-			// `;
 
 			// Send the formatted message as a response
-			await axios.post(
-				"https://api.line.me/v2/bot/message/reply",
-				{
-					replyToken,
-					messages: [{ type: "text", text: latestRecordMessage.trim() }],
-				},
-				{
-					headers: { Authorization: `Bearer ${config.line.channelAccessToken}` },
-				}
-			);
+			// await axios.post(
+			// 	"https://api.line.me/v2/bot/message/reply",
+			// 	{
+			// 		replyToken,
+			// 		messages: [{ type: "text", text: latestRecordMessage.trim() }],
+			// 	},
+			// 	{
+			// 		headers: { Authorization: `Bearer ${config.line.channelAccessToken}` },
+			// 	}
+			// );
+            console.log(latestRecordMessage);
 		} else {
 			// If no records found, inform the user
 			const responseMessage = {
