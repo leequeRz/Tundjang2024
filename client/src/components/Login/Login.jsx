@@ -23,7 +23,7 @@ const Login = ({ setIsLoggedIn }) => {
 				<Grid item xs={4}>
 					<div className={styles.loginContent}>
 						<form onSubmit={handleLogin}>
-							<div className={styles.iconPage} style={justifyContent="space-evenly"}>
+							<div className={styles.iconPage}>
 								<img src={Nurse} alt="avatar" />
 							</div>
 							<Typography variant="h3" className={styles.loginTitle}>
