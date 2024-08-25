@@ -174,17 +174,17 @@ ${patientData.prefix} ${patientData.name} ${patientData.surname} เพศ${pati
 
 
 			// Send the formatted message as a response
-			// await axios.post(
-			// 	"https://api.line.me/v2/bot/message/reply",
-			// 	{
-			// 		replyToken,
-			// 		messages: [{ type: "text", text: latestRecordMessage.trim() }],
-			// 	},
-			// 	{
-			// 		headers: { Authorization: `Bearer ${config.line.channelAccessToken}` },
-			// 	}
-			// );
-            console.log(latestRecordMessage);
+			await axios.post(
+				"https://api.line.me/v2/bot/message/reply",
+				{
+					replyToken,
+					messages: [{ type: "text", text: latestRecordMessage.trim() }],
+				},
+				{
+					headers: { Authorization: `Bearer ${config.line.channelAccessToken}` },
+				}
+			);
+            // console.log(latestRecordMessage);
 		} else {
 			// If no records found, inform the user
 			const responseMessage = {
