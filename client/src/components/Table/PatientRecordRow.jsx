@@ -74,6 +74,21 @@ const PatientRecordRow = ({ patient }) => {
 	const openPopup = () => setPopupOpen(true);
 	const closePopup = () => setPopupOpen(false);
 
+	// Helper function to format timestamp
+	const formatTimestamp = (timestamp) => {
+		const date = new Date(timestamp);
+		const formattedDate = date.toLocaleDateString("en-US", {
+			year: "numeric",
+			month: "short",
+			day: "2-digit",
+		});
+		const formattedTime = date.toLocaleTimeString("en-US", {
+			hour: "2-digit",
+			minute: "2-digit",
+		});
+		return { formattedDate, formattedTime };
+	};
+
 	// Fetch records for the given patient HN
 	const PatientRecordsDisplay = () => {
 		const {
@@ -85,40 +100,45 @@ const PatientRecordRow = ({ patient }) => {
 		if (isLoading) return <CircularProgress />;
 		if (isError) return <div>Error loading records</div>;
 
-		return records.map((entry) => (
-			<TableRow
-				key={entry.timestamp}
-				onClick={() => {
-					setPatientRecord(entry);
-					openPopup();
-				}}
-			>
-				<TableCell>{entry.id}</TableCell>
-				<TableCell>{entry.notes}</TableCell>
-				<TableCell>
-					<Tooltip title="Edit Patient">
-						<IconButton
-							onClick={(e) => {
-								handleEditClick(e, patient.HN, entry.id);
-							}}
-							color="primary"
-						>
-							<EditIcon />
-						</IconButton>
-					</Tooltip>
-					<Tooltip title="Delete Patient">
-						<IconButton
-							onClick={(e) => {
-								handleDeleteClick(e, entry.id);
-							}}
-							color="error"
-						>
-							<DeleteIcon />
-						</IconButton>
-					</Tooltip>
-				</TableCell>
-			</TableRow>
-		));
+		return records.map((entry) => {
+			const { formattedDate, formattedTime } = formatTimestamp(entry.timestamp);
+			return (
+				<TableRow
+					key={entry.timestamp}
+					onClick={() => {
+						setPatientRecord(entry);
+						openPopup();
+					}}
+				>
+					<TableCell>{entry.id}</TableCell>
+					<TableCell>{formattedDate}</TableCell>
+					<TableCell>{formattedTime}</TableCell>
+					<TableCell>{entry.notes}</TableCell>
+					<TableCell>
+						<Tooltip title="Edit Patient">
+							<IconButton
+								onClick={(e) => {
+									handleEditClick(e, patient.HN, entry.id);
+								}}
+								color="primary"
+							>
+								<EditIcon />
+							</IconButton>
+						</Tooltip>
+						<Tooltip title="Delete Patient">
+							<IconButton
+								onClick={(e) => {
+									handleDeleteClick(e, entry.id);
+								}}
+								color="error"
+							>
+								<DeleteIcon />
+							</IconButton>
+						</Tooltip>
+					</TableCell>
+				</TableRow>
+			);
+		});
 	};
 
 	return (
@@ -129,7 +149,9 @@ const PatientRecordRow = ({ patient }) => {
 						<Table size="small">
 							<TableHead>
 								<TableRow>
-									<TableCell>Timestamp</TableCell>
+									<TableCell>ID</TableCell>
+									<TableCell>Date</TableCell>
+									<TableCell>Time</TableCell>
 									<TableCell>Detail</TableCell>
 									<TableCell>
 										<Button onClick={handleNewClick}>Add New Record</Button>
