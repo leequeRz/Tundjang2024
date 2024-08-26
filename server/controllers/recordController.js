@@ -63,7 +63,7 @@ const AddRecord = logRequest(
 
 			const docId = `rec_${firestoreTimestampToDateInUTCPlus7(
 				current_time,
-				"noplus"
+				"wtf"
 			)}`;
 			await db
 				.collection("patients")
@@ -93,7 +93,6 @@ const EditRecord = logRequest(
 
 			const updateData = {
 				...req.body,
-				timestamp: admin.firestore.Timestamp.now(),
 			};
 
 			await db
