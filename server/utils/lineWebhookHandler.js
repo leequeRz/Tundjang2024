@@ -157,7 +157,7 @@ const handleHNRequest = async (userId, replyToken, messageText) => {
 			)[0];
 
 			// Format the food intake string
-			const foodIntakeStr = latestRecord.food_intake ? latestRecord.food_intake.join(", ") : " ";
+			const foodIntakeStr = latestRecord.food_intake ? latestRecord.food_intake.join(", ") : " "; 
 			const age = getAge(patientData.DOB);
 
 
@@ -168,7 +168,7 @@ ${patientData.prefix} ${patientData.name} ${patientData.surname} เพศ${pati
 อาการประจำวันนี้ ${new Date(latestRecord.timestamp).toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' })}
 
 1. สัญญาณชีพ : ${latestRecord.BT}, ความดันโลหิต: ${latestRecord.BP}, หัวใจเต้นเร็ว: ${latestRecord.HR}, หายใจเร็ว: ${latestRecord.RR}, ค่าออกซิเจน: ${latestRecord.O2sat}
-2. อาการเบื้องต้น : รู้สึกตัว: ${latestRecord.conscious}, หายใจ: ${latestRecord.breath_pattern}, กินอาหาร: ${latestRecord.eat_method}  สามารถกิน${ foodIntakeStr || " "} ได้ เกี่ยวกับอาหารเพิ่มเติม: ${latestRecord.extra_food || "ไม่มี"},   ไม่มีอาการแทรกซ้อน: ${latestRecord.extra_symptoms || "ไม่มี"}, นอนหลับดี: ${latestRecord.sleep} , ถ่าย: ${latestRecord.excretion || "ปกติ"}
+2. อาการเบื้องต้น : รู้สึกตัว: ${latestRecord.conscious}, หายใจ: ${latestRecord.breath_pattern}, กินอาหาร: ${latestRecord.eat_method}  สามารถกิน${ foodIntakeStr || " "} ได้ , นอนหลับดี: ${latestRecord.sleep} , ถ่าย: ${latestRecord.excretion || "ปกติ"}
 3. หมายเหตุ:   ${ latestRecord.notes || " ไม่มี"}
             `.trim();
 
