@@ -14,6 +14,8 @@ import {
 	Grid,
 	Snackbar,
 	Alert,
+	Autocomplete,
+	Checkbox,
 } from "@mui/material";
 import { getCurrentShift, calculateAge } from "../../utils/helper";
 import SearchFilterBar from "../SearchFilterBar";
@@ -51,12 +53,15 @@ const CONSCIOUS_OPTIONS = [
 const BREATH_PATTERN_OPTIONS = [
 	"หายใจปกติ",
 	"หายใจช้า",
-	"หายใจเร็ว หายใจหอบเหนื่อย",
+	"หายใจเร็ว",
+	"หายใจหอบเหนื่อย",
 ];
+
+const PHLEGM_OPTIONS = ["ไม่มีเสมหะ", "มีเสมหะ"];
 const EAT_METHOD_OPTIONS = ["รับประทานเองได้", "ใส่สายยางให้อาหาร"];
 const SLEEP_OPTIONS = ["นอนหลับได้", "นอนไม่หลับ", "หลับๆ ตื่นๆ"];
 const EXCRETION_OPTIONS = ["ถ่ายดี", "ท้องเสีย", "ท้องผูก"];
-const FOOD_TYPE_OPTIONS = ["นมแม่", "นมผสม", "อาหารแข็ง", "อาหารอื่นๆ"];
+const FOOD_INTAKE_OPTIONS = ["นมแม่", "นมผสม", "อาหารแข็ง", "อาหารอื่นๆ"];
 const EXTRA_FOOD_OPTIONS = ["ตามปกติ", "รับประทานน้อย", "ไม่รับประทาน"];
 
 const initialFormState = {
@@ -68,8 +73,9 @@ const initialFormState = {
 	conscious: "ตื่น รู้สึกตัวดี",
 	breath_pattern: "หายใจปกติ",
 	eat_method: "รับประทานเองได้",
+	phlegm: "ไม่มีเสมหะ",
 	food_type: "นมแม่",
-	food_intake: [""],
+	food_intake: ["นมแม่"],
 	sleep: "นอนหลับได้",
 	excretion: "ถ่ายดี",
 	extra_symptoms: "",
@@ -102,6 +108,7 @@ const Form = () => {
 		updateRecord,
 	} = usePatientRecords();
 
+	// console.log(currentEditRecord);
 	const { data: records = [] } = useFetchRecords(currentEditRecord.HN?.trim());
 
 	const generateLabel = useCallback(
@@ -139,7 +146,10 @@ const Form = () => {
 
 	const handleSelectHNFilter = useCallback(
 		(value) => {
-			setCurrentEditRecord({ HN: value.id, docId: null });
+			setCurrentEditRecord({
+				HN: value.id,
+				docId: { id: "create-new", label: "Create New Record" },
+			});
 			const selectedPatient = patients.find(
 				(patient) => patient.id === value.id
 			);
@@ -174,7 +184,7 @@ const Form = () => {
 	);
 
 	useEffect(() => {
-		console.log(currentEditRecord);
+		// console.log(currentEditRecord);
 		handleSelectHNFilter({ id: currentEditRecord.HN });
 		handleSelectRecordFilter(currentEditRecord.docId);
 	}, []);
@@ -192,7 +202,7 @@ const Form = () => {
 				HN: formHeader.HN,
 				record: {
 					...form,
-					id: currentEditRecord.docId,
+					id: currentEditRecord.docId.id,
 				},
 			};
 
@@ -213,7 +223,10 @@ const Form = () => {
 				},
 			};
 
-			if (currentEditRecord.docId && currentEditRecord.docId !== "create-new") {
+			if (
+				currentEditRecord.docId &&
+				currentEditRecord.docId.id !== "create-new"
+			) {
 				updateRecord(recordData, options);
 			} else {
 				addRecord(recordData, options);
@@ -368,6 +381,12 @@ const Form = () => {
 								value: form.breath_pattern,
 								options: BREATH_PATTERN_OPTIONS,
 							})}
+							{renderRadioGroup({
+								label: "เสมหะ",
+								name: "phlegm",
+								value: form.phlegm,
+								options: PHLEGM_OPTIONS,
+							})}
 							<Grid item xs={12}>
 								<TextField
 									name="extra_symptoms"
@@ -391,12 +410,31 @@ const Form = () => {
 								value: form.eat_method,
 								options: EAT_METHOD_OPTIONS,
 							})}
-							{renderRadioGroup({
-								label: "อาหาร",
-								name: "food_type",
-								value: form.food_type,
-								options: FOOD_TYPE_OPTIONS,
-							})}
+							<Grid item xs={12} sm={6}>
+								<FormControl component="fieldset">
+									<FormLabel component="legend" required>
+										การรับประทานอาหาร
+									</FormLabel>
+									<Autocomplete
+										multiple
+										options={FOOD_INTAKE_OPTIONS}
+										value={form.food_intake}
+										onChange={(_, value) =>
+											setForm((prev) => ({ ...prev, food_intake: value }))
+										}
+										renderOption={(props, option, { selected }) => (
+											<li {...props}>
+												<Checkbox
+													style={{ marginRight: 8 }}
+													checked={selected}
+												/>
+												{option}
+											</li>
+										)}
+										renderInput={(params) => <TextField {...params} />}
+									/>
+								</FormControl>
+							</Grid>
 							{renderRadioGroup({
 								label: "พฤติกรรมการรับประทานอาหาร",
 								name: "extra_food",

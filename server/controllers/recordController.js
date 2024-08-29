@@ -43,7 +43,8 @@ const AddRecord = logRequest(
 			const current_time = admin.firestore.Timestamp.now();
 
 			const recordData = {
-				timestamp: current_time,
+				create_time: current_time,
+				update_time: null,
 				BT: req.body.BT,
 				BP: req.body.BP,
 				HR: req.body.HR,
@@ -73,7 +74,16 @@ const AddRecord = logRequest(
 				.set(recordData);
 
 			logger.info(`Record added for patient ${HN} with ID ${docId}`);
-			res.status(200).send({ message: "success", data: docId });
+			res.status(200).send({
+				message: "success",
+				data: {
+					id: docId,
+					create_time: firestoreTimestampToDateInUTCPlus7(
+						current_time,
+						"noplus"
+					),
+				},
+			});
 		} catch (error) {
 			logger.error(`Error adding record for patient: ${error.message}`);
 			res.status(500).send(error.message);
@@ -93,7 +103,7 @@ const EditRecord = logRequest(
 
 			const updateData = {
 				...req.body,
-				timestamp: admin.firestore.Timestamp.now(),
+				update_time: admin.firestore.Timestamp.now(),
 			};
 
 			await db
@@ -143,27 +153,31 @@ const GetRecord = logRequest(
 	timeExecution(async (req, res) => {
 		try {
 			const requiredParams = ["HN"];
-			if (!checkParam(requiredParams, req, res)) {
-				return;
-			}
+			if (!checkParam(requiredParams, req, res)) return;
 
 			const { HN } = req.params;
-
 			const snapshot = await db
 				.collection("patients")
 				.doc(HN)
 				.collection("records")
 				.get();
-			const records = [];
-			snapshot.forEach((doc) => {
+
+			const convertTimestampFields = (data) => {
+				const fieldsToConvert = ["timestamp", "create_time", "update_time"];
+				fieldsToConvert.forEach((field) => {
+					if (data[field]) {
+						data[field] = firestoreTimestampToDateInUTCPlus7(
+							data[field],
+							"date"
+						);
+					}
+				});
+			};
+
+			const records = snapshot.docs.map((doc) => {
 				const data = doc.data();
-				if (data.timestamp) {
-					data.timestamp = firestoreTimestampToDateInUTCPlus7(
-						data.timestamp,
-						"date"
-					);
-				}
-				records.push({ id: doc.id, ...data });
+				convertTimestampFields(data);
+				return { id: doc.id, ...data };
 			});
 
 			logger.info(`Records retrieved for patient ${HN}`);

@@ -16,6 +16,7 @@ import PatientRecordPopup from "./PatientRecordPopup";
 import { usePatientRecords } from "../../context/patientRecordContext";
 import { useSelectedItem } from "../../context/mainContentContext";
 import DeleteConfirmationDialog from "../Dialog/DeleteConfirmationDialog";
+import { formatDateToThai } from "../../utils/helper";
 
 const PatientRecordRow = ({ patient }) => {
 	const [isPopupOpen, setPopupOpen] = useState(false);
@@ -50,7 +51,10 @@ const PatientRecordRow = ({ patient }) => {
 
 	const handleNewClick = (e, docId) => {
 		e.stopPropagation();
-		setCurrentEditRecord((prev) => ({ ...prev, HN: patient.HN }));
+		setCurrentEditRecord((prev) => ({
+			HN: patient.HN,
+			docId: { id: "create-new", label: "Create New Record" },
+		}));
 		setSelectedSidebarItem("Form");
 	};
 
@@ -85,15 +89,20 @@ const PatientRecordRow = ({ patient }) => {
 		if (isLoading) return <CircularProgress />;
 		if (isError) return <div>Error loading records</div>;
 
-		return records.map((entry) => (
+		// Sort records by timestamp in descending order (latest first)
+		const sortedRecords = records.slice().sort((a, b) => {
+			return new Date(b.create_time) - new Date(a.create_time);
+		});
+
+		return sortedRecords.map((entry) => (
 			<TableRow
-				key={entry.timestamp}
+				key={entry.id}
 				onClick={() => {
 					setPatientRecord(entry);
 					openPopup();
 				}}
 			>
-				<TableCell>{entry.id}</TableCell>
+				<TableCell>{formatDateToThai(entry.create_time)}</TableCell>
 				<TableCell>{entry.notes}</TableCell>
 				<TableCell>
 					<Tooltip title="Edit Patient">

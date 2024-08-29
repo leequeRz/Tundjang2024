@@ -30,7 +30,7 @@ export const PatientRecordProvider = ({ children }) => {
 	const queryClient = useQueryClient();
 	const [currentEditRecord, setCurrentEditRecord] = useState({
 		HN: null,
-		docId: null,
+		docId: { id: "create-new", label: "Create New Record" },
 	});
 
 	const deleteRecord = useMutation(
@@ -67,9 +67,14 @@ export const PatientRecordProvider = ({ children }) => {
 		},
 		{
 			onSuccess: (newRecord, { HN, record }) => {
+				console.log(newRecord, HN, record);
 				queryClient.setQueryData(["patientRecords", HN], (oldRecords = []) => [
 					...oldRecords,
-					{ ...record, id: newRecord.data },
+					{
+						...record,
+						id: newRecord.data.id,
+						create_time: newRecord.data.create_time,
+					},
 				]);
 			},
 			onError: (error) => {

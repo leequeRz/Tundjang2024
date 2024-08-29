@@ -7,7 +7,6 @@ const firestoreTimestampToDateInUTCPlus7 = (
 	firestoreTimestamp,
 	returnFormat = "DOB"
 ) => {
-	// TODO: BUG Time stamp in add new record is wrong
 	// Convert Firestore Timestamp to JavaScript Date (in UTC)
 	// const utcDate = new Date(firestoreTimestamp);
 	const utcDate = firestoreTimestamp.toDate();
