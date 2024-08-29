@@ -26,6 +26,7 @@ const AddRecord = logRequest(
 				"breath_pattern",
 				"eat_method",
 				"food_type",
+				"phlegm",
 				"food_intake",
 				"sleep",
 				"excretion",
@@ -52,10 +53,11 @@ const AddRecord = logRequest(
 				O2sat: req.body.O2sat,
 				conscious: req.body.conscious,
 				breath_pattern: req.body.breath_pattern,
-				extra_symptoms: req.body.extra_symptoms || null,
+				phlegm: req.body.phlegm, // add
+				// extra_symptoms: req.body.extra_symptoms || null, **delete**
 				eat_method: req.body.eat_method,
 				food_type: req.body.food_type,
-				extra_food: req.body.extra_food || null,
+				// extra_food: req.body.extra_food || null, **delete**
 				food_intake: req.body.food_intake,
 				sleep: req.body.sleep,
 				excretion: req.body.excretion,
@@ -64,7 +66,7 @@ const AddRecord = logRequest(
 
 			const docId = `rec_${firestoreTimestampToDateInUTCPlus7(
 				current_time,
-				"noplus"
+				"wtf"
 			)}`;
 			await db
 				.collection("patients")

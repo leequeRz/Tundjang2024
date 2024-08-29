@@ -70,13 +70,31 @@ const EditPatient = logRequest(
 const FindPatient = logRequest(
 	timeExecution(async (req, res) => {
 		try {
-			const HN = req.query.HN;
+			const { HN, DOB } = req.query;
 			let snapshot;
 
-			if (!HN) {
-				snapshot = await db.collection("patients").limit(15).get();
+
+			if (HN && DOB) {
+				let convertedDOB = DOB;
+				const [day, month, yearBE] = DOB.split("/").map(Number);
+				const yearAD = yearBE - 543;
+				convertedDOB = `${yearAD}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+				const correctDOB = dateToFirestoreTimestamp(convertedDOB);
+				// Search by both HN and DOB
+				snapshot = await db
+					.collection("patients")
+					.where("HN", "==", HN)
+					.where("DOB", "==", correctDOB)
+					.get();
+			} else if (HN) {
+				// Search by HN only
+				snapshot = await db
+					.collection("patients")
+					.where("HN", "==", HN)
+					.get();
 			} else {
-				snapshot = await db.collection("patients").where("HN", "==", HN).get();
+				// Return a limited list if no HN is provided
+				snapshot = await db.collection("patients").limit(15).get();
 			}
 
 			const patients = [];
@@ -88,7 +106,7 @@ const FindPatient = logRequest(
 				patients.push({ id: doc.id, ...data });
 			});
 
-			logger.info(`Patient(s) found: ${HN ? HN : "all patients"}`); // Log the retrieval of patients
+			logger.info(`Patient(s) found: ${HN ? HN : "all patients"}`); 
 			res.status(200).json(patients);
 		} catch (error) {
 			logger.error(`Error finding patient(s): ${error.message}`); // Log the error

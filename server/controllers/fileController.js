@@ -1,6 +1,6 @@
 const { storage } = require("../config/firebaseConfig");
 
-const readFile = async (req, res) => {
+const readFile = async () => {
 	try {
 		const [files] = await storage
 			.bucket("i-care-u.appspot.com")
@@ -16,10 +16,10 @@ const readFile = async (req, res) => {
 		await randomFile.makePublic();
 		const url = randomFile.publicUrl();
 
-		res.status(200).json({ imageUrl: url });
+		return { imageUrl: url }; // Return the result instead of sending it via res
 	} catch (error) {
 		console.error("Error reading file", error);
-		res.status(500).send({ error: error.message });
+		throw new Error("Failed to read file: " + error.message); 
 	}
 };
 
