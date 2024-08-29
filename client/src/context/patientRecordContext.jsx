@@ -67,7 +67,7 @@ export const PatientRecordProvider = ({ children }) => {
 		},
 		{
 			onSuccess: (newRecord, { HN, record }) => {
-				console.log(newRecord, HN, record);
+				// console.log(newRecord, HN, record);
 				queryClient.setQueryData(["patientRecords", HN], (oldRecords = []) => [
 					...oldRecords,
 					{
@@ -99,10 +99,11 @@ export const PatientRecordProvider = ({ children }) => {
 			return response.json();
 		},
 		{
-			onSuccess: (_, { HN, record }) => {
+			onSuccess: (updateRecord, { HN, record }) => {
+				// console.log(updateRecord, HN, record);
 				queryClient.setQueryData(["patientRecords", HN], (oldRecords = []) =>
 					oldRecords.map((record_) =>
-						record_.id === record.id ? record_ : record
+						record_.id === record.id ? updateRecord.data : record_
 					)
 				);
 			},

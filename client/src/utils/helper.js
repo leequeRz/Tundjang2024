@@ -1,3 +1,8 @@
+import dayjs from "dayjs";
+import "dayjs/locale/th"; // Import Thai locale
+import utcOffset from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
 export const getCurrentShift = () => {
 	const currentHour = new Date().getHours();
 
@@ -23,6 +28,40 @@ export const calculateAge = (dob) => {
 		age--;
 	}
 	return age;
+};
+
+// Extend dayjs with plugins
+dayjs.extend(utcOffset);
+dayjs.extend(timezone);
+
+// Thai year offset
+const THAI_YEAR_OFFSET = 543;
+
+// Convert to Thai year
+export const convertToThaiYear = (date) => {
+	if (!date) return dayjs(); // Return today's date if input is null or undefined
+	const thaiYear = date.year() + THAI_YEAR_OFFSET;
+	return date.year(thaiYear);
+};
+
+// Convert to Gregorian year
+export const convertToGregorianYear = (date) => {
+	if (!date) return dayjs(); // Return today's date if input is null or undefined
+	const gregorianYear = date.year() - THAI_YEAR_OFFSET;
+	return date.year(gregorianYear);
+};
+
+// Format date to Thai format
+export const formatDateToThaiDayJS = (dateString) => {
+	if (!dateString) return ""; // Return empty string if no date provided
+	const date = dayjs(dateString).locale("th");
+
+	// Convert to Thai time (UTC+7)
+	const thaiDate = date
+		.utcOffset(420) // Thai time zone (UTC+7)
+		.format("dddd, D MMMM YYYY HH:mm:ss");
+
+	return thaiDate;
 };
 
 export const formatDateToThai = (dateString) => {

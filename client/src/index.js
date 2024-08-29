@@ -5,6 +5,8 @@ import App from "./App";
 import { ThemeProvider } from "@mui/material/styles";
 import { PatientProvider } from "./context/patientContext";
 import { PatientRecordProvider } from "./context/patientRecordContext";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import theme from "./theme";
 
 const queryClient = new QueryClient();
@@ -14,9 +16,11 @@ ReactDOM.render(
 		<ThemeProvider theme={theme}>
 			<PatientProvider>
 				<PatientRecordProvider>
-					<StrictMode>
-						<App />
-					</StrictMode>
+					<LocalizationProvider dateAdapter={AdapterDayjs}>
+						<StrictMode>
+							<App />
+						</StrictMode>
+					</LocalizationProvider>
 				</PatientRecordProvider>
 			</PatientProvider>
 		</ThemeProvider>

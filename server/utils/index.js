@@ -44,6 +44,11 @@ const dateToFirestoreTimestamp = (dateString) => {
 	return Timestamp.fromDate(utcDate);
 };
 
+const dateISOToFirestoreTimestamp = (dateISOString) => {
+	const date = new Date(dateISOString);
+	return Timestamp.fromDate(date);
+};
+
 function checkField(requiredFields, req, res) {
 	for (const field of requiredFields) {
 		if (!req.body[field]) {

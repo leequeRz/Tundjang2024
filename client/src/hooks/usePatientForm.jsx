@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { usePatients } from "../context/patientContext";
+import dayjs from "dayjs";
 
 export const usePatientForm = (patientData, onClose) => {
 	const { addPatient, updatePatient } = usePatients();
@@ -22,7 +23,7 @@ export const usePatientForm = (patientData, onClose) => {
 				name: "",
 				surname: "",
 				gender: "",
-				DOB: "",
+				DOB: dayjs(),
 			});
 		}
 	}, [patientData]);

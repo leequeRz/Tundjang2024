@@ -66,7 +66,7 @@ const PatientRecordRow = ({ patient }) => {
 
 	const handleEditClick = (e, HN, docId) => {
 		e.stopPropagation();
-		setCurrentEditRecord({ HN: HN, docId: docId });
+		setCurrentEditRecord({ HN: HN, docId: { id: docId, label: docId } });
 		setSelectedSidebarItem("Form");
 	};
 
@@ -77,21 +77,6 @@ const PatientRecordRow = ({ patient }) => {
 
 	const openPopup = () => setPopupOpen(true);
 	const closePopup = () => setPopupOpen(false);
-
-	// Helper function to format timestamp
-	const formatTimestamp = (timestamp) => {
-		const date = new Date(timestamp);
-		const formattedDate = date.toLocaleDateString("en-US", {
-			year: "numeric",
-			month: "short",
-			day: "2-digit",
-		});
-		const formattedTime = date.toLocaleTimeString("en-US", {
-			hour: "2-digit",
-			minute: "2-digit",
-		});
-		return { formattedDate, formattedTime };
-	};
 
 	// Fetch records for the given patient HN
 	const PatientRecordsDisplay = () => {
@@ -153,8 +138,6 @@ const PatientRecordRow = ({ patient }) => {
 						<Table size="small">
 							<TableHead>
 								<TableRow>
-									<TableCell>ID</TableCell>
-									<TableCell>Date</TableCell>
 									<TableCell>Time</TableCell>
 									<TableCell>Detail</TableCell>
 									<TableCell>

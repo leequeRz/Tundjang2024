@@ -11,7 +11,7 @@ const apiUrl =
 
 const fetchPatients = async () => {
 	const response = await fetch(`${apiUrl}/patient`);
-	console.log("Fetching Patient");
+	// console.log("Fetching Patient");
 	if (!response.ok) throw new Error("Error fetching patients");
 	return response.json();
 };

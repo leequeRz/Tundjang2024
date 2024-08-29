@@ -10,12 +10,21 @@ import {
 } from "@mui/material";
 import { usePatientForm } from "../../hooks/usePatientForm";
 import { FormField, SelectField } from "./FormComponents";
+import ThaiYearDatePicker from "../ThaiYearDatePicker";
+import dayjs from "dayjs";
 
 const PatientPopup = ({ open, onClose, patientData }) => {
 	const { formData, handleChange, handleSubmit, isSubmitting } = usePatientForm(
 		patientData,
 		onClose
 	);
+
+	const handleDateChange = (date) => {
+		// Convert dayjs date to Date object or null
+		const formattedDate = date ? date.format("YYYY-MM-DD") : null;
+		handleChange({ target: { name: "DOB", value: formattedDate } });
+		// console.log(formData);
+	};
 
 	const formFields = [
 		{ name: "HN", label: "Hospital Name", disabled: !!patientData, sm: 12 },
@@ -35,7 +44,19 @@ const PatientPopup = ({ open, onClose, patientData }) => {
 			options: ["Male", "Female", "Other"],
 			sm: 6,
 		},
-		{ name: "DOB", label: "DOB", type: "date", sm: 6 },
+		{
+			name: "DOB",
+			label: "DOB",
+			type: "date",
+			sm: 6,
+			component: (
+				<ThaiYearDatePicker
+					label="DOB"
+					value={formData.DOB ? dayjs(formData.DOB) : null}
+					onChange={handleDateChange}
+				/>
+			),
+		},
 	];
 
 	return (
@@ -60,6 +81,8 @@ const PatientPopup = ({ open, onClose, patientData }) => {
 									options={field.options}
 									fullWidth
 								/>
+							) : field.type === "date" ? (
+								field.component
 							) : (
 								<FormField
 									InputLabelProps={{ shrink: true }}

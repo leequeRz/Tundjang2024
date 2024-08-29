@@ -45,7 +45,7 @@ const AddRecord = logRequest(
 
 			const recordData = {
 				create_time: current_time,
-				update_time: null,
+				update_time: current_time,
 				BT: req.body.BT,
 				BP: req.body.BP,
 				HR: req.body.HR,
@@ -116,7 +116,7 @@ const EditRecord = logRequest(
 				.update(updateData);
 
 			logger.info(`Record updated for patient ${HN} with ID ${docId}`); // Log success
-			res.status(200).send({ message: "Edit success" });
+			res.status(200).send({ message: "Edit success", data: updateData });
 		} catch (error) {
 			logger.error(`Error updating record for patient: ${error.message}`); // Log error
 			res.status(500).send(error.message);
