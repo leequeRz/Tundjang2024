@@ -153,9 +153,9 @@ const PatientRecordRow = ({ patient }) => {
 						<Table size="small">
 							<TableHead>
 								<TableRow>
-									<TableCell>ID</TableCell>
-									<TableCell>Date</TableCell>
-									<TableCell>Time</TableCell>
+									{/* <TableCell>ID</TableCell> */}
+									<TableCell>Date-Time</TableCell>
+									{/* <TableCell>Time</TableCell> */}
 									<TableCell>Detail</TableCell>
 									<TableCell>
 										<Button onClick={handleNewClick}>Add New Record</Button>
