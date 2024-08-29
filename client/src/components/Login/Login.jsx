@@ -1,10 +1,9 @@
 import React from "react";
 import { TextField, Button, Typography, Container, Grid } from "@mui/material";
 import Nurse from "../../imgs/Nurse.jpg";
-// import bg from "../../imgs/bg.svg";
 import styles from "./Login.module.scss";
 import { useLoginForm } from "../../hooks/useLoginForm";
-// import "./Login.css"
+
 
 const Login = ({ setIsLoggedIn }) => {
 	const { credentials, error, handleInputChange, handleLogin, isLoading } =

@@ -17,14 +17,6 @@ body {
 	background-color: $primary-color;
 }
 
-/* Background wave styling */
-.wave {
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	height: 100%;
-	z-index: -1;
-}
 
 /* Background image styling */
 .img {
@@ -139,7 +131,18 @@ body {
 		display: none;
 	}
 
-	.wave{
+	.login-content{
+		justify-content: center;
+	}
+}
+@media screen and (max-width: 500px){
+	.container{
+		display: flex;
+		justify-content: space-evenly;
+		align-items: center;
+	}
+
+	.img{
 		display: none;
 	}
 
