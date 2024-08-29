@@ -6,6 +6,7 @@ import { calculateAge } from "../../utils/helper";
 
 import PatientRecordRow from "./PatientRecordRow";
 import DeleteConfirmationDialog from "../Dialog/DeleteConfirmationDialog";
+import styles from "./PatientRow.module.scss"; // Import your styles
 
 const PatientRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
 	const { HN, prefix, name, surname, gender, DOB, lastUpdate } = row;
@@ -29,12 +30,14 @@ const PatientRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
 		<>
 			<TableRow onClick={() => handleRowClick(HN)}>
 				<TableCell>{HN || ""}</TableCell>
-				<TableCell>{prefix || ""}</TableCell>
+				<TableCell className={styles.hiddenOnMobile}>{prefix || ""}</TableCell>
 				<TableCell>{name || ""}</TableCell>
 				<TableCell>{surname || ""}</TableCell>
-				<TableCell>{gender || ""}</TableCell>
-				<TableCell>{DOB ? calculateAge(DOB) : ""}</TableCell>
-				<TableCell>{lastUpdate || ""}</TableCell>
+				<TableCell className={styles.hiddenOnMobile}>{gender || ""}</TableCell>
+				<TableCell className={styles.hiddenOnMobile}>
+					{DOB ? calculateAge(DOB) : ""}
+				</TableCell>
+				<TableCell className={styles.hiddenOnMobile}>{lastUpdate || ""}</TableCell>
 				<TableCell>
 					<Tooltip title="Edit Patient">
 						<IconButton

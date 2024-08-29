@@ -79,19 +79,19 @@ const PatientRecordRow = ({ patient }) => {
 	const closePopup = () => setPopupOpen(false);
 
 	// Helper function to format timestamp
-	const formatTimestamp = (timestamp) => {
-		const date = new Date(timestamp);
-		const formattedDate = date.toLocaleDateString("en-US", {
-			year: "numeric",
-			month: "short",
-			day: "2-digit",
-		});
-		const formattedTime = date.toLocaleTimeString("en-US", {
-			hour: "2-digit",
-			minute: "2-digit",
-		});
-		return { formattedDate, formattedTime };
-	};
+	// const formatTimestamp = (timestamp) => {
+	// 	const date = new Date(timestamp);
+	// 	const formattedDate = date.toLocaleDateString("en-US", {
+	// 		year: "numeric",
+	// 		month: "short",
+	// 		day: "2-digit",
+	// 	});
+	// 	const formattedTime = date.toLocaleTimeString("en-US", {
+	// 		hour: "2-digit",
+	// 		minute: "2-digit",
+	// 	});
+	// 	return { formattedDate, formattedTime };
+	// };
 
 	// Fetch records for the given patient HN
 	const PatientRecordsDisplay = () => {
