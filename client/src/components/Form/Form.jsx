@@ -469,7 +469,7 @@ const Form = () => {
 							onChange={handleFormChange}
 						/>
 
-						<Box marginTop={2} marginBottom={5}>
+						<Box marginTop={2} marginBottom={15}>
 							<Button type="submit" variant="contained" color="primary">
 								บันทึกข้อมูล
 							</Button>
