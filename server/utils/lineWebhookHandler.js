@@ -12,6 +12,7 @@ const {
 
 
 const userStates = {};
+const pictueSelected = {}
 
 module.exports = async (req, res) => {
 	try {
@@ -49,9 +50,11 @@ module.exports = async (req, res) => {
 const handleGeneralInfoRequest = async (userId, replyToken, req, res) => {
 	try {
 		delete userStates[userId];
+		delete pictueSelected[userId];
 		
 		// Use the readFile function from fileController.js
-		const readFileResponse = await readFile();
+		const number = messageText.trim();
+		const readFileResponse = await readFile(number);
 
 		const imageUrl = readFileResponse.imageUrl;
 		const responseMessage = {
@@ -85,13 +88,14 @@ const handleGeneralInfoRequest = async (userId, replyToken, req, res) => {
 
 const handleContactRequest = async (userId, replyToken) => {
 	delete userStates[userId];
-	const phoneNumber = "0123456789";
+	delete pictueSelected[userId];
+	const phoneNumber = "0801529199";
 	const responseMessage = {
 		type: "template",
 		altText: "Contact us",
 		template: {
 			type: "buttons",
-			text: `ติดต่อได้ที่ ${phoneNumber} (เวลาราชการเท่านั้น)`,
+			text: `ติดต่อได้ที่ ${phoneNumber} (ในเวลา 08:00 - 16:00 น.)`,
 			actions: [{ type: "uri", label: "Call us", uri: `tel:${phoneNumber}` }],
 		},
 	};
@@ -153,11 +157,12 @@ const handleHNRequest = async (userId, replyToken, messageText) => {
 		// Process the records and format the response
 		if (recordsResponse.data.length > 0) {
 			const latestRecord = recordsResponse.data.sort(
-				(a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+				(a, b) => new Date(b.create_time) - new Date(a.create_time)
 			)[0];
 
-			// Format the food intake string
+			// Format the array list to string
 			const foodIntakeStr = latestRecord.food_intake ? latestRecord.food_intake.join(", ") : " "; 
+			const excretionStr = latestRecord.excretion ? latestRecord.excretion.join(", ") : " "; 
 			const age = getAge(patientData.DOB);
 
 
@@ -165,10 +170,15 @@ const handleHNRequest = async (userId, replyToken, messageText) => {
 			const latestRecordMessage = `
 HN: ${hnCode} DOB: ${patientData.DOB}
 ${patientData.prefix} ${patientData.name} ${patientData.surname} เพศ${patientData.gender} อายุ ${age}
-อาการประจำวันนี้ ${new Date(latestRecord.timestamp).toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' })}
+อาการประจำวันนี้ ${new Date(latestRecord.create_time).toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' })}
 
-1. สัญญาณชีพ : ${latestRecord.BT}, ความดันโลหิต: ${latestRecord.BP}, หัวใจเต้นเร็ว: ${latestRecord.HR}, หายใจเร็ว: ${latestRecord.RR}, ค่าออกซิเจน: ${latestRecord.O2sat}
-2. อาการเบื้องต้น : รู้สึกตัว: ${latestRecord.conscious}, หายใจ: ${latestRecord.breath_pattern}, กินอาหาร: ${latestRecord.eat_method}  สามารถกิน${ foodIntakeStr || " "} ได้ , นอนหลับดี: ${latestRecord.sleep} , ถ่าย: ${latestRecord.excretion || "ปกติ"}
+1. สัญญาณชีพ
+   อุณหภูมิกาย : ${latestRecord.BT}
+   ความดันโลหิต : ${latestRecord.BP}
+   อัตราการเต้นของหัวใจ : ${latestRecord.HR}
+   อัตราการหายใจ : ${latestRecord.RR}
+   ค่าออกซิเจนในเลือด : ${latestRecord.O2sat}
+2. อาการเบื้องต้น = ${latestRecord.conscious} , ${latestRecord.breath_pattern} , ${latestRecord.phlegm} , ${latestRecord.eat_method} , ${latestRecord.food_type} , ${ foodIntakeStr || " "} , ${latestRecord.sleep} , ปัสสาวะ ${latestRecord.urine_num || 0 } ครั้ง อุจจาระ ${latestRecord.stool_num || 0} ครั้งง ${latestRecord.excretionStr || " "}
 3. หมายเหตุ:   ${ latestRecord.notes || " ไม่มี"}
             `.trim();
 
@@ -217,11 +227,34 @@ ${patientData.prefix} ${patientData.name} ${patientData.surname} เพศ${pati
 
 const promptForHN = async (userId, replyToken) => {
 	userStates[userId] = "awaitingHN";
+	delete pictueSelected[userId];
 	const responseMessage = 
 	`โปรดกรอกรหัส HN และวันเดือนปีเกิด เช่น 
 	HN12345
 	01/01/2567
 	`;
+
+	await axios.post(
+		"https://api.line.me/v2/bot/message/reply",
+		{
+			replyToken,
+			messages: [{ type: "text", text: responseMessage }],
+		},
+		{
+			headers: { Authorization: `Bearer ${config.line.channelAccessToken}` },
+		}
+	);
+};
+
+const promptForPictureNumber = async (userId, replyToken) => {
+	pictueSelected[userId] = "awaitingNumber";
+	const responseMessage = 
+	`กดพิมพ์เลือกหมายเลขที่ท่านต้องการข้อมูล
+1.ภาวะหายใจลำบากเฉียบพลัน
+2.ภาวะติดเชื้อในกระแสเลือด
+3.โรคปอดอักเสบ
+4.โรคหัวใจพิการแต่กำเนิด
+5.โรคแพ้ภูมิตนเอง`;
 
 	await axios.post(
 		"https://api.line.me/v2/bot/message/reply",
