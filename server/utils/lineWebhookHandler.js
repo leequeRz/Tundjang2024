@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
 					await handleContactRequest(userId, replyToken);
 				}
 				else if ( pictueSelected[userId] === "awaitingNumber") { 
-					await handleGeneralInfoRequest(userId, replyToken, req, res);
+					await handleGeneralInfoRequest(userId, replyToken, req, res, messageText);
 				}
 				else if (messageText === "โรคทั่วไป & อาการผิดปกติ") {
 					await promptForPictureNumber(userId, replyToken)
@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
 	}
 };
 
-const handleGeneralInfoRequest = async (userId, replyToken, req, res) => {
+const handleGeneralInfoRequest = async (userId, replyToken, req, res, messageText) => {
 	try {
 		delete userStates[userId];
 		delete pictueSelected[userId];
