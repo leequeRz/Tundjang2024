@@ -72,12 +72,24 @@ const AddRecord = logRequest(
 				current_time,
 				"wtf"
 			)}`;
-			await db
-				.collection("patients")
-				.doc(HN)
-				.collection("records")
-				.doc(docId)
-				.set(recordData);
+
+			const HNDocRef = db.collection("patients").doc(HN);
+
+			// Check if the HN document exists
+			const HNDoc = await HNDocRef.get();
+			if (!HNDoc.exists) {
+				throw new Error('HN document does not exist');
+			}
+
+			// Proceed with setting the record data if HN exists
+			await HNDocRef.collection("records").doc(docId).set(recordData);
+
+			// await db
+			// 	.collection("patients")
+			// 	.doc(HN)
+			// 	.collection("records")
+			// 	.doc(docId)
+			// 	.set(recordData);
 
 			logger.info(`Record added for patient ${HN} with ID ${docId}`);
 			res.status(200).send({
