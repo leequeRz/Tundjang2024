@@ -26,11 +26,16 @@ module.exports = async (req, res) => {
 
 				console.log(`Received message from ${userId}: ${messageText}`);
 
-				if (messageText === "โรคทั่วไป & อาการผิดปกติ") {
-					await handleGeneralInfoRequest(userId, replyToken, req, res);
-				} else if (messageText === "ติดต่อ") {
+				if (messageText === "ติดต่อ") {
 					await handleContactRequest(userId, replyToken);
-				} else if (userStates[userId] === "awaitingHN") {
+				}
+				else if ( pictueSelected[userId] === "awaitingNumber") { 
+					await handleGeneralInfoRequest(userId, replyToken, req, res);
+				}
+				else if (messageText === "โรคทั่วไป & อาการผิดปกติ") {
+					await promptForPictureNumber(userId, replyToken)
+				} 
+				else if (userStates[userId] === "awaitingHN") {
 					await handleHNRequest(userId, replyToken, messageText);
 				} else if (messageText === "ข้อมูลทั่วไป") {
 					await promptForHN(userId, replyToken);
