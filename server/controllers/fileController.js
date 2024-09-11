@@ -1,6 +1,6 @@
 const { storage } = require("../config/firebaseConfig");
 
-const readFile = async () => {
+const readFile = async (number) => {
 	try {
 		// const [files] = await storage
 		// 	.bucket("i-care-u.appspot.com")
