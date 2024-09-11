@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
+
 	Container,
 	Divider,
 	Typography,
@@ -62,6 +63,7 @@ const EAT_METHOD_OPTIONS = ["รับประทานเองได้", "�
 const SLEEP_OPTIONS = ["นอนหลับได้", "นอนไม่หลับ", "หลับๆ ตื่นๆ"];
 const EXCRETION_OPTIONS = ["ถ่ายดี", "ท้องเสีย", "ท้องผูก"];
 const FOOD_INTAKE_OPTIONS = ["นมแม่", "นมผสม", "อาหารแข็ง", "อาหารอื่นๆ"];
+const EAT_VALUE_OPTIONS = ["กินได้ดี","กินได้น้อย","กินไม่ได้","สำลัก","คลื่นไส้อาเจียน","ท้องอืด"]
 const EXTRA_FOOD_OPTIONS = ["ตามปกติ", "รับประทานน้อย", "ไม่รับประทาน"];
 
 const initialFormState = {
@@ -76,8 +78,11 @@ const initialFormState = {
 	phlegm: "ไม่มีเสมหะ",
 	food_type: "นมแม่",
 	food_intake: ["นมแม่"],
+	eat_value:["กินได้ดี"],
 	sleep: "นอนหลับได้",
-	excretion: "ถ่ายดี",
+	excretion: ["ถ่ายดี"],
+	urine_num:"",
+	stool_num:"",
 	extra_symptoms: "",
 	extra_food: "ตามปกติ",
 	notes: "",
@@ -132,7 +137,7 @@ const Form = () => {
 		],
 		[records]
 	);
-
+	// const [excretion, setExcretion] = useState([]);
 	const {
 		searchTerm: patientSearchTerm,
 		setSearchTerm: setPatientSearchTerm,
@@ -188,6 +193,10 @@ const Form = () => {
 		handleSelectHNFilter({ id: currentEditRecord.HN });
 		handleSelectRecordFilter(currentEditRecord.docId);
 	}, []);
+
+	useEffect(() => {
+		console.log('Form state updated:', form);
+	  }, [form]);
 
 	const handleFormChange = useCallback((e) => {
 		const { name, value } = e.target;
@@ -400,8 +409,11 @@ const Form = () => {
 							</Grid>
 						</Grid>
 
+
+						<Divider sx={{ marginY: "3rem" }} />
+							
 						<Typography variant="h6" gutterBottom>
-							การรับประทานอาหาร
+						ส่วนที่ 3 อาหาร
 						</Typography>
 						<Grid container spacing={2} marginBottom={2}>
 							{renderRadioGroup({
@@ -410,17 +422,30 @@ const Form = () => {
 								value: form.eat_method,
 								options: EAT_METHOD_OPTIONS,
 							})}
+							{renderRadioGroup({
+								label: "ประเภทของอาหารอาหาร",
+								name: "food_type",
+								value: form.food_type,
+								options: FOOD_INTAKE_OPTIONS,
+							})}
+						
+							{renderRadioGroup({
+								label: "พฤติกรรมการรับประทานอาหาร",
+								name: "extra_food",
+								value: form.extra_food,
+								options: EXTRA_FOOD_OPTIONS,
+							})}
 							<Grid item xs={12} sm={6}>
 								<FormControl component="fieldset">
 									<FormLabel component="legend" required>
-										การรับประทานอาหาร
+									การรับประทานอาหาร
 									</FormLabel>
 									<Autocomplete
 										multiple
-										options={FOOD_INTAKE_OPTIONS}
-										value={form.food_intake}
+										options={EAT_VALUE_OPTIONS }
+										value={form.eat_value}
 										onChange={(_, value) =>
-											setForm((prev) => ({ ...prev, food_intake: value }))
+											setForm((prev) => ({ ...prev, eat_value: value }))
 										}
 										renderOption={(props, option, { selected }) => (
 											<li {...props}>
@@ -435,24 +460,62 @@ const Form = () => {
 									/>
 								</FormControl>
 							</Grid>
-							{renderRadioGroup({
-								label: "พฤติกรรมการรับประทานอาหาร",
-								name: "extra_food",
-								value: form.extra_food,
-								options: EXTRA_FOOD_OPTIONS,
-							})}
+							
 							{renderRadioGroup({
 								label: "การนอนหลับ",
 								name: "sleep",
 								value: form.sleep,
 								options: SLEEP_OPTIONS,
 							})}
-							{renderRadioGroup({
-								label: "การขับถ่าย",
-								name: "excretion",
-								value: form.excretion,
-								options: EXCRETION_OPTIONS,
-							})}
+
+
+							
+							<Grid item xs={12} sm={6}>
+							<FormControl component="fieldset">
+								<FormLabel component="legend" required>
+								การขับถ่าย
+								</FormLabel>
+								<Autocomplete
+									multiple
+									options={EXCRETION_OPTIONS }
+									value={form.excretion}
+									onChange={(_, value) =>
+										setForm((prev) => ({ ...prev, excretion: value }))
+									}
+									renderOption={(props, option, { selected }) => (
+										<li {...props}>
+											<Checkbox
+												style={{ marginRight: 8 }}
+												checked={selected}
+											/>												{option}
+										</li>
+									)}
+									renderInput={(params) => <TextField {...params} />}
+								/>
+							</FormControl>
+							</Grid>
+									{/* Urine and Stool Count */}
+							<Grid item xs={12} sm={6}></Grid>
+							<Grid item xs={12} sm={6}>
+								<Grid item xs={12} sm={6}>
+									<TextField	
+										label="จำนวนปัสสาวะ"
+										name="urine_num"
+										value={form.urine_num}
+										onChange={handleFormChange}
+									/>
+								</Grid>
+								<Grid item xs={12} sm={6}>
+									<TextField
+										label="จำนวนอุจจาระ"
+										name="stool_num"
+										value={form.stool_num}
+										onChange={handleFormChange}
+									/>
+								</Grid>
+							</Grid>
+
+							
 						</Grid>
 
 						<Typography variant="h6" gutterBottom>

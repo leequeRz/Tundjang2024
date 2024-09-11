@@ -13,6 +13,7 @@ import {
 import { calculateAge } from "../../utils/helper";
 
 const PatientRecordPopup = ({ open, onClose, patient, record }) => {
+	console.log(record)
 	return (
 		<Dialog
 			open={open}
@@ -114,7 +115,7 @@ const PatientRecordPopup = ({ open, onClose, patient, record }) => {
 
 					{/* Diet and Sleep Section */}
 					<Typography variant="h6" gutterBottom>
-						การรับประทานอาหาร
+						ส่วนที่ 3 การรับประทานอาหาร
 					</Typography>
 					<Grid container spacing={1}>
 						<Grid item xs={12}>
@@ -135,6 +136,16 @@ const PatientRecordPopup = ({ open, onClose, patient, record }) => {
 						<Grid item xs={12}>
 							<Typography variant="body2" gutterBottom>
 								<strong>การขับถ่าย:</strong> {record.excretion}
+							</Typography>
+						</Grid>
+						<Grid item xs={12}>
+							<Typography variant="body2" gutterBottom>
+								<strong>จำนวนปัสสาวะ:</strong> {record.urine_num}
+							</Typography>
+						</Grid>
+						<Grid item xs={12}>
+							<Typography variant="body2" gutterBottom>
+								<strong>จำนวนอุจจาระ:</strong> {record.stool_num}
 							</Typography>
 						</Grid>
 					</Grid>
