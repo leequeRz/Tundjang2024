@@ -11,7 +11,7 @@ const readFile = async (number) => {
 		// 	return res.status(404).send("No files found in the specified folder.");
 		// }
 
-		const fileName = `general_info/choice_${number}`;
+		const fileName = `general_info/choice_${number}.jpg`;
 		
 		const [files] = await storage
 			.bucket("i-care-u.appspot.com")

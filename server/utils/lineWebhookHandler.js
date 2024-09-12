@@ -175,7 +175,7 @@ const handleHNRequest = async (userId, replyToken, messageText) => {
 			const latestRecordMessage = `
 HN: ${hnCode} DOB: ${patientData.DOB}
 ${patientData.prefix} ${patientData.name} ${patientData.surname} เพศ${patientData.gender} อายุ ${age}
-อาการประจำวันนี้ ${new Date(latestRecord.create_time).toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' })}
+อาการประจำวันนี้ ${new Date(latestRecord.create_time)}
 
 1. สัญญาณชีพ
    อุณหภูมิกาย : ${latestRecord.BT}
@@ -183,7 +183,7 @@ ${patientData.prefix} ${patientData.name} ${patientData.surname} เพศ${pati
    อัตราการเต้นของหัวใจ : ${latestRecord.HR}
    อัตราการหายใจ : ${latestRecord.RR}
    ค่าออกซิเจนในเลือด : ${latestRecord.O2sat}
-2. อาการเบื้องต้น = ${latestRecord.conscious} , ${latestRecord.breath_pattern} , ${latestRecord.phlegm} , ${latestRecord.eat_method} , ${latestRecord.food_type} , ${ foodIntakeStr || " "} , ${latestRecord.sleep} , ปัสสาวะ ${latestRecord.urine_num || 0 } ครั้ง อุจจาระ ${latestRecord.stool_num || 0} ครั้งง ${latestRecord.excretionStr || " "}
+2. อาการเบื้องต้น = ${latestRecord.conscious} , ${latestRecord.breath_pattern} , ${latestRecord.phlegm} , ${latestRecord.eat_method} , ${latestRecord.food_type} , ${ foodIntakeStr || " "} , ${latestRecord.sleep} , ปัสสาวะ ${latestRecord.urine_num || 0 } ครั้ง อุจจาระ ${latestRecord.stool_num || 0} ครั้ง ${excretionStr || " "}
 3. หมายเหตุ:   ${ latestRecord.notes || " ไม่มี"}
             `.trim();
 
