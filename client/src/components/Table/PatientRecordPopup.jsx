@@ -140,7 +140,7 @@ const PatientRecordPopup = ({ open, onClose, patient, record }) => {
 						</Grid>
 						<Grid item xs={12}>
 							<Typography variant="body2" gutterBottom>
-								<strong>การรับประทานอาหาร:</strong> {record.eat_value}
+								<strong>การรับประทานอาหาร:</strong> {record.food_intake}
 							</Typography>
 						</Grid>
 						<Grid item xs={12}>

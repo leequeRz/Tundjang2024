@@ -62,8 +62,8 @@ const PHLEGM_OPTIONS = ["ไม่มีเสมหะ", "มีเสมหะ
 const EAT_METHOD_OPTIONS = ["รับประทานเองได้", "ใส่สายยางให้อาหาร"];
 const SLEEP_OPTIONS = ["นอนหลับได้", "นอนไม่หลับ", "หลับๆ ตื่นๆ"];
 const EXCRETION_OPTIONS = [" ถ่ายดี", " ท้องเสีย", " ท้องผูก"];
-const FOOD_INTAKE_OPTIONS = ["นมแม่", "นมผสม", "อาหารแข็ง", "อาหารอื่นๆ"];
-const EAT_VALUE_OPTIONS = [" กินได้ดี"," กินได้น้อย"," กินไม่ได้"," สำลัก"," คลื่นไส้อาเจียน"," ท้องอืด"]
+const FOOD_TYPE_OPTIONS = ["นมแม่", "นมผสม", "อาหารแข็ง", "อาหารอื่นๆ"];
+const FOOD_INTAKE_OPTIONS = [" กินได้ดี"," กินได้น้อย"," กินไม่ได้"," สำลัก"," คลื่นไส้อาเจียน"," ท้องอืด"]
 const EXTRA_FOOD_OPTIONS = ["ตามปกติ", "รับประทานน้อย", "ไม่รับประทาน"];
 
 const initialFormState = {
@@ -77,8 +77,8 @@ const initialFormState = {
 	eat_method: "รับประทานเองได้",
 	phlegm: "ไม่มีเสมหะ",
 	food_type: "นมแม่",
-	food_intake: ["นมแม่"],
-	eat_value:["กินได้ดี"],
+	food_intake: ["กินได้ดี"],
+	// eat_value:["กินได้ดี"],
 	sleep: "นอนหลับได้",
 	excretion: ["ถ่ายดี"],
 	urine_num:"",
@@ -179,7 +179,7 @@ const Form = () => {
 				setForm((prev) => ({
 					...prev,
 					...selectedRecord,
-					food_intake: selectedRecord.food_intake || [""],
+					food_type: selectedRecord.food_type || [""],
 				}));
 			} else {
 				setForm(initialFormState);
@@ -426,7 +426,7 @@ const Form = () => {
 								label: "ประเภทของอาหารอาหาร",
 								name: "food_type",
 								value: form.food_type,
-								options: FOOD_INTAKE_OPTIONS,
+								options: FOOD_TYPE_OPTIONS,
 							})}
 						
 							{renderRadioGroup({
@@ -442,10 +442,10 @@ const Form = () => {
 									</FormLabel>
 									<Autocomplete
 										multiple
-										options={EAT_VALUE_OPTIONS }
-										value={form.eat_value}
+										options={FOOD_INTAKE_OPTIONS}
+										value={form.food_intake}
 										onChange={(_, value) =>
-											setForm((prev) => ({ ...prev, eat_value: value }))
+											setForm((prev) => ({ ...prev, food_intake: value }))
 										}
 										renderOption={(props, option, { selected }) => (
 											<li {...props}>
