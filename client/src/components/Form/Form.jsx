@@ -61,9 +61,9 @@ const BREATH_PATTERN_OPTIONS = [
 const PHLEGM_OPTIONS = ["ไม่มีเสมหะ", "มีเสมหะ"];
 const EAT_METHOD_OPTIONS = ["รับประทานเองได้", "ใส่สายยางให้อาหาร"];
 const SLEEP_OPTIONS = ["นอนหลับได้", "นอนไม่หลับ", "หลับๆ ตื่นๆ"];
-const EXCRETION_OPTIONS = ["ถ่ายดี", "ท้องเสีย", "ท้องผูก"];
+const EXCRETION_OPTIONS = [" ถ่ายดี", " ท้องเสีย", " ท้องผูก"];
 const FOOD_INTAKE_OPTIONS = ["นมแม่", "นมผสม", "อาหารแข็ง", "อาหารอื่นๆ"];
-const EAT_VALUE_OPTIONS = ["กินได้ดี","กินได้น้อย","กินไม่ได้","สำลัก","คลื่นไส้อาเจียน","ท้องอืด"]
+const EAT_VALUE_OPTIONS = [" กินได้ดี"," กินได้น้อย"," กินไม่ได้"," สำลัก"," คลื่นไส้อาเจียน"," ท้องอืด"]
 const EXTRA_FOOD_OPTIONS = ["ตามปกติ", "รับประทานน้อย", "ไม่รับประทาน"];
 
 const initialFormState = {

@@ -106,6 +106,11 @@ const PatientRecordPopup = ({ open, onClose, patient, record }) => {
 						</Grid>
 						<Grid item xs={12}>
 							<Typography variant="body2" gutterBottom>
+								<strong>เสมหะ:</strong> {record.phlegm}
+							</Typography>
+						</Grid>
+						<Grid item xs={12}>
+							<Typography variant="body2" gutterBottom>
 								<strong>อาการเพิ่มเติม:</strong> {record.extra_symptoms}
 							</Typography>
 						</Grid>
@@ -125,7 +130,17 @@ const PatientRecordPopup = ({ open, onClose, patient, record }) => {
 						</Grid>
 						<Grid item xs={12}>
 							<Typography variant="body2" gutterBottom>
-								<strong>อาหารเพิ่มเติม:</strong> {record.extra_food}
+								<strong>ประเภทของอาหารอาหาร:</strong> {record.food_type}
+							</Typography>
+						</Grid>
+						<Grid item xs={12}>
+							<Typography variant="body2" gutterBottom>
+								<strong>พฤติกรรมการรับประทานอาหาร:</strong> {record.extra_food}
+							</Typography>
+						</Grid>
+						<Grid item xs={12}>
+							<Typography variant="body2" gutterBottom>
+								<strong>การรับประทานอาหาร:</strong> {record.eat_value}
 							</Typography>
 						</Grid>
 						<Grid item xs={12}>
