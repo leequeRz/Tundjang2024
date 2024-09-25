@@ -77,10 +77,10 @@ const initialFormState = {
 	eat_method: "รับประทานเองได้",
 	phlegm: "ไม่มีเสมหะ",
 	food_type: "นมแม่",
-	food_intake: ["กินได้ดี"],
+	food_intake: "กินได้ดี",
 	// eat_value:["กินได้ดี"],
 	sleep: "นอนหลับได้",
-	excretion: ["ถ่ายดี"],
+	excretion: "ถ่ายดี",
 	urine_num:"",
 	stool_num:"",
 	extra_symptoms: "",
@@ -429,13 +429,19 @@ const Form = () => {
 								options: FOOD_TYPE_OPTIONS,
 							})}
 						
-							{renderRadioGroup({
+						{renderRadioGroup({
 								label: "พฤติกรรมการรับประทานอาหาร",
 								name: "extra_food",
 								value: form.extra_food,
 								options: EXTRA_FOOD_OPTIONS,
 							})}
-							<Grid item xs={12} sm={6}>
+							{renderRadioGroup({
+								label: "การรับประทานอาหาร",
+								name: "food_intake",
+								value: form.food_intake,
+								options: FOOD_INTAKE_OPTIONS,
+							})}
+							{/* <Grid item xs={12} sm={6}>
 								<FormControl component="fieldset">
 									<FormLabel component="legend" required>
 									การรับประทานอาหาร
@@ -459,7 +465,7 @@ const Form = () => {
 										renderInput={(params) => <TextField {...params} />}
 									/>
 								</FormControl>
-							</Grid>
+							</Grid> */}
 							
 							{renderRadioGroup({
 								label: "การนอนหลับ",
@@ -468,9 +474,15 @@ const Form = () => {
 								options: SLEEP_OPTIONS,
 							})}
 
+							{renderRadioGroup({
+								label: "การขับถ่าย",
+								name: "excretion",
+								value: form.excretion,
+								options: EXCRETION_OPTIONS ,
+							})}
 
 							
-							<Grid item xs={12} sm={6}>
+							{/* <Grid item xs={12} sm={6}>
 							<FormControl component="fieldset">
 								<FormLabel component="legend" required>
 								การขับถ่าย
@@ -493,21 +505,21 @@ const Form = () => {
 									renderInput={(params) => <TextField {...params} />}
 								/>
 							</FormControl>
-							</Grid>
+							</Grid> */}
 									{/* Urine and Stool Count */}
 							<Grid item xs={12} sm={6}></Grid>
 							<Grid item xs={12} sm={6}>
 								<Grid item xs={12} sm={6}>
 									<TextField	
-										label="จำนวนปัสสาวะ"
+										label="จำนวนปัสสาวะ (ครั้ง)"
 										name="urine_num"
 										value={form.urine_num}
 										onChange={handleFormChange}
 									/>
 								</Grid>
-								<Grid item xs={12} sm={6}>
+								<Grid item xs={12} sm={6} marginTop={1}>
 									<TextField
-										label="จำนวนอุจจาระ"
+										label="จำนวนอุจจาระ (ครั้ง)"
 										name="stool_num"
 										value={form.stool_num}
 										onChange={handleFormChange}
