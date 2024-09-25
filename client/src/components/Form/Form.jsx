@@ -476,7 +476,6 @@ const Form = () => {
 								การขับถ่าย
 								</FormLabel>
 								<Autocomplete
-									multiple
 									options={EXCRETION_OPTIONS }
 									value={form.excretion}
 									onChange={(_, value) =>
