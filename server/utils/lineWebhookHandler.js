@@ -166,8 +166,8 @@ const handleHNRequest = async (userId, replyToken, messageText) => {
 			)[0];
 
 			// Format the array list to string
-			const foodIntakeStr = latestRecord.food_intake ? latestRecord.food_intake.join(", ") : " "; 
-			const excretionStr = latestRecord.excretion ? latestRecord.excretion.join(", ") : " "; 
+			// const foodIntakeStr = latestRecord.food_intake ? latestRecord.food_intake.join(", ") : " "; 
+			// const excretionStr = latestRecord.excretion ? latestRecord.excretion.join(", ") : " "; 
 			const age = getAge(patientData.DOB);
 
 
@@ -183,7 +183,7 @@ ${patientData.prefix} ${patientData.name} ${patientData.surname} เพศ${pati
    อัตราการเต้นของหัวใจ : ${latestRecord.HR}
    อัตราการหายใจ : ${latestRecord.RR}
    ค่าออกซิเจนในเลือด : ${latestRecord.O2sat}
-2. อาการเบื้องต้น = ${latestRecord.conscious} , ${latestRecord.breath_pattern} , ${latestRecord.phlegm} , ${latestRecord.eat_method} , ${latestRecord.food_type} , ${ foodIntakeStr || " "} , ${latestRecord.sleep} , ปัสสาวะ ${latestRecord.urine_num || 0 } ครั้ง อุจจาระ ${latestRecord.stool_num || 0} ครั้ง ${excretionStr || " "}
+2. อาการเบื้องต้น = ${latestRecord.conscious} , ${latestRecord.breath_pattern} , ${latestRecord.phlegm} , ${latestRecord.eat_method} , ${latestRecord.food_type} , ${ latestRecord.food_intake} , ${latestRecord.sleep} , ปัสสาวะ ${latestRecord.urine_num || 0 } ครั้ง อุจจาระ ${latestRecord.stool_num || 0} ครั้ง ${latestRecord.excretion}
 3. หมายเหตุ:   ${ latestRecord.notes || " ไม่มี"}
             `.trim();
 
