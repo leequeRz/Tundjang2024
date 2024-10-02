@@ -26,7 +26,7 @@ const create = logRequest(
 
       const userData = {
         username: req.body.username,
-        password: hashData(req.body.password),
+        password: req.body.password,
         user_type: req.body.user_type,
       };
 
@@ -58,7 +58,7 @@ const login = logRequest(
       const checkLogin = await db
         .collection("users")
         .where("username", "==", username)
-        .where("password", "==", hashData(password))
+        .where("password", "==", password)
         .get();
 
       if (checkLogin.empty) {
@@ -97,7 +97,7 @@ const del = logRequest(
       await db
         .collection("users")
         .where("username", "==", req.body.username)
-        .where("password", "==", hashData(req.body.password))
+        .where("password", "==", req.body.password)
         .delete();
 
       logger.info(`User deleted successfully: ${req.body.username}`); // Log success
