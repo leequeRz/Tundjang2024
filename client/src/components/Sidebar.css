@@ -24,8 +24,8 @@
   height: 4%;
 }
 
-.logo > span > span {
-  color: rgb(36, 196, 202);
+.logo > span {
+  color: #fa4616;
 }
 
 .logo > img {
@@ -61,9 +61,7 @@
   .menuItem > span {
     display: none;
   }
-
 }
-
 
 @media screen and (min-width: 768px) {
   .menu .menuItem:last-child {
@@ -71,20 +69,19 @@
     bottom: 2.3rem;
     width: 100%;
   }
-  
-.active {
-  background: var(--activeItem);
-  margin-left: 0;
-}
 
-.active::before {
-  content: "";
-  width: 8px;
-  height: 100%;
-  background: var(--blue-sky);
-  margin-right: calc(1rem - 8px);
-}
+  .active {
+    background: var(--activeItem);
+    margin-left: 0;
+  }
 
+  .active::before {
+    content: "";
+    width: 8px;
+    height: 100%;
+    background: var(--blue-sky);
+    margin-right: calc(1rem - 8px);
+  }
 }
 @media screen and (max-width: 768px) {
   .sidebar {
@@ -101,7 +98,6 @@
     z-index: 9;
     padding-top: 1.5vh;
     padding-bottom: 10vh;
-    
   }
 
   /* Hide the logo */
@@ -133,7 +129,7 @@
     background: var(--activeItem);
     margin-left: 0;
   }
-  
+
   .active::before {
     height: 100%;
     background: var(--blue-sky);
