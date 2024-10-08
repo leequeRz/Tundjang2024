@@ -8,14 +8,14 @@ import {
 	Button,
 	Grid,
 } from "@mui/material";
-import { usePatientForm } from "../../hooks/usePatientForm";
+import { useCustomerForm } from "../../hooks/useCustomerForm";
 import { FormField, SelectField } from "./FormComponents";
 import ThaiYearDatePicker from "../ThaiYearDatePicker";
 import dayjs from "dayjs";
 
-const PatientPopup = ({ open, onClose, patientData }) => {
-	const { formData, handleChange, handleSubmit, isSubmitting } = usePatientForm(
-		patientData,
+const CustomerPopup = ({ open, onClose, customerData }) => {
+	const { formData, handleChange, handleSubmit, isSubmitting } = useCustomerForm(
+		customerData,
 		onClose
 	);
 
@@ -25,49 +25,56 @@ const PatientPopup = ({ open, onClose, patientData }) => {
 		handleChange({ target: { name: "DOB", value: formattedDate } });
 		// console.log(formData);
 	};
-
+	// customer_id: "",
+		
+	// customer_name: "",
+	// phone: "",
+	// role: "",
+	// tel_company: "",
 	const formFields = [
-		{ name: "HN", label: "Hospital Name", disabled: !!patientData, sm: 12 },
+		{ name: "customer_id", label: "Customer ID", disabled: !!customerData, sm: 12 },
+		// {
+		// 	name: "prefix",
+		// 	label: "Prefix",
+		// 	type: "select",
+		// 	options: ["Mr.", "Mrs.", "Ms."],
+		// 	sm: 2,
+		// },
+		{ name: "customer_name", label: "ชื่อ-นามสกุล", sm: 12 },
+		// { name: "surname", label: "Surname", sm: 5 },
+		{name: "phone", label: "โทร", sm: 5 },
+		{name: "tel_company", label: "tel_company", sm: 5 },
 		{
-			name: "prefix",
-			label: "Prefix",
+			name: "role",
+			label: "ตำแหน่ง",
 			type: "select",
-			options: ["Mr.", "Mrs.", "Ms."],
+			options: ["เด็กเดิน", "เด็กเชียร์เบียร์", "รด."],
 			sm: 2,
 		},
-		{ name: "name", label: "Name", sm: 5 },
-		{ name: "surname", label: "Surname", sm: 5 },
-		{
-			name: "gender",
-			label: "Gender",
-			type: "select",
-			options: ["Male", "Female", "Other"],
-			sm: 6,
-		},
-		{
-			name: "DOB",
-			label: "DOB",
-			type: "date",
-			sm: 6,
-			component: (
-				<ThaiYearDatePicker
-					label="DOB"
-					value={formData.DOB ? dayjs(formData.DOB) : null}
-					onChange={handleDateChange}
-				/>
-			),
-		},
+		// {
+		// 	name: "DOB",
+		// 	label: "DOB",
+		// 	type: "date",
+		// 	sm: 6,
+		// 	component: (
+		// 		<ThaiYearDatePicker
+		// 			label="DOB"
+		// 			value={formData.DOB ? dayjs(formData.DOB) : null}
+		// 			onChange={handleDateChange}
+		// 		/>
+		// 	),
+		// },
 	];
 
 	return (
 		<Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
 			<DialogTitle>
-				{patientData ? "Update Patient" : "Add New Patient"}
+				{customerData ? "Update Customer" : "Add New Customer"}
 			</DialogTitle>
 			<DialogContent>
 				<DialogContentText>
-					Please fill out the form below to {patientData ? "update" : "add"} a
-					patient.
+					Please fill out the form below to {customerData ? "update" : "add"} a
+					Customer.
 				</DialogContentText>
 				<Grid container spacing={2}>
 					{formFields.map((field) => (
@@ -108,16 +115,16 @@ const PatientPopup = ({ open, onClose, patientData }) => {
 					disabled={isSubmitting}
 				>
 					{isSubmitting
-						? patientData
+						? customerData
 							? "Updating..."
 							: "Adding..."
-						: patientData
-						? "Update Patient"
-						: "Add Patient"}
+						: customerData
+						? "Update Customer"
+						: "Add Customer"}
 				</Button>
 			</DialogActions>
 		</Dialog>
 	);
 };
 
-export default PatientPopup;
+export default CustomerPopup;

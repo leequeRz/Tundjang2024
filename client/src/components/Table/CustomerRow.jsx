@@ -4,13 +4,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { calculateAge } from "../../utils/helper";
 
-import PatientRecordRow from "./PatientRecordRow";
+import CustomerRecordRow from "./CustomerRecordRow";
 import DeleteConfirmationDialog from "../Dialog/DeleteConfirmationDialog";
 
-const PatientRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
+const CustomerRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
   const { HN, prefix, name, surname, gender, DOB, lastUpdate } = row;
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [patientToDelete, setPatientToDelete] = useState(null);
+  const [customerToDelete, setCustomerToDelete] = useState(null);
 
   const isHNPresent = !!HN;
   
@@ -19,12 +19,12 @@ const PatientRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
 
   const handleDeleteClick = (e) => {
     e.stopPropagation();
-    setPatientToDelete(HN);
+    setCustomerToDelete(customer_id);
     setDialogOpen(true);
   };
 
   const confirmDelete = () => {
-    onDelete(patientToDelete);
+    onDelete(customerToDelete);
     setDialogOpen(false);
   };
 
@@ -41,7 +41,7 @@ const PatientRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
         </TableCell>}
         {!isMobile && <TableCell>{lastUpdate || ""}</TableCell>}
         <TableCell>
-          <Tooltip title="Edit Patient">
+          <Tooltip title="Edit Customer">
             <IconButton
               onClick={(e) => {
                 e.stopPropagation();
@@ -53,7 +53,7 @@ const PatientRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
               <EditIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Delete Patient">
+          <Tooltip title="Delete Customer">
             <IconButton
               onClick={handleDeleteClick}
               color="error"
@@ -64,17 +64,17 @@ const PatientRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
           </Tooltip>
         </TableCell>
       </TableRow>
-      {isExpanded && <PatientRecordRow patient={row} />}
+      {isExpanded && <CustomerRecordRow customer={row} />}
 
       <DeleteConfirmationDialog
         isOpen={isDialogOpen}
         onClose={() => setDialogOpen(false)}
         onConfirm={confirmDelete}
         title="Confirm Deletion"
-        contentText={`Are you sure you want to delete the patient with HN: ${HN}?`}
+        contentText={`Are you sure you want to delete the Customer with HN: ${customer_id}?`}
       />
     </>
   );
 };
 
-export default PatientRow;
+export default CustomerRow;

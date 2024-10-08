@@ -1,27 +1,27 @@
 const express = require("express");
 const router = express.Router();
 const {
-	AddPatient,
-	EditPatient,
-	FindPatient,
-	DelPatient,
-} = require("../controllers/patientController");
+	AddCustomer,
+	EditCustomer,
+	FindCustomer,
+	DelCustomer,
+} = require("../controllers/customerController");
 
 /**
  * @swagger
  * tags:
- *   name: Patients
- *   description: Operations related to Patients
+ *   name: Customers
+ *   description: Operations related to Customers
  */
 
 /**
  * @swagger
- * /api/v1/patient:
+ * /api/v1/customer:
  *   post:
- *     summary: Add a new patient
- *     description: Adds a new patient record to the system.
+ *     summary: Add a new customer
+ *     description: Adds a new customer record to the system.
  *     tags:
- *       - Patients
+ *       - Customers
  *     requestBody:
  *       required: true
  *       content:
@@ -29,54 +29,54 @@ const {
  *           schema:
  *             type: object
  *             properties:
- *               HN:
+ *               customer_id:
  *                 type: string
- *                 description: Hospital Number (HN) of the patient.
+ *                 description: Customer ID (customer_id) of the customer.
  *                 example: 'AI12345'
  *               prefix:
  *                 type: string
- *                 description: Prefix of the patient's name (e.g., Mr., Mrs.).
+ *                 description: Prefix of the customer's name (e.g., Mr., Mrs.).
  *                 example: 'Mr.'
  *               name:
  *                 type: string
- *                 description: First name of the patient.
+ *                 description: First name of the customer.
  *                 example: 'John'
  *               surname:
  *                 type: string
- *                 description: Surname of the patient.
+ *                 description: Surname of the customer.
  *                 example: 'Doe'
  *               gender:
  *                 type: string
- *                 description: Gender of the patient.
+ *                 description: Gender of the customer.
  *                 example: 'Male'
  *               DOB:
  *                 type: string
  *                 format: date
- *                 description: Date of birth of the patient.
+ *                 description: Date of birth of the customer.
  *                 example: '1990-01-01'
  *             required:
- *               - HN
- *               - prefix
+ *               - customer_id
+ *               - customer
  *               - name
  *               - surname
  *               - gender
  *               - DOB
  *     responses:
  *       200:
- *         description: Patient added successfully
+ *         description: customer added successfully
  *       500:
  *         description: Internal server error
  */
-router.post("/patient", AddPatient);
+router.post("/customer", AddCustomer);
 
 /**
  * @swagger
- * /api/v1/patient/{HN}:
+ * /api/v1/customer/{customer_id}:
  *   put:
- *     summary: Edit an existing patient
- *     description: Updates details of an existing patient identified by Hospital Number (HN).
+ *     summary: Edit an existing customer
+ *     description: Updates details of an existing customer identified by Hospital Number (HN).
  *     tags:
- *       - Patients
+ *       - Customers
  *     parameters:
  *       - in: path
  *         name: HN
@@ -84,7 +84,7 @@ router.post("/patient", AddPatient);
  *         schema:
  *           type: string
  *           example: "AI123456"
- *         description: Hospital Number (HN) of the patient.
+ *         description: Hospital Number (HN) of the customer.
  *     requestBody:
  *       required: true
  *       content:
@@ -94,24 +94,24 @@ router.post("/patient", AddPatient);
  *             properties:
  *               prefix:
  *                 type: string
- *                 description: Prefix of the patient's name (e.g., Mr., Mrs.).
+ *                 description: Prefix of the customer's name (e.g., Mr., Mrs.).
  *                 example: 'Mr.'
  *               name:
  *                 type: string
- *                 description: First name of the patient.
+ *                 description: First name of the customer.
  *                 example: 'John'
  *               surname:
  *                 type: string
- *                 description: Surname of the patient.
+ *                 description: Surname of the customer.
  *                 example: 'Doe'
  *               gender:
  *                 type: string
- *                 description: Gender of the patient.
+ *                 description: Gender of the customer.
  *                 example: 'Male'
  *               DOB:
  *                 type: string
  *                 format: date
- *                 description: Date of birth of the patient, must be in "YYYY-MM-DD" format.
+ *                 description: Date of birth of the customer, must be in "YYYY-MM-DD" format.
  *                 example: '1990-01-01'
  *             required:
  *               - prefix
@@ -121,30 +121,30 @@ router.post("/patient", AddPatient);
  *               - DOB
  *     responses:
  *       200:
- *         description: Patient updated successfully
+ *         description: Customer updated successfully
  *       500:
  *         description: Internal server error
  */
-router.put("/patient/:HN", EditPatient);
+router.put("/customer/:customer_id", EditCustomer);
 
 /**
  * @swagger
- * /api/v1/patient/{HN}:
+ * /api/v1/customer/{customer_id}:
  *   get:
- *     summary: Find a patient by HN
- *     description: Retrieves a patient record by the specified Hospital Number (HN). If HN is not provided, retrieves a list of patients.
+ *     summary: Find a customer by customer_id
+ *     description: Retrieves a customer record by the specified Hospital Number (HN). If HN is not provided, retrieves a list of customers.
  *     tags:
- *       - Patients
+ *       - Customers
  *     parameters:
  *       - in: query
  *         name: HN
  *         schema:
  *           type: string
  *         required: false
- *         description: Hospital Number (HN) of the patient. If not provided, returns all patients.
+ *         description: Hospital Number (HN) of the customer. If not provided, returns all customers.
  *     responses:
  *       200:
- *         description: Patient data retrieved successfully
+ *         description: Customer data retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -154,59 +154,59 @@ router.put("/patient/:HN", EditPatient);
  *                 properties:
  *                   id:
  *                     type: string
- *                     description: The document ID of the patient in Firestore.
+ *                     description: The document ID of the customer in Firestore.
  *                     example: abc123
- *                   HN:
+ *                   customer_id:
  *                     type: string
- *                     description: Hospital Number of the patient.
+ *                     description: Customer ID of the customer.
  *                     example: 12345
  *                   prefix:
  *                     type: string
- *                     description: Prefix of the patient's name.
+ *                     description: Prefix of the customer's name.
  *                     example: Mr.
  *                   name:
  *                     type: string
- *                     description: First name of the patient.
+ *                     description: First name of the customer.
  *                     example: John
  *                   surname:
  *                     type: string
- *                     description: Surname of the patient.
+ *                     description: Surname of the customer.
  *                     example: Doe
  *                   gender:
  *                     type: string
- *                     description: Gender of the patient.
+ *                     description: Gender of the customer.
  *                     example: Male
  *                   DOB:
  *                     type: string
  *                     format: date
- *                     description: Date of birth of the patient.
+ *                     description: Date of birth of the customer.
  *                     example: 1990-01-01
  *                   lastUpdate:
  *                     type: string
  *                     format: date-time
- *                     description: The timestamp of the last update for the patient record.
+ *                     description: The timestamp of the last update for the customer record.
  *                     example: 2024-08-08T12:34:56Z
  *       500:
  *         description: Internal server error
  */
-router.get("/patient", FindPatient);
+router.get("/customer", FindCustomer);
 
 /**
  * @swagger
- * /api/v1/patient/{HN}:
+ * /api/v1/customer/{customer_id}:
  *   delete:
- *     summary: Delete a patient's information
- *     description: Delete an existing document from a patient's information collection using the Hospital Number (HN).
+ *     summary: Delete a customer's information
+ *     description: Delete an existing document from a customer's information collection using the Customer ID (customer_id).
  *     tags:
- *       - Patients
+ *       - Customers
  *     parameters:
  *       - in: path
- *         name: HN
+ *         name: customer_id
  *         required: true
  *         schema:
  *           type: string
  *           example: "AI123456"
- *         description: Hospital Number (HN) of the patient.
+ *         description: Customer ID (customer_id) of the customer.
  *     responses:
  *       200:
  *         description: Record deleted successfully.
@@ -218,6 +218,6 @@ router.get("/patient", FindPatient);
  *               type: string
  *               example: Error message
  */
-router.delete("/patient/:HN", DelPatient);
+router.delete("/customer/:customer_id", DelCustomer);
 
 module.exports = router;

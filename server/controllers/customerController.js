@@ -12,69 +12,68 @@ const {
   timeExecution,
 } = require("../middleware/performanceMiddleware");
 
-const AddPatient = logRequest(
+const AddCustomer = logRequest(
   timeExecution(async (req, res) => {
     try {
       const requiredFields = [
-        "HN",
-        "prefix",
-        "name",
-        "surname",
-        "gender",
-        "DOB",
+        "customer_id",
+        "customer_name",
+        "phone",
+        "role",
+        "tel_company",
       ];
       if (!checkField(requiredFields, req, res)) {
         return;
       }
 
       req.body.DOB = dateToFirestoreTimestamp(req.body.DOB);
-      await db.collection("patients").doc(req.body.HN).create(req.body);
+      await db.collection("customers").doc(req.body.customer_id).create(req.body);
 
-      logger.info(`Patient added: ${req.body.HN}`); // Log the addition of a patient
+      logger.info(`Customer added: ${req.body.customer_id}`); // Log the addition of a Customer
       res.status(200).send({ message: "success" });
     } catch (error) {
-      logger.error(`Error adding patient: ${error.message}`); // Log the error
+      logger.error(`Error adding Customer: ${error.message}`); // Log the error
       res.status(500).send(error.message);
     }
   })
 );
 
-const EditPatient = logRequest(
+const EditCustomer = logRequest(
   timeExecution(async (req, res) => {
     try {
-      const requiredParams = ["HN"];
+      const requiredParams = ["customer_id"];
       if (!checkParam(requiredParams, req, res)) {
         return;
       }
       console.log(req.params);
 
-      const { HN } = req.params;
+      const { customer_id } = req.params;
 
-      const requiredFields = ["prefix", "name", "surname", "gender", "DOB"];
+      const requiredFields = ["customer_id", "customer_name", "phone", "role", "tel_company"];
 
       if (!checkField(requiredFields, req, res)) {
         return;
       }
 
       req.body.DOB = dateToFirestoreTimestamp(req.body.DOB);
-      await db.collection("patients").doc(HN).update(req.body);
+      await db.collection("customers").doc(customer_id).update(req.body);
 
-      logger.info(`Patient updated: ${HN}`); // Log the update of a patient
+      logger.info(`Customer updated: ${customer_id}`); // Log the update of a Customer
       res.status(200).send({ message: "success" });
     } catch (error) {
-      logger.error(`Error updating patient: ${error.message}`); // Log the error
+      logger.error(`Error updating Customer: ${error.message}`); // Log the error
       res.status(500).send(error.message);
     }
   })
 );
 
-const FindPatient = logRequest(
+const FindCustomer = logRequest(
   timeExecution(async (req, res) => {
     try {
-      const { HN, DOB } = req.query;
+      const { customer_id, DOB } = req.query;
       let snapshot;
 
-      if (HN && DOB) {
+      if (customer_id && DOB) {
         let convertedDOB = DOB;
         const [day, month, yearBE] = DOB.split("/").map(Number);
         const yearAD = yearBE - 543;
@@ -82,61 +81,60 @@ const FindPatient = logRequest(
           .toString()
           .padStart(2, "0")}`;
         const correctDOB = dateToFirestoreTimestamp(convertedDOB);
-        // Search by both HN and DOB
+        // Search by both customer_id and DOB
         snapshot = await db
-          .collection("patients")
-          .where("HN", "==", HN)
+          .collection("customers")
+          .where("customer_id", "==", customer_id)
           .where("DOB", "==", correctDOB)
           .get();
-      } else if (HN) {
-        // Search by HN only
-        snapshot = await db.collection("patients").where("HN", "==", HN).get();
+      } else if (customer_id) {
+        // Search by customer_id only
+        snapshot = await db.collection("customers").where("customer_id", "==", customer_id).get();
       } else {
-        // Return a limited list if no HN is provided
-        snapshot = await db.collection("patients").limit(15).get();
+        // Return a limited list if no customer_id is provided
+        snapshot = await db.collection("customers").limit(15).get();
       }
 
-      const patients = [];
+      const customers = [];
       snapshot.forEach((doc) => {
         const data = doc.data();
         if (data.DOB) {
           data.DOB = firestoreTimestampToDateInUTCPlus7(data.DOB, "DOB");
         }
-        patients.push({ id: doc.id, ...data });
+        customers.push({ id: doc.id, ...data });
       });
 
-      logger.info(`Patient(s) found: ${HN ? HN : "all patients"}`);
-      res.status(200).json(patients);
+      logger.info(`Customer(s) found: ${customer_id ? customer_id : "all Customers"}`);
+      res.status(200).json(customers);
     } catch (error) {
-      logger.error(`Error finding patient(s): ${error.message}`); // Log the error
+      logger.error(`Error finding Customer(s): ${error.message}`); // Log the error
       res.status(500).send(error.message);
     }
   })
 );
 
-const DelPatient = logRequest(
+const DelCustomer = logRequest(
   timeExecution(async (req, res) => {
     try {
-      const requiredParams = ["HN"];
+      const requiredParams = ["customer_id"];
       if (!checkParam(requiredParams, req, res)) {
         return;
       }
 
-      const { HN } = req.params;
+      const { customer_id } = req.params;
 
-      await db.collection("patients").doc(HN).delete();
-      logger.info(`Patient deleted: ${HN}`); // Log the deletion of a patient
-      res.status(200).send({ message: "Patient deleted successfully" });
+      logger.info(`Customer deleted: ${customer_id}`); // Log the deletion of a Customer
+      res.status(200).send({ message: "Customer deleted successfully" });
     } catch (error) {
-      logger.error(`Error deleting patient: ${error.message}`); // Log the error
+      logger.error(`Error deleting Customer: ${error.message}`); // Log the error
       res.status(500).send(error.message);
     }
   })
 );
 
 module.exports = {
-  AddPatient,
-  EditPatient,
-  FindPatient,
-  DelPatient,
+  AddCustomer,
+  EditCustomer,
+  FindCustomer,
+  DelCustomer,
 };

@@ -20,8 +20,8 @@ import {
 import { getCurrentShift, calculateAge } from "../../utils/helper";
 import SearchFilterBar from "../SearchFilterBar";
 import { useSearch } from "../../hooks/useSearch";
-import { usePatients } from "../../context/patientContext";
-import { usePatientRecords } from "../../context/patientRecordContext";
+import { useCustomers } from "../../context/customerContext";
+import { useCustomerRecords } from "../../context/customerRecordContext";
 
 const VITAL_SIGNS = [
   {
@@ -116,14 +116,14 @@ const Form = () => {
     message: "",
   });
 
-  const { patients } = usePatients();
+  const { customers } = useCustomers();
   const {
     currentEditRecord,
     setCurrentEditRecord,
     useFetchRecords,
     addRecord,
     updateRecord,
-  } = usePatientRecords();
+  } = useCustomerRecords();
 
   // console.log(currentEditRecord);
   const { data: records = [] } = useFetchRecords(currentEditRecord.HN?.trim());
@@ -133,13 +133,13 @@ const Form = () => {
     []
   );
 
-  const patientOptions = useMemo(
+  const customerOptions = useMemo(
     () =>
-      patients.map((patient) => ({
-        id: patient.id,
-        label: generateLabel(patient),
+      customers.map((customer) => ({
+        id: customer.customer_id,
+        label: generateLabel(customer),
       })),
-    [patients, generateLabel]
+    [customers, generateLabel]
   );
 
   const recordOptions = useMemo(
@@ -151,10 +151,10 @@ const Form = () => {
   );
   // const [excretion, setExcretion] = useState([]);
   const {
-    searchTerm: patientSearchTerm,
-    setSearchTerm: setPatientSearchTerm,
-    filteredItems: filteredPatients,
-  } = useSearch(patientOptions, ["label"]);
+    searchTerm: customerSearchTerm,
+    setSearchTerm: setCustomerSearchTerm,
+    filteredItems: filteredCustomers,
+  } = useSearch(customerOptions, ["label"]);
   const {
     searchTerm: recordSearchTerm,
     setSearchTerm: setRecordSearchTerm,

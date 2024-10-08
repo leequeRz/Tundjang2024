@@ -10,14 +10,14 @@ import {
   Paper,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { usePatients } from "../../context/patientContext";
+import { useCustomers } from "../../context/customerContext";
 import { usePagination } from "../../hooks/usePagination";
 import { useSearch } from "../../hooks/useSearch";
 import SearchBar from "../SearchBar";
 import TableHeader from "./TableHeader";
-import PatientRow from "./PatientRow";
+import CustomerRow from "./CustomerRow";
 import PaginationFooter from "./PaginationFooter";
-import PatientPopup from "./PatientPopup";
+import CustomerPopup from "./CustomerPopup";
 
 const theme = createTheme({
   palette: {
@@ -28,33 +28,33 @@ const theme = createTheme({
 });
 
 const TableComponent = () => {
-  const { patients, isLoading, error, deletePatient } = usePatients();
+  const { customers, isLoading, error, deleteCustomer } = useCustomers();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [editingPatient, setEditingPatient] = useState(null);
+  const [editingCustomer, setEditingCustomer] = useState(null);
   const [expandedRows, setExpandedRows] = useState([]);
 
-  const { searchTerm, setSearchTerm, filteredItems } = useSearch(patients, [
-    "name",
-    "surname",
-    "HN",
+  const { searchTerm, setSearchTerm, filteredItems } = useSearch(customers, [
+    "Customer_name",
+    // "surname",
+    "customer_id",
   ]);
   const { currentItems, currentPage, handlePageChange } = usePagination(
     filteredItems,
     15
   );
 
-  const handleEdit = (patient) => {
-    setEditingPatient(patient);
+  const handleEdit = (customer) => {
+    setEditingCustomer(customer);
     setIsPopupOpen(true);
   };
 
-  const handleDelete = (HN) => {
-    deletePatient(HN);
+  const handleDelete = (customer_id) => {
+    deleteCustomer(customer_id);
   };
 
-  const handleRowClick = (hn) => {
+  const handleRowClick = (customer_ID) => {
     setExpandedRows((prev) =>
-      prev.includes(hn) ? prev.filter((rowHn) => rowHn !== hn) : [...prev, hn]
+      prev.includes(customer_ID) ? prev.filter((rowCustomer_Id) => rowCustomer_Id !== customer_ID) : [...prev, customer_ID]
     );
   };
 
@@ -80,7 +80,7 @@ const TableComponent = () => {
               color="primary"
               sx={{ ml: 2 }}
               onClick={() => {
-                setEditingPatient(null, setIsPopupOpen(true));
+                setEditingCustomer(null, setIsPopupOpen(true));
               }}
             >
               เพิ่มรายชื่อคนยืมพัสดุ
@@ -94,10 +94,10 @@ const TableComponent = () => {
           <TableHeader />
           <TableBody>
             {currentItems.map((row, index) => (
-              <PatientRow
-                key={row.HN || index}
+              <CustomerRow
+                key={row.customer_id || index}
                 row={row}
-                isExpanded={expandedRows.includes(row.HN)}
+                isExpanded={expandedRows.includes(row.customer_id)}
                 handleRowClick={handleRowClick}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
@@ -114,10 +114,10 @@ const TableComponent = () => {
         onPageChange={handlePageChange}
       />
 
-      <PatientPopup
+      <CustomerPopup
         open={isPopupOpen}
         onClose={() => setIsPopupOpen(false)}
-        patientData={editingPatient}
+        customerData={editingCustomer}
       />
     </Box>
   );
