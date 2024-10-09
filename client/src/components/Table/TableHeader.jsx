@@ -4,14 +4,18 @@ const TableHeader = () => (
 	<TableHead>
 		<TableRow>
 			{[
-				{ label: "HN", key: "HN" },
-				{ label: "Prefix", key: "Prefix", hiddenOnMobile: true },
+				{ label: "UID", key: "customer_id" },
+				// { label: "Prefix", key: "Prefix", hiddenOnMobile: true },
 				{ label: "Name", key: "Name" },
 				{ label: "Surname", key: "Surname" },
-				{ label: "Gender", key: "Gender", hiddenOnMobile: true },
-				{ label: "Age", key: "Age", hiddenOnMobile: true },
-				{ label: "Last Update", key: "Last Update", hiddenOnMobile: true },
-				{ label: "", key: "Details" },
+				// { label: "Gender", key: "Gender", hiddenOnMobile: true },
+				// { label: "Age", key: "Age", hiddenOnMobile: true },
+				// { label: "Last Update", key: "Last Update", hiddenOnMobile: true },
+				{ label: "Phone", key: "Phone" },
+				{ label: "tel_company", key: "tel" },
+				{ label: "role", key: "role" },
+				{ label: "", key: "" },
+				
 			].map(({ label, key, hiddenOnMobile }) => (
 				<TableCell
 					key={key}

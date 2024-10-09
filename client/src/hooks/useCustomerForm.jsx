@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import { useCustomers } from "../context/customerContext";
-import dayjs from "dayjs";
+// import dayjs from "dayjs";
 
 export const useCustomerForm = (customerData, onClose) => {
 	const { addCustomer, updateCustomer } = useCustomers();
 	const [formData, setFormData] = useState({
 		customer_id: "",
-		customer_name: "",
+		name: "",
+		surname: "",
 		phone: "",
+		tel: "",
 		role: "",
-		tel_company: "",
+		
 		// "customer_id",
         // "customer_name",
         // "phone",
@@ -23,10 +25,11 @@ export const useCustomerForm = (customerData, onClose) => {
 		} else {
 			setFormData({
 				customer_id: "",
-				customer_name: "",
+				name: "",
+				surname: "",
 				phone: "",
+				tel: "",
 				role: "",
-				tel_company: "",
 			});
 		}
 	}, [customerData]);

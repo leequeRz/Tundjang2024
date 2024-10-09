@@ -17,16 +17,16 @@ const AddCustomer = logRequest(
     try {
       const requiredFields = [
         "customer_id",
-        "customer_name",
+        "name",
+        "surname",
         "phone",
         "role",
-        "tel_company",
+        "tel",
       ];
       if (!checkField(requiredFields, req, res)) {
         return;
       }
 
-      req.body.DOB = dateToFirestoreTimestamp(req.body.DOB);
       await db.collection("customers").doc(req.body.customer_id).create(req.body);
 
       logger.info(`Customer added: ${req.body.customer_id}`); // Log the addition of a Customer
@@ -49,13 +49,12 @@ const EditCustomer = logRequest(
 
       const { customer_id } = req.params;
 
-      const requiredFields = ["customer_id", "customer_name", "phone", "role", "tel_company"];
+      const requiredFields = ["customer_id", "name","surname", "phone", "role", "tel_company"];
 
       if (!checkField(requiredFields, req, res)) {
         return;
       }
 
-      req.body.DOB = dateToFirestoreTimestamp(req.body.DOB);
       await db.collection("customers").doc(customer_id).update(req.body);
 
       logger.info(`Customer updated: ${customer_id}`); // Log the update of a Customer
@@ -67,51 +66,51 @@ const EditCustomer = logRequest(
   })
 );
 
-const FindCustomer = logRequest(
-  timeExecution(async (req, res) => {
-    try {
-      const { customer_id, DOB } = req.query;
-      let snapshot;
+const FindCustomer = logRequest( // ฟังก์ชัน FindCustomer ถูกห่อด้วย logRequest เพื่อบันทึก log ของ request
+  timeExecution( // ฟังก์ชันนี้ถูกห่อด้วย timeExecution เพื่อบันทึกเวลาการทำงาน
+    async (req, res) => { // เป็นฟังก์ชันอะซิงโครนัสที่ใช้ในการจัดการ request และ response
+      try {
+        const { customer_id, name, surname } = req.query; // ดึงค่า customer_id, name, surname จาก query parameters
+        let snapshot;
 
-      if (customer_id && DOB) {
-        let convertedDOB = DOB;
-        const [day, month, yearBE] = DOB.split("/").map(Number);
-        const yearAD = yearBE - 543;
-        convertedDOB = `${yearAD}-${month.toString().padStart(2, "0")}-${day
-          .toString()
-          .padStart(2, "0")}`;
-        const correctDOB = dateToFirestoreTimestamp(convertedDOB);
-        // Search by both customer_id and DOB
-        snapshot = await db
-          .collection("customers")
-          .where("customer_id", "==", customer_id)
-          .where("DOB", "==", correctDOB)
-          .get();
-      } else if (customer_id) {
-        // Search by customer_id only
-        snapshot = await db.collection("customers").where("customer_id", "==", customer_id).get();
-      } else {
-        // Return a limited list if no customer_id is provided
-        snapshot = await db.collection("customers").limit(15).get();
-      }
-
-      const customers = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.DOB) {
-          data.DOB = firestoreTimestampToDateInUTCPlus7(data.DOB, "DOB");
+        // ค้นหาลูกค้าโดยใช้ customer_id, name หรือ surname
+        if (customer_id) {
+          // ค้นหาจาก customer_id ถ้ามี
+          snapshot = await db.collection("customers").where("customer_id", "==", customer_id).get();
+        } else if (name && surname) {
+          // ค้นหาจาก name และ surname ถ้ามีทั้งคู่
+          snapshot = await db
+            .collection("customers")
+            .where("name", "==", name)
+            .where("surname", "==", surname)
+            .get();
+        } else if (name) {
+          // ค้นหาจาก name อย่างเดียว
+          snapshot = await db.collection("customers").where("name", "==", name).get();
+        } else if (surname) {
+          // ค้นหาจาก surname อย่างเดียว
+          snapshot = await db.collection("customers").where("surname", "==", surname).get();
+        } else {
+          // ถ้าไม่มีเงื่อนไขใดๆ ส่งข้อมูลลูกค้ามากที่สุด 15 รายการ
+          snapshot = await db.collection("customers").limit(15).get();
         }
-        customers.push({ id: doc.id, ...data });
-      });
 
-      logger.info(`Customer(s) found: ${customer_id ? customer_id : "all Customers"}`);
-      res.status(200).json(customers);
-    } catch (error) {
-      logger.error(`Error finding Customer(s): ${error.message}`); // Log the error
-      res.status(500).send(error.message);
+        const customers = []; // สร้าง array สำหรับเก็บข้อมูลลูกค้า
+        snapshot.forEach((doc) => { // วนลูปผ่านเอกสารที่ได้จากการค้นหา
+          const data = doc.data(); // ดึงข้อมูลจากแต่ละเอกสาร
+          customers.push({ id: doc.id, ...data }); // เพิ่มข้อมูลลูกค้าและ id ของเอกสารลงใน array
+        });
+
+        logger.info(`Customer(s) found: ${customer_id || name || surname ? `${customer_id || name || surname}` : "all Customers"}`); // บันทึก log ว่าพบลูกค้า (หรือทั้งหมดถ้าไม่มี customer_id, name, surname)
+        res.status(200).json(customers); // ส่งข้อมูลลูกค้าที่พบกลับในรูปแบบ JSON
+      } catch (error) { // หากเกิดข้อผิดพลาด
+        logger.error(`Error finding Customer(s): ${error.message}`); // บันทึก log ข้อผิดพลาด
+        res.status(500).send(error.message); // ส่งข้อความข้อผิดพลาดกลับไปยัง client
+      }
     }
-  })
+  )
 );
+
 
 const DelCustomer = logRequest(
   timeExecution(async (req, res) => {

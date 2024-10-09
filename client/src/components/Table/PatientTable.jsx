@@ -34,8 +34,8 @@ const TableComponent = () => {
   const [expandedRows, setExpandedRows] = useState([]);
 
   const { searchTerm, setSearchTerm, filteredItems } = useSearch(customers, [
-    "Customer_name",
-    // "surname",
+    "name",
+    "surname",
     "customer_id",
   ]);
   const { currentItems, currentPage, handlePageChange } = usePagination(

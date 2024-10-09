@@ -154,7 +154,7 @@ const Form = () => {
     searchTerm: customerSearchTerm,
     setSearchTerm: setCustomerSearchTerm,
     filteredItems: filteredCustomers,
-  } = useSearch(customerOptions, ["label"]);
+  } = useSearch(customersOptions, ["label"]);
   const {
     searchTerm: recordSearchTerm,
     setSearchTerm: setRecordSearchTerm,

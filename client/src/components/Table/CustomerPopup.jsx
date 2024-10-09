@@ -10,8 +10,8 @@ import {
 } from "@mui/material";
 import { useCustomerForm } from "../../hooks/useCustomerForm";
 import { FormField, SelectField } from "./FormComponents";
-import ThaiYearDatePicker from "../ThaiYearDatePicker";
-import dayjs from "dayjs";
+// import ThaiYearDatePicker from "../ThaiYearDatePicker";
+// import dayjs from "dayjs";
 
 const CustomerPopup = ({ open, onClose, customerData }) => {
 	const { formData, handleChange, handleSubmit, isSubmitting } = useCustomerForm(
@@ -19,12 +19,12 @@ const CustomerPopup = ({ open, onClose, customerData }) => {
 		onClose
 	);
 
-	const handleDateChange = (date) => {
-		// Convert dayjs date to Date object or null
-		const formattedDate = date ? date.format("YYYY-MM-DD") : null;
-		handleChange({ target: { name: "DOB", value: formattedDate } });
-		// console.log(formData);
-	};
+	// const handleDateChange = (date) => {
+	// 	// Convert dayjs date to Date object or null
+	// 	const formattedDate = date ? date.format("YYYY-MM-DD") : null;
+	// 	handleChange({ target: { name: "DOB", value: formattedDate } });
+	// 	// console.log(formData);
+	// };
 	// customer_id: "",
 		
 	// customer_name: "",
@@ -40,10 +40,10 @@ const CustomerPopup = ({ open, onClose, customerData }) => {
 		// 	options: ["Mr.", "Mrs.", "Ms."],
 		// 	sm: 2,
 		// },
-		{ name: "customer_name", label: "ชื่อ-นามสกุล", sm: 12 },
-		// { name: "surname", label: "Surname", sm: 5 },
-		{name: "phone", label: "โทร", sm: 5 },
-		{name: "tel_company", label: "tel_company", sm: 5 },
+		{ name: "name", label: "ชื่อ", sm: 6 },
+		{ name: "surname", label: "นามสกุล", sm: 6 },
+		{name: "phone", label: "โทร", sm: 6 },
+		{name: "tel", label: "tel_company", sm: 6 },
 		{
 			name: "role",
 			label: "ตำแหน่ง",
