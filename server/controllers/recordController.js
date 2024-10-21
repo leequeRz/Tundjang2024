@@ -18,55 +18,45 @@ const AddRecord = logRequest(
   timeExecution(async (req, res) => {
     try {
       const requiredFields = [
-        "BT",
-        "BP",
-        "HR",
-        "RR",
-        "O2sat",
-        "conscious",
-        "breath_pattern",
-        "eat_method",
-        "food_type",
-        "phlegm", //add
-        "food_intake",
-        "sleep",
-        "excretion", //add
-        "urine_num", //add
-        "stool_num", // add
+
+        "start_date",
+        "end_date",
+        "detail1",
+        "detail2"
       ];
       if (!checkField(requiredFields, req, res)) {
         return;
       }
-      const requiredParams = ["HN"];
+      const requiredParams = ["customer_id"];
       if (!checkParam(requiredParams, req, res)) {
         return;
       }
 
-      const { HN } = req.params;
+      const { customer_id } = req.params;
 
       const current_time = admin.firestore.Timestamp.now();
 
       const recordData = {
         create_time: current_time,
         update_time: current_time,
-        BT: req.body.BT,
-        BP: req.body.BP,
-        HR: req.body.HR,
-        RR: req.body.RR,
-        O2sat: req.body.O2sat,
-        conscious: req.body.conscious,
-        breath_pattern: req.body.breath_pattern,
-        phlegm: req.body.phlegm, // add "เสมหะ"
-        // extra_symptoms: req.body.extra_symptoms || null, **delete**
-        eat_method: req.body.eat_method,
-        food_type: req.body.food_type,
-        // extra_food: req.body.extra_food || null, **delete**
-        food_intake: req.body.food_intake, // array
-        sleep: req.body.sleep,
-        excretion: req.body.excretion, // change to array
-        urine_num: req.body.urine_num, // add
-        stool_num: req.body.stool_num, // add
-        notes: req.body.notes || null,
+        start_date: req.body.start_date,
+        end_date: req.body.end_date,
+        detail1: req.body.detail1 || null,
+        detail2: req.body.detail2 || null,
+        // O2sat: req.body.O2sat,
+        // conscious: req.body.conscious,
+        // breath_pattern: req.body.breath_pattern,
+        // phlegm: req.body.phlegm, // add "เสมหะ"
+        // // extra_symptoms: req.body.extra_symptoms || null, **delete**
+        // eat_method: req.body.eat_method,
+        // food_type: req.body.food_type,
+        // // extra_food: req.body.extra_food || null, **delete**
+        // food_intake: req.body.food_intake, // array
+        // sleep: req.body.sleep,
+        // excretion: req.body.excretion, // change to array
+        // urine_num: req.body.urine_num, // add
+        // stool_num: req.body.stool_num, // add
+        // notes: req.body.notes || null,
       };
 
       const docId = `rec_${firestoreTimestampToDateInUTCPlus7(
@@ -74,25 +64,25 @@ const AddRecord = logRequest(
         "wtf"
       )}`;
 
-      const HNDocRef = db.collection("patients").doc(HN);
+      const customer_idDocRef = db.collection("customers").doc(customer_id);
 
-      // Check if the HN document exists
-      const HNDoc = await HNDocRef.get();
-      if (!HNDoc.exists) {
-        throw new Error("HN document does not exist");
+      // Check if the customer_id document exists
+      const customer_idDoc = await customer_idDocRef.get();
+      if (!customer_idDoc.exists) {
+        throw new Error("customer_id document does not exist");
       }
 
-      // Proceed with setting the record data if HN exists
-      await HNDocRef.collection("records").doc(docId).set(recordData);
+      // Proceed with setting the record data if customer_id exists
+      await customer_idDocRef.collection("records").doc(docId).set(recordData);
 
       // await db
-      // 	.collection("patients")
-      // 	.doc(HN)
+      // 	.collection("customers")
+      // 	.doc(customer_id)
       // 	.collection("records")
       // 	.doc(docId)
       // 	.set(recordData);
 
-      logger.info(`Record added for patient ${HN} with ID ${docId}`);
+      logger.info(`Record added for customer ${customer_id} with ID ${docId}`);
       res.status(200).send({
         message: "success",
         data: {
@@ -104,7 +94,7 @@ const AddRecord = logRequest(
         },
       });
     } catch (error) {
-      logger.error(`Error adding record for patient: ${error.message}`);
+      logger.error(`Error adding record for customer: ${error.message}`);
       res.status(500).send(error.message);
     }
   })
@@ -114,11 +104,11 @@ const AddRecord = logRequest(
 const EditRecord = logRequest(
   timeExecution(async (req, res) => {
     try {
-      const requiredParams = ["HN", "docId"];
+      const requiredParams = ["customer_id", "docId"];
       if (!checkParam(requiredParams, req, res)) {
         return;
       }
-      const { HN, docId } = req.params;
+      const { customer_id, docId } = req.params;
 
       const updateData = {
         ...req.body,
@@ -126,16 +116,16 @@ const EditRecord = logRequest(
       };
 
       await db
-        .collection("patients")
-        .doc(HN)
+        .collection("customers")
+        .doc(customer_id)
         .collection("records")
         .doc(docId)
         .update(updateData);
 
-      logger.info(`Record updated for patient ${HN} with ID ${docId}`); // Log success
+      logger.info(`Record updated for customer ${customer_id} with ID ${docId}`); // Log success
       res.status(200).send({ message: "Edit success", data: updateData });
     } catch (error) {
-      logger.error(`Error updating record for patient: ${error.message}`); // Log error
+      logger.error(`Error updating record for customer: ${error.message}`); // Log error
       res.status(500).send(error.message);
     }
   })
@@ -145,39 +135,39 @@ const EditRecord = logRequest(
 const DelRecord = logRequest(
   timeExecution(async (req, res) => {
     try {
-      const requiredParams = ["HN", "docId"];
+      const requiredParams = ["customer_id", "docId"];
       if (!checkParam(requiredParams, req, res)) {
         return;
       }
-      const { HN, docId } = req.params;
+      const { customer_id, docId } = req.params;
 
       await db
-        .collection("patients")
-        .doc(HN)
+        .collection("customers")
+        .doc(customer_id)
         .collection("records")
         .doc(docId)
         .delete();
 
-      logger.info(`Record deleted for patient ${HN} with ID ${docId}`); // Log success
+      logger.info(`Record deleted for customer ${customer_id} with ID ${docId}`); // Log success
       res.status(200).send({ message: "Delete success" });
     } catch (error) {
-      logger.error(`Error deleting record for patient: ${error.message}`); // Log error
+      logger.error(`Error deleting record for customer: ${error.message}`); // Log error
       res.status(500).send(error.message);
     }
   })
 );
 
-// GetRecord for retrieving records for a specific patient
+// GetRecord for retrieving records for a specific customer
 const GetRecord = logRequest(
   timeExecution(async (req, res) => {
     try {
-      const requiredParams = ["HN"];
+      const requiredParams = ["customer_id"];
       if (!checkParam(requiredParams, req, res)) return;
 
-      const { HN } = req.params;
+      const { customer_id } = req.params;
       const snapshot = await db
-        .collection("patients")
-        .doc(HN)
+        .collection("customers")
+        .doc(customer_id)
         .collection("records")
         .get();
 
@@ -199,10 +189,10 @@ const GetRecord = logRequest(
         return { id: doc.id, ...data };
       });
 
-      logger.info(`Records retrieved for patient ${HN}`);
+      logger.info(`Records retrieved for customer ${customer_id}`);
       res.status(200).json(records);
     } catch (error) {
-      logger.error(`Error retrieving records for patient: ${error.message}`);
+      logger.error(`Error retrieving records for customer: ${error.message}`);
       res.status(500).send(error.message);
     }
   })
