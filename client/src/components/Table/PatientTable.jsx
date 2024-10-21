@@ -1,4 +1,3 @@
-// Table.jsx
 import React, { useState } from "react";
 import {
   Box,
@@ -8,6 +7,10 @@ import {
   TableBody,
   TableContainer,
   Paper,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { usePatients } from "../../context/patientContext";
@@ -18,11 +21,13 @@ import TableHeader from "./TableHeader";
 import PatientRow from "./PatientRow";
 import PaginationFooter from "./PaginationFooter";
 import PatientPopup from "./PatientPopup";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#FFC72C", // Orange color
+      main: "#FA4616", // Orange color
     },
   },
 });
@@ -32,6 +37,18 @@ const TableComponent = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [editingPatient, setEditingPatient] = useState(null);
   const [expandedRows, setExpandedRows] = useState([]);
+
+  // Set the initial value to 2567
+  const [selectedYear, setSelectedYear] = useState(2567); // Default as 2567
+
+  // Automatically generate years starting from the current year
+  const currentYear = new Date().getFullYear() + 543; // Convert to Buddhist year (พ.ศ.)
+  const generateYears = (numYears) => {
+    // Generate an array of years starting from the current year
+    return Array.from({ length: numYears }, (_, i) => currentYear + i);
+  };
+
+  const years = generateYears(3); // Generate next 3 years
 
   const { searchTerm, setSearchTerm, filteredItems } = useSearch(patients, [
     "name",
@@ -58,6 +75,11 @@ const TableComponent = () => {
     );
   };
 
+  const handleYearChange = (event) => {
+    setSelectedYear(event.target.value); // Save selected year
+    console.log("Selected Year:", event.target.value); // Log the selected year
+  };
+
   if (isLoading) return <Typography>Loading...</Typography>;
   if (error) return <Typography>Error: {error}</Typography>;
 
@@ -71,7 +93,27 @@ const TableComponent = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h6">รายชื่อคนยืมพัสดุ</Typography>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Typography variant="h6" sx={{ mr: 2 }}>
+            รายชื่อคนยืมพัสดุ
+          </Typography>
+          <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+            <InputLabel id="year-select-label">ปี</InputLabel>
+            <Select
+              labelId="year-select-label"
+              id="year-select"
+              value={selectedYear} // Selected year
+              label="ปี"
+              onChange={handleYearChange} // Handle year selection
+            >
+              {years.map((year, index) => (
+                <MenuItem key={index} value={year}>
+                  {year}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           <ThemeProvider theme={theme}>
@@ -84,6 +126,50 @@ const TableComponent = () => {
               }}
             >
               เพิ่มรายชื่อคนยืมพัสดุ
+            </Button>
+          </ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ ml: 2 }}
+              onClick={() => {
+                setEditingPatient(null, setIsPopupOpen(true));
+              }}
+            >
+              เพิ่มปี
+            </Button>
+          </ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ ml: 2 }}
+              onClick={() => {
+                setEditingPatient(null, setIsPopupOpen(true));
+              }}
+            >
+              เพิ่มพัสดุ
+            </Button>
+          </ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <Button
+              variant="outlined"
+              color="primary"
+              sx={{ ml: 2, textTransform: "none" }}
+            >
+              <FilterListIcon sx={{ mr: 1 }} />
+              Filters
+            </Button>
+          </ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <Button
+              variant="outlined"
+              color="primary"
+              sx={{ ml: 2, textTransform: "none" }}
+            >
+              <PictureAsPdfIcon sx={{ mr: 1 }} />
+              Export PDF
             </Button>
           </ThemeProvider>
         </Box>

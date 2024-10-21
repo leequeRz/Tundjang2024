@@ -1,22 +1,21 @@
-.MainDash{
-    /* padding-top: 1rem; */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    width: 80vw;
+.MainDash {
+  /* padding-top: 1rem; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 80vw;
 }
 
 @media screen and (max-width: 1200px) {
-    .MainDash{
-        justify-content:flex-start;
-        margin-top: 2rem;
-    }
+  .MainDash {
+    justify-content: flex-start;
+    margin-top: 2rem;
+  }
 }
 
-@media screen and (max-width: 900px)
-{
-    .MainDash{
-        align-items: center;
-        margin-left: 10vw;
-    }
+@media screen and (max-width: 900px) {
+  .MainDash {
+    align-items: center;
+    margin-left: 10vw;
+  }
 }

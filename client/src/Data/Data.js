@@ -17,11 +17,11 @@ import img3 from "../imgs/img3.png";
 export const SidebarData = [
   {
     icon: UilEstate,
-    heading: "Dashboard",
+    heading: "ยืมพัสดุ",
   },
   {
     icon: UilClipboardAlt,
-    heading: "",
+    heading: "Form",
   },
   {
     icon: UilSignOutAlt,

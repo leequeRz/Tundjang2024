@@ -1,89 +1,89 @@
 :root {
-	--yellow: linear-gradient(to right, #0c986c, rgb(36, 196, 202), #0d5c76);
-	--orange: #fca61f;
-	--black: #242d49;
-	--gray: #788097;
-	--purple: linear-gradient(180deg, #bb67ff 0%, #c484f3 100%);
-	--blue-sky: #37eedf;
-	--glass: rgba(255, 255, 255, 0.54);
-	--boxShadow: 0px 19px 60px rgb(0 0 0 / 8%);
-	--smboxShadow: -79px 51px 60px rgba(0, 0, 0, 0.08);
-	--activeItem: #3797f054;
+  --yellow: linear-gradient(to right, #0c986c, rgb(36, 196, 202), #0d5c76);
+  --orange: #fca61f;
+  --black: #242d49;
+  --gray: #788097;
+  --purple: linear-gradient(180deg, #bb67ff 0%, #c484f3 100%);
+  --blue-sky: #37eedf;
+  --glass: rgba(255, 255, 255, 0.54);
+  --boxShadow: 0px 19px 60px rgb(0 0 0 / 8%);
+  --smboxShadow: -79px 51px 60px rgba(0, 0, 0, 0.08);
+  --activeItem: #3797f054;
 }
 
 .App {
-	color: var(--black);
-	background: white;
-	height: 100vh; /* Full viewport height */
-	width: 100vw; /* Full viewport width */
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-family: "Inter", sans-serif;
-	overflow: hidden; /* Prevent scrolling on the main container */
+  color: var(--black);
+  background: white;
+  height: 100vh; /* Full viewport height */
+  width: 100vw; /* Full viewport width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", sans-serif;
+  overflow: hidden; /* Prevent scrolling on the main container */
 }
 
 .AppGlass {
-	display: grid;
-	height: 100%; /* Full height of the App container */
-	width: 100%; /* Full width of the App container */
-	border-radius: 2rem;
-	gap: 50px;
-	grid-template-columns: 12rem auto;
-	overflow: hidden; /* Prevent scrolling on the glass container */
+  display: grid;
+  height: 100%; /* Full height of the App container */
+  width: 100%; /* Full width of the App container */
+  border-radius: 2rem;
+  gap: 50px;
+  grid-template-columns: 12rem auto;
+  overflow: hidden; /* Prevent scrolling on the glass container */
 }
 
 .MainContent {
-	width: 100%;
-	height: 100%;
-	padding: 5rem 0;
-	margin-top: 0; /* Removed margin for better spacing */
-	overflow: auto; /* Allow scrolling if content overflows */
+  width: 100%;
+  height: 100%;
+  padding: 3rem 0;
+  margin-top: 0; /* Removed margin for better spacing */
+  overflow: auto; /* Allow scrolling if content overflows */
 }
 
 /* Responsive for screens smaller than 1200px */
 @media screen and (max-width: 1200px) {
-	.AppGlass {
-		grid-template-columns: 20% auto;
-		gap: 30px;
-	}
+  .AppGlass {
+    grid-template-columns: 20% auto;
+    gap: 30px;
+  }
 
-	.MainContent {
-		margin-top: 0;
-	}
+  .MainContent {
+    margin-top: 0;
+  }
 }
 
 /* Responsive for screens smaller than 768px */
 @media screen and (max-width: 768px) {
-	.App {
-		padding: 0 10px;
-	}
+  .App {
+    padding: 0 10px;
+  }
 
-	.AppGlass {
-		grid-template-columns: 1fr;
-		grid-template-rows: auto 1fr;
-		gap: 20px;
-	}
+  .AppGlass {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+  }
 
-	.MainContent {
-		width: 100%;
-		height: auto;
-		margin-top: 0;
-	}
+  .MainContent {
+    width: 100%;
+    height: auto;
+    margin-top: 0;
+  }
 }
 
 /* Responsive for screens smaller than 480px */
 @media screen and (max-width: 480px) {
-	.App {
-		padding: 0 5px;
-	}
+  .App {
+    padding: 0 5px;
+  }
 
-	.AppGlass {
-		gap: 10px;
-		border-radius: 1rem;
-	}
+  .AppGlass {
+    gap: 10px;
+    border-radius: 1rem;
+  }
 
-	.MainContent {
-		padding: 0 10px;
-	}
+  .MainContent {
+    padding: 0 10px;
+  }
 }
