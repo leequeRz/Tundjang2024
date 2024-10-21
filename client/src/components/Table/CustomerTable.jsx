@@ -10,7 +10,7 @@ import {
   Paper,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useCustomers } from "../context/customerContext";
+import { useCustomers } from "../../context/customerContext";
 import { usePagination } from "../../hooks/usePagination";
 import { useSearch } from "../../hooks/useSearch";
 import SearchBar from "../SearchBar";

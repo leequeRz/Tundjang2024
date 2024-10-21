@@ -12,47 +12,39 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import PatientRecordPopup from "./PatientRecordPopup";
-import { usePatientRecords } from "../../context/patientRecordContext";
+import CustomerRecordPopup from "./CustomerRecordPopup";
+import { useCustomerRecords } from "../../context/customerRecordContext";
 import { useSelectedItem } from "../../context/mainContentContext";
 import DeleteConfirmationDialog from "../Dialog/DeleteConfirmationDialog";
 import { formatDateToThai } from "../../utils/helper";
 
-const PatientRecordRow = ({ patient }) => {
+const CustomerRecordRow = ({ customer }) => {
 	const [isPopupOpen, setPopupOpen] = useState(false);
-	const [patientRecord, setPatientRecord] = useState({
-		id: "",
-		RR: "",
-		extra_food: "",
-		notes: "",
-		HR: "",
-		breath_pattern: "",
-		food_type: "",
-		extra_symptoms: "",
-		eat_method: "",
-		BP: "",
-		sleep: "",
-		BT: "",
-		O2sat: "",
-		excretion: "",
-		food_intake: [],
-		conscious: "",
-		timestamp: "",
+	const [customerRecord, setCustomerRecord] = useState({
+	
+		start_date:"",
+        end_date:"",
+        detail1:"",
+        detail2:""
+		// excretion: "",
+		// food_intake: [],
+		// conscious: "",
+		// timestamp: "",
 	});
 	const [isDialogOpen, setDialogOpen] = useState(false);
 	const [recordToDelete, setRecordToDelete] = useState({
-		HN: patient.HN,
+		customer_id: customer.customer_id,
 		docId: null,
 	});
 	const { useFetchRecords, setCurrentEditRecord, deleteRecord } =
-		usePatientRecords();
+		useCustomerRecords();
 
 	const { setSelectedSidebarItem } = useSelectedItem();
 
 	const handleNewClick = (e, docId) => {
 		e.stopPropagation();
 		setCurrentEditRecord((prev) => ({
-			HN: patient.HN,
+			customer_id: customer.customer_id,
 			docId: { id: "create-new", label: "Create New Record" },
 		}));
 		setSelectedSidebarItem("Form");
@@ -60,13 +52,13 @@ const PatientRecordRow = ({ patient }) => {
 
 	const handleDeleteClick = (e, docId) => {
 		e.stopPropagation();
-		setRecordToDelete((prev) => ({ HN: prev.HN, docId: docId }));
+		setRecordToDelete((prev) => ({ customer_id: prev.customer_id, docId: docId }));
 		setDialogOpen(true);
 	};
 
-	const handleEditClick = (e, HN, docId) => {
+	const handleEditClick = (e, customer_id, docId) => {
 		e.stopPropagation();
-		setCurrentEditRecord({ HN: HN, docId: { id: docId, label: docId } });
+		setCurrentEditRecord({ customer_id: customer_id, docId: { id: docId, label: docId } });
 		setSelectedSidebarItem("Form");
 	};
 
@@ -78,13 +70,13 @@ const PatientRecordRow = ({ patient }) => {
 	const openPopup = () => setPopupOpen(true);
 	const closePopup = () => setPopupOpen(false);
 
-	// Fetch records for the given patient HN
-	const PatientRecordsDisplay = () => {
+	// Fetch records for the given customer customer_id
+	const CustomerRecordsDisplay = () => {
 		const {
 			data: records = [],
 			isLoading,
 			isError,
-		} = useFetchRecords(patient.HN);
+		} = useFetchRecords(customer.customer_id);
 
 		if (isLoading) return <CircularProgress />;
 		if (isError) return <div>Error loading records</div>;
@@ -98,24 +90,24 @@ const PatientRecordRow = ({ patient }) => {
 			<TableRow
 				key={entry.id}
 				onClick={() => {
-					setPatientRecord(entry);
+					setCustomerRecord(entry);
 					openPopup();
 				}}
 			>
 				<TableCell>{formatDateToThai(entry.create_time)}</TableCell>
 				<TableCell>{entry.notes}</TableCell>
 				<TableCell>
-					<Tooltip title="Edit Patient">
+					<Tooltip title="Edit Customer">
 						<IconButton
 							onClick={(e) => {
-								handleEditClick(e, patient.HN, entry.id);
+								handleEditClick(e, customer.customer_id, entry.id);
 							}}
 							color="primary"
 						>
 							<EditIcon />
 						</IconButton>
 					</Tooltip>
-					<Tooltip title="Delete Patient">
+					<Tooltip title="Delete customer">
 						<IconButton
 							onClick={(e) => {
 								handleDeleteClick(e, entry.id);
@@ -146,18 +138,18 @@ const PatientRecordRow = ({ patient }) => {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								<PatientRecordsDisplay />
+								<CustomerRecordsDisplay />
 							</TableBody>
 						</Table>
 					</div>
 				</TableCell>
 			</TableRow>
 
-			<PatientRecordPopup
+			<CustomerRecordPopup
 				open={isPopupOpen}
 				onClose={closePopup}
-				patient={patient}
-				record={patientRecord}
+				customer={customer}
+				record={customerRecord}
 			/>
 			<DeleteConfirmationDialog
 				isOpen={isDialogOpen}
@@ -170,4 +162,4 @@ const PatientRecordRow = ({ patient }) => {
 	);
 };
 
-export default PatientRecordRow;
+export default CustomerRecordRow;

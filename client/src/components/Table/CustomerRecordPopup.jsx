@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { calculateAge } from "../../utils/helper";
 
-const PatientRecordPopup = ({ open, onClose, patient, record }) => {
+const CustomerRecordPopup = ({ open, onClose, customer, record }) => {
 	console.log(record)
 	return (
 		<Dialog
@@ -33,22 +33,22 @@ const PatientRecordPopup = ({ open, onClose, patient, record }) => {
 						{/* Static Inputs */}
 						<Grid item xs={12} sm={6}>
 							<Typography variant="body2" gutterBottom>
-								<strong>HN:</strong> {patient.HN}
+								<strong>customer_id:</strong> {customer.customer_id}
 							</Typography>
 						</Grid>
 						<Grid item xs={12} sm={6}>
 							<Typography variant="body2" gutterBottom>
-								<strong>ชื่อ-สกุล:</strong> {patient.name} {patient.surname}
+								<strong>ชื่อ-สกุล:</strong> {customer.name} {customer.surname}
 							</Typography>
 						</Grid>
 						<Grid item xs={12} sm={6}>
 							<Typography variant="body2" gutterBottom>
-								<strong>เพศ:</strong> {patient.gender}
+								<strong>เพศ:</strong> {customer.gender}
 							</Typography>
 						</Grid>
 						<Grid item xs={12} sm={6}>
 							<Typography variant="body2" gutterBottom>
-								<strong>อายุ:</strong> {calculateAge(patient.DOB)}
+								<strong>อายุ:</strong> {calculateAge(customer.DOB)}
 							</Typography>
 						</Grid>
 					</Grid>
@@ -177,4 +177,4 @@ const PatientRecordPopup = ({ open, onClose, patient, record }) => {
 	);
 };
 
-export default PatientRecordPopup;
+export default CustomerRecordPopup;

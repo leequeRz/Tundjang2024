@@ -1,8 +1,8 @@
-// patientRecordContext.js
+// customerRecordContext.js
 import React, { createContext, useContext, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-const PatientRecordContext = createContext();
+const CustomerRecordContext = createContext();
 
 const apiUrl =
   process.env.NODE_ENV === "development" &&
@@ -10,40 +10,40 @@ const apiUrl =
     ? process.env.REACT_APP_API_URL_DEV
     : process.env.REACT_APP_API_URL_PROD;
 
-// Fetch patient records function
-const fetchPatientRecords = async (HN) => {
-  const response = await fetch(`${apiUrl}/patient/${HN}/record`);
-  if (!response.ok) throw new Error("Error fetching patient records");
+// Fetch customer records function
+const fetchCustomerRecords = async (customer_id) => {
+  const response = await fetch(`${apiUrl}/customer/${customer_id}/record`);
+  if (!response.ok) throw new Error("Error fetching customer records");
   return response.json();
 };
 
-// Custom hook to fetch patient records
-const useFetchRecords = (HN) => {
-  return useQuery(["patientRecords", HN], () => fetchPatientRecords(HN), {
+// Custom hook to fetch customer records
+const useFetchRecords = (customer_id) => {
+  return useQuery(["customerRecords", customer_id], () => fetchCustomerRecords(customer_id), {
     staleTime: 5 * 60 * 1000,
     cacheTime: 30 * 60 * 1000,
-    enabled: !!HN,
+    enabled: !!customer_id,
   });
 };
 
-export const PatientRecordProvider = ({ children }) => {
+export const CustomerRecordProvider = ({ children }) => {
   const queryClient = useQueryClient();
   const [currentEditRecord, setCurrentEditRecord] = useState({
-    HN: null,
+    customer_id: null,
     docId: { id: "create-new", label: "Create New Record" },
   });
 
   const deleteRecord = useMutation(
-    async ({ HN, docId }) => {
-      const response = await fetch(`${apiUrl}/patient/${HN}/record/${docId}`, {
+    async ({ customer_id, docId }) => {
+      const response = await fetch(`${apiUrl}/customer/${customer_id}/record/${docId}`, {
         method: "DELETE",
       });
       if (!response.ok) throw new Error("Failed to delete the record");
       return response.json();
     },
     {
-      onSuccess: (_, { HN, docId }) => {
-        queryClient.setQueryData(["patientRecords", HN], (oldRecords = []) =>
+      onSuccess: (_, { customer_id, docId }) => {
+        queryClient.setQueryData(["customerRecords", customer_id], (oldRecords = []) =>
           oldRecords.filter((record) => record.id !== docId)
         );
       },
@@ -54,8 +54,8 @@ export const PatientRecordProvider = ({ children }) => {
   );
 
   const addRecord = useMutation(
-    async ({ HN, record }) => {
-      const response = await fetch(`${apiUrl}/patient/${HN}/record`, {
+    async ({ customer_id, record }) => {
+      const response = await fetch(`${apiUrl}/customer/${customer_id}/record`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,9 +66,9 @@ export const PatientRecordProvider = ({ children }) => {
       return response.json();
     },
     {
-      onSuccess: (newRecord, { HN, record }) => {
-        // console.log(newRecord, HN, record);
-        queryClient.setQueryData(["patientRecords", HN], (oldRecords = []) => [
+      onSuccess: (newRecord, { customer_id, record }) => {
+        // console.log(newRecord, customer_id, record);
+        queryClient.setQueryData(["customerRecords", customer_id], (oldRecords = []) => [
           ...oldRecords,
           {
             ...record,
@@ -84,9 +84,9 @@ export const PatientRecordProvider = ({ children }) => {
   );
 
   const updateRecord = useMutation(
-    async ({ HN, record }) => {
+    async ({ customer_id, record }) => {
       const response = await fetch(
-        `${apiUrl}/patient/${HN}/record/${record.id}`,
+        `${apiUrl}/customer/${customer_id}/record/${record.id}`,
         {
           method: "PUT",
           headers: {
@@ -99,9 +99,9 @@ export const PatientRecordProvider = ({ children }) => {
       return response.json();
     },
     {
-      onSuccess: (updateRecord, { HN, record }) => {
-        // console.log(updateRecord, HN, record);
-        queryClient.setQueryData(["patientRecords", HN], (oldRecords = []) =>
+      onSuccess: (updateRecord, { customer_id, record }) => {
+        // console.log(updateRecord, customer_id, record);
+        queryClient.setQueryData(["customerRecords", customer_id], (oldRecords = []) =>
           oldRecords.map((record_) =>
             record_.id === record.id ? updateRecord.data : record_
           )
@@ -114,7 +114,7 @@ export const PatientRecordProvider = ({ children }) => {
   );
 
   return (
-    <PatientRecordContext.Provider
+    <CustomerRecordContext.Provider
       value={{
         currentEditRecord,
         setCurrentEditRecord,
@@ -125,8 +125,8 @@ export const PatientRecordProvider = ({ children }) => {
       }}
     >
       {children}
-    </PatientRecordContext.Provider>
+    </CustomerRecordContext.Provider>
   );
 };
 
-export const usePatientRecords = () => useContext(PatientRecordContext);
+export const useCustomerRecords = () => useContext(CustomerRecordContext);
