@@ -20,8 +20,8 @@ const AddCustomer = logRequest(
         "name",
         "surname",
         "phone",
-        "role",
         "tel",
+        "role"
       ];
       if (!checkField(requiredFields, req, res)) {
         return;
@@ -49,7 +49,7 @@ const EditCustomer = logRequest(
 
       const { customer_id } = req.params;
 
-      const requiredFields = ["customer_id", "name","surname", "phone", "role", "tel_company"];
+      const requiredFields = ["customer_id", "name","surname", "phone", "tel","role"];
 
       if (!checkField(requiredFields, req, res)) {
         return;
