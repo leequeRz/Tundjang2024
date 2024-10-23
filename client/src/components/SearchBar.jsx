@@ -13,7 +13,7 @@ const SearchBar = ({ searchTerm, setSearchTerm }) => (
   >
     <SearchIcon sx={{ mr: 1 }} />
     <InputBase
-      placeholder="Search by Name Surname"
+      placeholder="ค้นหาชื่อ นามสกุล เลข UID"
       value={searchTerm}
       onChange={(e) => setSearchTerm(e.target.value)}
       sx={{ width: { xs: 200, sm: 300 } }}
