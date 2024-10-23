@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const {
-	AddRecord,
-	EditRecord,
-	DelRecord,
-	GetRecord,
+  AddRecord,
+  EditRecord,
+  DelRecord,
+  GetRecord,
 } = require("../controllers/recordController");
 
 // AddRecord route for adding a record
