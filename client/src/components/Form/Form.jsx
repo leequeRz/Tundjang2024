@@ -21,26 +21,6 @@ import { useSearch } from "../../hooks/useSearch";
 import { useCustomers } from "../../context/customerContext";
 import { useCustomerRecords } from "../../context/customerRecordContext";
 
-const VITAL_SIGNS = [
-  {
-    label: "อุณหภูมิ (BT)",
-    name: "BT",
-    options: ["ไม่มีไข้", "ไข้ต่ำ", "ไข้สูง"],
-  },
-  { label: "ความดันโลหิต (BP)", name: "BP", options: ["ปกติ", "ต่ำ", "สูง"] },
-  {
-    label: "อัตราการเต้นของหัวใจ (HR)",
-    name: "HR",
-    options: ["ปกติ", "ช้า", "เร็ว"],
-  },
-  { label: "อัตราการหายใจ (RR)", name: "RR", options: ["ปกติ", "ช้า", "เร็ว"] },
-  {
-    label: "ค่าออกซิเจนในเลือด (O2sat)",
-    name: "O2sat",
-    options: ["ปกติ", "ต่ำ"],
-  },
-];
-
 const CONSCIOUS_OPTIONS = [
   "ตื่น รู้สึกตัวดี",
   "หลับ",
