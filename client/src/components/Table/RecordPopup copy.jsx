@@ -17,7 +17,7 @@ import {
   Autocomplete,
   Checkbox,
 } from "@mui/material";
-import { getCurrentShift} from "../../utils/helper";
+import { getCurrentShift, calculateAge } from "../../utils/helper";
 import SearchFilterBar from "../SearchFilterBar";
 import { useSearch } from "../../hooks/useSearch";
 import { useCustomers } from "../../context/customerContext";
@@ -81,23 +81,18 @@ const EXTRA_FOOD_OPTIONS = ["ตามปกติ", "รับประทา�
 const initialFormState = {
   start_date:"",
   end_date:"",
-  Item: "",
-  count: "",
-  Responsible_person: "",
-  Item_number: "",
-  Status: "ยืม",
+
   // eat_value:["กินได้ดี"],
   shift: getCurrentShift(),
 };
 
-const Form = () => {
+const RecordPopup = () => {
   const currentDate = new Date().toLocaleDateString();
   const [formHeader, setFormHeader] = useState({
     customer_id: "",
     "name surname": "",
-    role: "",
-    tel_company: "",
-    
+    sex: "",
+    age: "",
   });
   const [form, setForm] = useState(initialFormState);
   const [alert, setAlert] = useState({
@@ -164,8 +159,8 @@ const Form = () => {
         setFormHeader({
           customer_id: selectedCustomer.customer_id.trim(),
           "name surname": `${selectedCustomer.name} ${selectedCustomer.surname}`,
-          role: selectedCustomer.role,
-          tel_company: selectedCustomer.tel_company,
+          sex: selectedCustomer.gender,
+          age: calculateAge(selectedCustomer.DOB),
         });
         setForm(initialFormState);
       }
@@ -282,12 +277,10 @@ const Form = () => {
 
   return (
     <Container maxWidth="md">
-      <Typography variant="h3" gutterBottom sx={{ marginY: 6 }}>
-        บันทึกรายการยืม ประจำวันที่ {currentDate}
+      <Typography variant="h4" gutterBottom sx={{ marginY: 4 }}>
+        บันทึกอาการรายวัน ประจำวันที่ {currentDate}
       </Typography>
-      <Typography variant="h4" gutterBottom>
-              ส่วนที่ 1 ข้อมูลผู้ยืมอุปกรณ์
-      </Typography>
+
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2} margin="normal">
           <Grid item xs={12} sm={12}>
@@ -297,8 +290,8 @@ const Form = () => {
               selectedValue={currentEditRecord.customer_id}
               filterItems={filteredCustomers}
               onFilterSelected={handleSelectCustomer_idFilter}
-              label="Customer ID"
-              placeholder="Search by ID , name or surname"
+              label="Customer customer_id"
+              placeholder="Search by customer_id name or surname"
               required={true}
             />
           </Grid>
@@ -319,12 +312,38 @@ const Form = () => {
               selectedValue={currentEditRecord.docId}
               filterItems={filteredRecords}
               onFilterSelected={handleSelectRecordFilter}
-              label="customer Record"
+              label="Customer Record"
               placeholder="Search by record id"
               required={true}
             />
           </Grid>
         </Grid>
+
+        <FormControl component="fieldset" margin="normal">
+          <FormLabel component="legend" required>
+            เวร
+          </FormLabel>
+          <RadioGroup
+            row
+            aria-label="shift"
+            name="shift"
+            value={form.shift}
+            onChange={handleFormChange}
+          >
+            {[
+              { value: "morning-shift", label: "เวรเช้า (08:00 - 16:00)" },
+              { value: "afternoon-shift", label: "เวรบ่าย (16:00 - 23:59)" },
+              { value: "night-shift", label: "เวรดึก (00:00 - 08:00)" },
+            ].map(({ value, label }) => (
+              <FormControlLabel
+                key={value}
+                value={value}
+                control={<Radio />}
+                label={label}
+              />
+            ))}
+          </RadioGroup>
+        </FormControl>
 
         {formHeader.customer_id && (
           <>
@@ -332,87 +351,22 @@ const Form = () => {
             <Box
               sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
             >
-              {/* <Typography variant="body1">customer_id: {formHeader.customer_id}</Typography>
+              <Typography variant="body1">customer_id: {formHeader.customer_id}</Typography>
               <Typography variant="body1">
                 Name: {formHeader["name surname"]}
               </Typography>
-              <Typography variant="body1">Role: {formHeader.role}</Typography>
-              <Typography variant="body1">Telephone company: {formHeader.tel_company}</Typography> */}
-              {/* <Typography variant="body1">Shift: {form.shift}</Typography> */}
+              <Typography variant="body1">Sex: {formHeader.sex}</Typography>
+              <Typography variant="body1">Age: {formHeader.age}</Typography>
+              <Typography variant="body1">Shift: {form.shift}</Typography>
             </Box>
 
-            <Typography variant="h4" gutterBottom>
-              ส่วนที่ 2 ข้อมูลครุภัณฑ์
+            <Typography variant="h5" gutterBottom>
+              ส่วนที่ 1 สัญญาณชีพ
             </Typography>
             <Grid container spacing={2} marginBottom={2}>
-            <Grid item xs={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
-                <span style={{ fontSize: '25px' }}>ครุภัณฑ์</span> {/* เพิ่มขนาดตัวหนังสือ */}
-            </Grid>
-
-            <Grid item xs={6}>
-                <TextField
-                  name="extra_symptoms"
-                  // label="หมายเลขครุภัณฑ์"  // ลบ label ที่ซ้ำกันออก
-                  value={form.extra_symptoms}
-                  placeholder="พิมพ์ครุภัณฑ์ที่นี่"
-                  fullWidth
-                  InputProps={{ style: { fontSize: '18px' } }} // เพิ่มขนาดตัวหนังสือของ input
-                  onChange={handleFormChange}
-                />
-            </Grid>
-            
-            <Grid item xs={6} style={{ display: 'flex', alignItems: 'center', justifyContent:'start' }}>
-                <span style={{ fontSize: '25px' }}>จำนวน</span> {/* เพิ่มขนาดตัวหนังสือ */}
-            </Grid>
-
-            <Grid item xs={6}>
-                <TextField
-                  name="extra_symptoms"
-                  // label="หมายเลขครุภัณฑ์"  // ลบ label ที่ซ้ำกันออก
-                  value={form.extra_symptoms}
-                  placeholder="พิมพ์จำนวนครุภัณฑ์ที่นี่"
-                  fullWidth
-                  InputProps={{ style: { fontSize: '18px' } }} // เพิ่มขนาดตัวหนังสือของ input
-                  onChange={handleFormChange}
-                />
-            </Grid>
-            <Grid item xs={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
-                <span style={{ fontSize: '25px' }}>หมายเลขครุภัณฑ์</span> {/* เพิ่มขนาดตัวหนังสือ */}
-            </Grid>
-
-            <Grid item xs={6}>
-                <TextField
-                  name="extra_symptoms"
-                  // label="หมายเลขครุภัณฑ์"  // ลบ label ที่ซ้ำกันออก
-                  value={form.extra_symptoms}
-                  placeholder="พิมพ์หมายเลขครุภัณฑ์ที่นี่"
-                  fullWidth
-                  InputProps={{ style: { fontSize: '18px' } }} // เพิ่มขนาดตัวหนังสือของ input
-                  onChange={handleFormChange}
-                />
-            </Grid>
-
-
-            <Grid item xs={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'start'  }}>
-                <span style={{ fontSize: '25px' }}>หมายเหตุ</span> {/* เพิ่มขนาดตัวหนังสือ */}
-            </Grid>
-
-            <Grid item xs={6}>
-                <TextField
-                  name="extra_symptoms"
-                  // label="หมายเลขครุภัณฑ์"  // ลบ label ที่ซ้ำกันออก
-                  value={form.extra_symptoms}
-                  placeholder="พิมพ์หมายเหตุที่นี่"
-                  fullWidth
-                  InputProps={{ style: { fontSize: '18px' } }} // เพิ่มขนาดตัวหนังสือของ input
-                  onChange={handleFormChange}
-                />
-            </Grid>
-
-
-              {/* {VITAL_SIGNS.map((vitalSign) =>
+              {VITAL_SIGNS.map((vitalSign) =>
                 renderRadioGroup({ ...vitalSign, value: form[vitalSign.name] })
-              )} */}
+              )}
             </Grid>
 
             <Divider sx={{ marginY: "3rem" }} />
@@ -608,4 +562,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default RecordPopup;

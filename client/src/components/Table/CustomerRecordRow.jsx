@@ -9,6 +9,8 @@ import {
 	IconButton,
 	CircularProgress,
 	Button,
+	Box,
+	Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -17,29 +19,68 @@ import { useCustomerRecords } from "../../context/customerRecordContext";
 import { useSelectedItem } from "../../context/mainContentContext";
 import DeleteConfirmationDialog from "../Dialog/DeleteConfirmationDialog";
 import { formatDateToThai } from "../../utils/helper";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import RecordPopup from "./RecordPopup";
+import { useCustomers } from "../../context/customerContext";
+import { useSearch } from "../../hooks/useSearch";
+
+const theme = createTheme({
+	palette: {
+		primary: {
+			main: "#FFC72C", // Orange color
+		},
+	},
+});
 
 const CustomerRecordRow = ({ customer }) => {
-	const [isPopupOpen, setPopupOpen] = useState(false);
-	const [customerRecord, setCustomerRecord] = useState({
+	// Hooks must be called at the top level
+	const [PopupOpen, setPopupOpen] = useState(false);
+	const { customers, isLoading, error, deleteCustomer } = useCustomers();
+	const [isPopupOpen, setIsPopupOpen] = useState(false);
+	const [editingCustomer, setEditingCustomer] = useState(null);
+	const [expandedRows, setExpandedRows] = useState([]);
+
 	
-		start_date:"",
-        end_date:"",
-        detail1:"",
-        detail2:""
-		// excretion: "",
-		// food_intake: [],
-		// conscious: "",
-		// timestamp: "",
+	const [customerRecord, setCustomerRecord] = useState({
+		start_date: "",
+		end_date: "",
+		detail1: "",
+		detail2: "",
+		// Item: "",
+		// count: "",
+		// Responsible_person: "",
+		// Item_number: "",
+		// Status: "",
+
 	});
 	const [isDialogOpen, setDialogOpen] = useState(false);
 	const [recordToDelete, setRecordToDelete] = useState({
 		customer_id: customer.customer_id,
 		docId: null,
 	});
-	const { useFetchRecords, setCurrentEditRecord, deleteRecord } =
-		useCustomerRecords();
-
+	const { useFetchRecords, setCurrentEditRecord, deleteRecord } = useCustomerRecords();
 	const { setSelectedSidebarItem } = useSelectedItem();
+
+	// Conditional rendering logic should come after all hooks
+	if (isLoading) return <Typography>Loading...</Typography>;
+	if (error) return <Typography>Error: {error}</Typography>;
+
+	const handleEdit = (customer) => {
+		setEditingCustomer(customer);
+		setIsPopupOpen(true);
+	};
+
+	const handleDelete = (customer_id) => {
+		deleteCustomer(customer_id);
+	};
+
+	const handleRowClick = (customer_ID) => {
+		setExpandedRows((prev) =>
+			prev.includes(customer_ID)
+				? prev.filter((rowCustomer_Id) => rowCustomer_Id !== customer_ID)
+				: [...prev, customer_ID]
+		);
+	};
 
 	const handleNewClick = (e, docId) => {
 		e.stopPropagation();
@@ -58,7 +99,10 @@ const CustomerRecordRow = ({ customer }) => {
 
 	const handleEditClick = (e, customer_id, docId) => {
 		e.stopPropagation();
-		setCurrentEditRecord({ customer_id: customer_id, docId: { id: docId, label: docId } });
+		setCurrentEditRecord({
+			customer_id: customer_id,
+			docId: { id: docId, label: docId },
+		});
 		setSelectedSidebarItem("Form");
 	};
 
@@ -72,11 +116,7 @@ const CustomerRecordRow = ({ customer }) => {
 
 	// Fetch records for the given customer customer_id
 	const CustomerRecordsDisplay = () => {
-		const {
-			data: records = [],
-			isLoading,
-			isError,
-		} = useFetchRecords(customer.customer_id);
+		const { data: records = [], isLoading, isError } = useFetchRecords(customer.customer_id);
 
 		if (isLoading) return <CircularProgress />;
 		if (isError) return <div>Error loading records</div>;
@@ -135,6 +175,40 @@ const CustomerRecordRow = ({ customer }) => {
 									<TableCell>
 										<Button onClick={handleNewClick}>Add New Record</Button>
 									</TableCell>
+									{/* <TableCell>
+										
+											<Box
+												sx={{
+													display: "flex",
+													justifyContent: "space-between",
+													alignItems: "center",
+													mb: 2,
+												}}
+											>
+								
+												<Box sx={{ display: "flex", alignItems: "center" }}>
+												
+													<ThemeProvider theme={theme}>
+														<Button
+															variant="contained"
+															color="primary"
+															sx={{ ml: 2 }}
+															onClick={() => {
+																setEditingCustomer(null, setIsPopupOpen(true));
+															}}
+														>
+															เพิ่มรายชื่อคนยืมพัสดุ
+														</Button>
+													</ThemeProvider>
+												</Box>
+											</Box>
+											<RecordPopup
+												open={isPopupOpen}
+												onClose={() => setIsPopupOpen(false)}
+												customerData={editingCustomer}
+											/>
+										
+									</TableCell> */}
 								</TableRow>
 							</TableHead>
 							<TableBody>
@@ -146,7 +220,7 @@ const CustomerRecordRow = ({ customer }) => {
 			</TableRow>
 
 			<CustomerRecordPopup
-				open={isPopupOpen}
+				open={PopupOpen}
 				onClose={closePopup}
 				customer={customer}
 				record={customerRecord}

@@ -21,7 +21,7 @@ export const SidebarData = [
   },
   {
     icon: UilClipboardAlt,
-    heading: "",
+    heading: "Form",
   },
   {
     icon: UilSignOutAlt,

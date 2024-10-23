@@ -8,8 +8,6 @@ const TableHeader = () => (
 				// { label: "Prefix", key: "Prefix", hiddenOnMobile: true },
 				{ label: "Name", key: "Name" },
 				{ label: "Surname", key: "Surname" },
-				// { label: "Gender", key: "Gender", hiddenOnMobile: true },
-				// { label: "Age", key: "Age", hiddenOnMobile: true },
 				// { label: "Last Update", key: "Last Update", hiddenOnMobile: true },
 				{ label: "Phone", key: "Phone" },
 				{ label: "tel_company", key: "tel" },

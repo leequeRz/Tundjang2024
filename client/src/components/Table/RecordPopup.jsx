@@ -10,10 +10,11 @@ import {
 } from "@mui/material";
 import { useCustomerForm } from "../../hooks/useCustomerForm";
 import { FormField, SelectField } from "./FormComponents";
+// import RecordPopup from "./RecordPopup copy";
 // import ThaiYearDatePicker from "../ThaiYearDatePicker";
 // import dayjs from "dayjs";
 
-const CustomerPopup = ({ open, onClose, customerData }) => {
+const RecordPopup = ({ open, onClose, customerData }) => {
 	const { formData, handleChange, handleSubmit, isSubmitting } = useCustomerForm(
 		customerData,
 		onClose
@@ -97,4 +98,4 @@ const CustomerPopup = ({ open, onClose, customerData }) => {
 	);
 };
 
-export default CustomerPopup;
+export default RecordPopup;
