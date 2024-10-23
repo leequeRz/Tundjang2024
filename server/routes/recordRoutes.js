@@ -12,25 +12,25 @@ const {
  * @swagger
  * tags:
  *   name: Records
- *   description: Operations related to patient records
+ *   description: Operations related to customer records
  */
 
 /**
  * @swagger
- * /api/v1/patient/{HN}/record:
+ * /api/v1/customer/{customer_id}/record:
  *   post:
- *     summary: Add a new record for a patient
- *     description: Adds a new record with various health parameters for the patient identified by the Hospital Number (HN).
+ *     summary: Add a new record for a customer
+ *     description: Adds a new record with various health parameters for the customer identified by the customer_id (customer_id).
  *     tags:
  *       - Records
  *     parameters:
  *       - in: path
- *         name: HN
+ *         name: customer_id
  *         required: true
  *         schema:
  *           type: string
  *           example: "AI123456"
- *         description: Hospital Number (HN) of the patient.
+ *         description: customer id (customer_id) of the customer.
  *     requestBody:
  *       required: true
  *       content:
@@ -122,25 +122,25 @@ const {
  *       500:
  *         description: Internal server error
  */
-router.post("/patient/:HN/record", AddRecord);
+router.post("/customer/:customer_id/record", AddRecord);
 
 // EditRecord route for updating a specific record
 /**
  * @swagger
- * /api/v1/patient/{HN}/record/{docId}:
+ * /api/v1/customer/{customer_id}/record/{docId}:
  *   put:
  *     summary: Update a specific record
- *     description: Updates a specific record identified by the document ID for the patient identified by the Hospital Number (HN).
+ *     description: Updates a specific record identified by the document ID for the customer identified by the Customer ID (customer_id).
  *     tags:
  *       - Records
  *     parameters:
  *       - in: path
- *         name: HN
+ *         name: customer_id
  *         required: true
  *         schema:
  *           type: string
  *           example: "AI123456"
- *         description: Hospital Number (HN) of the patient.
+ *         description: Customer ID (customer_id) of the customer.
  *       - in: path
  *         name: docId
  *         required: true
@@ -234,25 +234,25 @@ router.post("/patient/:HN/record", AddRecord);
  *       500:
  *         description: Internal server error
  */
-router.put("/patient/:HN/record/:docId", EditRecord);
+router.put("/customer/:customer_id/record/:docId", EditRecord);
 
 // DelRecord route for deleting a specific record
 /**
  * @swagger
- * /api/v1/patient/{HN}/record/{docId}:
+ * /api/v1/customer/{customer_id}/record/{docId}:
  *   delete:
  *     summary: Delete a specific record
- *     description: Deletes a specific record identified by the document ID for the patient identified by the Hospital Number (HN).
+ *     description: Deletes a specific record identified by the document ID for the customer identified by the Customer ID (customer_id).
  *     tags:
  *       - Records
  *     parameters:
  *       - in: path
- *         name: HN
+ *         name: customer_id
  *         required: true
  *         schema:
  *           type: string
  *           example: "AI123456"
- *         description: Hospital Number (HN) of the patient.
+ *         description: Customer ID (customer_id) of the customer.
  *       - in: path
  *         name: docId
  *         required: true
@@ -268,25 +268,25 @@ router.put("/patient/:HN/record/:docId", EditRecord);
  *       500:
  *         description: Internal server error
  */
-router.delete("/patient/:HN/record/:docId", DelRecord);
+router.delete("/customer/:customer_id/record/:docId", DelRecord);
 
-// GetRecord route for retrieving records of a specific patient
+// GetRecord route for retrieving records of a specific customer
 /**
  * @swagger
- * /api/v1/patient/{HN}/record:
+ * /api/v1/customer/{customer_id}/record:
  *   get:
- *     summary: Retrieve records for a specific patient
- *     description: Retrieves all records for the patient identified by the Hospital Number (HN).
+ *     summary: Retrieve records for a specific customer
+ *     description: Retrieves all records for the customer identified by the Customer ID (customer_id).
  *     tags:
  *       - Records
  *     parameters:
  *       - in: path
- *         name: HN
+ *         name: customer_id
  *         required: true
  *         schema:
  *           type: string
  *           example: "AI123456"
- *         description: Hospital Number (HN) of the patient.
+ *         description: Customer ID (customer_id) of the customer.
  *     responses:
  *       200:
  *         description: Records retrieved successfully
@@ -369,10 +369,10 @@ router.delete("/patient/:HN/record/:docId", DelRecord);
  *                     description: Additional notes (optional)
  *                     example: "ไม่มีอาการผิดปกติ"
  *       400:
- *         description: Missing required parameter HN
+ *         description: Missing required parameter customer_id
  *       500:
  *         description: Internal server error
  */
-router.get("/patient/:HN/record", GetRecord);
+router.get("/customer/:customer_id/record", GetRecord);
 
 module.exports = router;
