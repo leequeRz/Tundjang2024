@@ -4,8 +4,8 @@ const {
 	readFile
 } = require("../controllers/fileController");
 const {
-	FindPatient,
-} = require("../controllers/patientController");
+	FindCustomer,
+} = require("../controllers/customerController");
 const {
 	GetRecord,
 } = require("../controllers/recordController");
