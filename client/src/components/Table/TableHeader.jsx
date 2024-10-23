@@ -12,10 +12,10 @@ const TableHeader = () => (
         // { label: "Age", key: "Age", hiddenOnMobile: true },
         // { label: "Last Update", key: "Last Update", hiddenOnMobile: true },
         { label: "Phone", key: "Phone" },
-        { label: "tel_company", key: "tel" },
-        { label: "role", key: "role" },
-        { label: "Edit / Delete", key: "HN" },
-        { label: "", key: "" },
+        { label: "Tel_company", key: "tel" },
+        { label: "Role", key: "role" },
+        { label: "Group", key: "group" },
+        { label: "Edit & Delete", key: "" },
       ].map(({ label, key, hiddenOnMobile }) => (
         <TableCell
           key={key}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TableRow, TableCell, Tooltip, IconButton} from "@mui/material";
+import { TableRow, TableCell, Tooltip, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 // import { calculateAge } from "../../utils/helper";
@@ -8,12 +8,12 @@ import CustomerRecordRow from "./CustomerRecordRow";
 import DeleteConfirmationDialog from "../Dialog/DeleteConfirmationDialog";
 
 const CustomerRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
-  const { customer_id, name, surname, phone, tel, role } = row;
+  const { customer_id, name, surname, phone, tel, role, group } = row;
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [customerToDelete, setCustomerToDelete] = useState(null);
 
   const isCustomer_idPresent = !!customer_id;
-  
+
   // Define a media query to check if the screen is mobile-sized
   // const isMobile = useMediaQuery('(max-width:600px)');
 
@@ -38,6 +38,7 @@ const CustomerRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
         <TableCell>{phone || ""}</TableCell>
         <TableCell>{tel || ""}</TableCell>
         <TableCell>{role || ""}</TableCell>
+        <TableCell>{group || ""}</TableCell>
 
         <TableCell>
           <Tooltip title="Edit Customer">

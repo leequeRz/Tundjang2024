@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const {
-	AddCustomer,
-	EditCustomer,
-	FindCustomer,
-	DelCustomer,
+  AddCustomer,
+  EditCustomer,
+  FindCustomer,
+  DelCustomer,
 } = require("../controllers/customerController");
 
 /**

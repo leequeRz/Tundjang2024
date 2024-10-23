@@ -42,7 +42,9 @@ export const CustomerProvider = ({ children }) => {
     {
       onSuccess: (_, customer_id) => {
         queryClient.setQueryData(["customers"], (oldCustomers = []) =>
-          oldCustomers.filter((customer) => customer.customer_id !== customer_id)
+          oldCustomers.filter(
+            (customer) => customer.customer_id !== customer_id
+          )
         );
       },
       onError: (error) => {
@@ -81,13 +83,16 @@ export const CustomerProvider = ({ children }) => {
   // Mutation to update an existing Customer
   const updateCustomer = useMutation(
     async (customer) => {
-      const response = await fetch(`${apiUrl}/customer/${customer.customer_id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(customer),
-      });
+      const response = await fetch(
+        `${apiUrl}/customer/${customer.customer_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(customer),
+        }
+      );
       if (!response.ok) throw new Error("Error updating Customer");
       return customer;
     },
@@ -95,7 +100,9 @@ export const CustomerProvider = ({ children }) => {
       onSuccess: (updatedCustomer) => {
         queryClient.setQueryData(["customers"], (oldCustomers = []) =>
           oldCustomers.map((customer) =>
-            customer.customer_id === updatedCustomer.customer_id ? updatedCustomer : customer
+            customer.customer_id === updatedCustomer.customer_id
+              ? updatedCustomer
+              : customer
           )
         );
       },

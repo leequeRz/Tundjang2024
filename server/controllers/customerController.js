@@ -22,12 +22,16 @@ const AddCustomer = logRequest(
         "phone",
         "role",
         "tel",
+        "group",
       ];
       if (!checkField(requiredFields, req, res)) {
         return;
       }
 
-      await db.collection("customers").doc(req.body.customer_id).create(req.body);
+      await db
+        .collection("customers")
+        .doc(req.body.customer_id)
+        .create(req.body);
 
       logger.info(`Customer added: ${req.body.customer_id}`); // Log the addition of a Customer
       res.status(200).send({ message: "success" });
@@ -49,7 +53,15 @@ const EditCustomer = logRequest(
 
       const { customer_id } = req.params;
 
-      const requiredFields = ["customer_id", "name","surname", "phone", "role", "tel_company"];
+      const requiredFields = [
+        "customer_id",
+        "name",
+        "surname",
+        "phone",
+        "role",
+        "tel_company",
+        "group",
+      ];
 
       if (!checkField(requiredFields, req, res)) {
         return;
@@ -66,9 +78,12 @@ const EditCustomer = logRequest(
   })
 );
 
-const FindCustomer = logRequest( // ฟังก์ชัน FindCustomer ถูกห่อด้วย logRequest เพื่อบันทึก log ของ request
-  timeExecution( // ฟังก์ชันนี้ถูกห่อด้วย timeExecution เพื่อบันทึกเวลาการทำงาน
-    async (req, res) => { // เป็นฟังก์ชันอะซิงโครนัสที่ใช้ในการจัดการ request และ response
+const FindCustomer = logRequest(
+  // ฟังก์ชัน FindCustomer ถูกห่อด้วย logRequest เพื่อบันทึก log ของ request
+  timeExecution(
+    // ฟังก์ชันนี้ถูกห่อด้วย timeExecution เพื่อบันทึกเวลาการทำงาน
+    async (req, res) => {
+      // เป็นฟังก์ชันอะซิงโครนัสที่ใช้ในการจัดการ request และ response
       try {
         const { customer_id, name, surname } = req.query; // ดึงค่า customer_id, name, surname จาก query parameters
         let snapshot;
@@ -76,7 +91,10 @@ const FindCustomer = logRequest( // ฟังก์ชัน FindCustomer ถู
         // ค้นหาลูกค้าโดยใช้ customer_id, name หรือ surname
         if (customer_id) {
           // ค้นหาจาก customer_id ถ้ามี
-          snapshot = await db.collection("customers").where("customer_id", "==", customer_id).get();
+          snapshot = await db
+            .collection("customers")
+            .where("customer_id", "==", customer_id)
+            .get();
         } else if (name && surname) {
           // ค้นหาจาก name และ surname ถ้ามีทั้งคู่
           snapshot = await db
@@ -86,31 +104,44 @@ const FindCustomer = logRequest( // ฟังก์ชัน FindCustomer ถู
             .get();
         } else if (name) {
           // ค้นหาจาก name อย่างเดียว
-          snapshot = await db.collection("customers").where("name", "==", name).get();
+          snapshot = await db
+            .collection("customers")
+            .where("name", "==", name)
+            .get();
         } else if (surname) {
           // ค้นหาจาก surname อย่างเดียว
-          snapshot = await db.collection("customers").where("surname", "==", surname).get();
+          snapshot = await db
+            .collection("customers")
+            .where("surname", "==", surname)
+            .get();
         } else {
           // ถ้าไม่มีเงื่อนไขใดๆ ส่งข้อมูลลูกค้ามากที่สุด 15 รายการ
           snapshot = await db.collection("customers").limit(15).get();
         }
 
         const customers = []; // สร้าง array สำหรับเก็บข้อมูลลูกค้า
-        snapshot.forEach((doc) => { // วนลูปผ่านเอกสารที่ได้จากการค้นหา
+        snapshot.forEach((doc) => {
+          // วนลูปผ่านเอกสารที่ได้จากการค้นหา
           const data = doc.data(); // ดึงข้อมูลจากแต่ละเอกสาร
           customers.push({ id: doc.id, ...data }); // เพิ่มข้อมูลลูกค้าและ id ของเอกสารลงใน array
         });
 
-        logger.info(`Customer(s) found: ${customer_id || name || surname ? `${customer_id || name || surname}` : "all Customers"}`); // บันทึก log ว่าพบลูกค้า (หรือทั้งหมดถ้าไม่มี customer_id, name, surname)
+        logger.info(
+          `Customer(s) found: ${
+            customer_id || name || surname
+              ? `${customer_id || name || surname}`
+              : "all Customers"
+          }`
+        ); // บันทึก log ว่าพบลูกค้า (หรือทั้งหมดถ้าไม่มี customer_id, name, surname)
         res.status(200).json(customers); // ส่งข้อมูลลูกค้าที่พบกลับในรูปแบบ JSON
-      } catch (error) { // หากเกิดข้อผิดพลาด
+      } catch (error) {
+        // หากเกิดข้อผิดพลาด
         logger.error(`Error finding Customer(s): ${error.message}`); // บันทึก log ข้อผิดพลาด
         res.status(500).send(error.message); // ส่งข้อความข้อผิดพลาดกลับไปยัง client
       }
     }
   )
 );
-
 
 const DelCustomer = logRequest(
   timeExecution(async (req, res) => {

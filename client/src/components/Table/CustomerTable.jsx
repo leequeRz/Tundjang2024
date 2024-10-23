@@ -28,7 +28,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#FA4616", // Orange color
+      main: "#FFC72C", // Orange color
     },
   },
 });
@@ -59,6 +59,11 @@ const TableComponent = () => {
     return Array.from({ length: numYears }, (_, i) => currentYear + i);
   };
 
+  const handleYearChange = (event) => {
+    setSelectedYear(event.target.value); // Save selected year
+    console.log("Selected Year:", event.target.value); // Log the selected year
+  };
+
   const years = generateYears(3); // Generate next 3 years
 
   const handleEdit = (customer) => {
@@ -78,11 +83,6 @@ const TableComponent = () => {
     );
   };
 
-  const handleYearChange = (event) => {
-    setSelectedYear(event.target.value); // Save selected year
-    console.log("Selected Year:", event.target.value); // Log the selected year
-  };
-
   if (isLoading) return <Typography>Loading...</Typography>;
   if (error) return <Typography>Error: {error}</Typography>;
 
@@ -97,7 +97,7 @@ const TableComponent = () => {
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="h5" sx={{ mr: 2 }}>
+          <Typography variant="h6" sx={{ mr: 2 }}>
             รายชื่อคนยืมพัสดุ
           </Typography>
           <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
@@ -123,11 +123,7 @@ const TableComponent = () => {
             <Button
               variant="contained"
               color="primary"
-              sx={{
-                // padding: "12px 24px",
-                fontSize: "1rem",
-                minWidth: "150px",
-              }}
+              sx={{ ml: 2 }}
               onClick={() => {
                 setEditingCustomer(null, setIsPopupOpen(true));
               }}
@@ -136,7 +132,7 @@ const TableComponent = () => {
             </Button>
           </ThemeProvider>
           <ThemeProvider theme={theme}>
-            {/* <Button
+            <Button
               variant="contained"
               color="primary"
               sx={{ ml: 2 }}
@@ -145,18 +141,13 @@ const TableComponent = () => {
               }}
             >
               เพิ่มปี
-            </Button> */}
+            </Button>
           </ThemeProvider>
           <ThemeProvider theme={theme}>
             <Button
               variant="contained"
               color="primary"
-              sx={{
-                ml: 2,
-                // padding: "12px 24px",
-                fontSize: "1rem",
-                minWidth: "150px",
-              }}
+              sx={{ ml: 2 }}
               onClick={() => {
                 setEditingCustomer(null, setIsPopupOpen(true));
               }}
@@ -168,13 +159,7 @@ const TableComponent = () => {
             <Button
               variant="outlined"
               color="primary"
-              sx={{
-                ml: 2,
-                // padding: "12px 24px",
-                fontSize: "1rem",
-                minWidth: "150px",
-                textTransform: "none",
-              }}
+              sx={{ ml: 2, textTransform: "none" }}
             >
               <FilterListIcon sx={{ mr: 1 }} />
               Filters
@@ -184,13 +169,7 @@ const TableComponent = () => {
             <Button
               variant="outlined"
               color="primary"
-              sx={{
-                ml: 2,
-                // padding: "12px 24px",
-                fontSize: "1rem",
-                minWidth: "150px",
-                textTransform: "none",
-              }}
+              sx={{ ml: 2, textTransform: "none" }}
             >
               <PictureAsPdfIcon sx={{ mr: 1 }} />
               Export PDF

@@ -14,10 +14,8 @@ import {
   Grid,
   Snackbar,
   Alert,
-  Autocomplete,
-  Checkbox,
 } from "@mui/material";
-import { getCurrentShift, calculateAge } from "../../utils/helper";
+import { getCurrentShift } from "../../utils/helper";
 import SearchFilterBar from "../SearchFilterBar";
 import { useSearch } from "../../hooks/useSearch";
 import { useCustomers } from "../../context/customerContext";
@@ -79,35 +77,24 @@ const FOOD_INTAKE_OPTIONS = [
 const EXTRA_FOOD_OPTIONS = ["ตามปกติ", "รับประทานน้อย", "ไม่รับประทาน"];
 
 const initialFormState = {
-  BT: "ไม่มีไข้",
-  BP: "ปกติ",
-  HR: "ปกติ",
-  RR: "ปกติ",
-  O2sat: "ปกติ",
-  conscious: "ตื่น รู้สึกตัวดี",
-  breath_pattern: "หายใจปกติ",
-  eat_method: "รับประทานเองได้",
-  phlegm: "ไม่มีเสมหะ",
-  food_type: "นมแม่",
-  food_intake: "กินได้ดี",
+  start_date: "",
+  end_date: "",
+  Item: "",
+  count: "",
+  Responsible_person: "",
+  Item_number: "",
+  Status: "ยืม",
   // eat_value:["กินได้ดี"],
-  sleep: "นอนหลับได้",
-  excretion: "ถ่ายดี",
-  urine_num: "",
-  stool_num: "",
-  extra_symptoms: "",
-  extra_food: "ตามปกติ",
-  notes: "",
   shift: getCurrentShift(),
 };
 
 const Form = () => {
   const currentDate = new Date().toLocaleDateString();
   const [formHeader, setFormHeader] = useState({
-    HN: "",
+    customer_id: "",
     "name surname": "",
-    sex: "",
-    age: "",
+    role: "",
+    tel_company: "",
   });
   const [form, setForm] = useState(initialFormState);
   const [alert, setAlert] = useState({
@@ -126,14 +113,16 @@ const Form = () => {
   } = useCustomerRecords();
 
   // console.log(currentEditRecord);
-  const { data: records = [] } = useFetchRecords(currentEditRecord.HN?.trim());
+  const { data: records = [] } = useFetchRecords(
+    currentEditRecord.customer_id?.trim()
+  );
 
   const generateLabel = useCallback(
-    (item) => `${item.name} ${item.surname} (${item.HN})`,
+    (item) => `${item.name} ${item.surname} (${item.customer_id})`,
     []
   );
 
-  const customerOptions = useMemo(
+  const customersOptions = useMemo(
     () =>
       customers.map((customer) => ({
         id: customer.customer_id,
@@ -161,26 +150,26 @@ const Form = () => {
     filteredItems: filteredRecords,
   } = useSearch(recordOptions, ["label"]);
 
-  const handleSelectHNFilter = useCallback(
+  const handleSelectCustomer_idFilter = useCallback(
     (value) => {
       setCurrentEditRecord({
-        HN: value.id,
+        customer_id: value.id,
         docId: { id: "create-new", label: "Create New Record" },
       });
-      const selectedPatient = patients.find(
-        (patient) => patient.id === value.id
+      const selectedCustomer = customers.find(
+        (customer) => customer.id === value.id
       );
-      if (selectedPatient) {
+      if (selectedCustomer) {
         setFormHeader({
-          HN: selectedPatient.HN.trim(),
-          "name surname": `${selectedPatient.name} ${selectedPatient.surname}`,
-          sex: selectedPatient.gender,
-          age: calculateAge(selectedPatient.DOB),
+          customer_id: selectedCustomer.customer_id.trim(),
+          "name surname": `${selectedCustomer.name} ${selectedCustomer.surname}`,
+          role: selectedCustomer.role,
+          tel_company: selectedCustomer.tel_company,
         });
         setForm(initialFormState);
       }
     },
-    [patients, setCurrentEditRecord]
+    [customers, setCurrentEditRecord]
   );
 
   const handleSelectRecordFilter = useCallback(
@@ -202,7 +191,7 @@ const Form = () => {
 
   useEffect(() => {
     // console.log(currentEditRecord);
-    handleSelectHNFilter({ id: currentEditRecord.HN });
+    handleSelectCustomer_idFilter({ id: currentEditRecord.customer_id });
     handleSelectRecordFilter(currentEditRecord.docId);
   }, []);
 
@@ -220,7 +209,7 @@ const Form = () => {
       event.preventDefault();
 
       const recordData = {
-        HN: formHeader.HN,
+        customer_id: formHeader.customer_id,
         record: {
           ...form,
           id: currentEditRecord.docId.id,
@@ -254,7 +243,13 @@ const Form = () => {
         setForm(initialFormState);
       }
     },
-    [form, formHeader.HN, currentEditRecord.docId, addRecord, updateRecord]
+    [
+      form,
+      formHeader.customer_id,
+      currentEditRecord.docId,
+      addRecord,
+      updateRecord,
+    ]
   );
 
   const handleCloseAlert = () => {
@@ -292,21 +287,23 @@ const Form = () => {
 
   return (
     <Container maxWidth="md">
-      <Typography variant="h4" gutterBottom sx={{ marginY: 4 }}>
-        บันทึกอาการรายวัน ประจำวันที่ {currentDate}
+      <Typography variant="h3" gutterBottom sx={{ marginY: 6 }}>
+        บันทึกรายการยืม ประจำวันที่ {currentDate}
       </Typography>
-
+      <Typography variant="h4" gutterBottom>
+        ส่วนที่ 1 ข้อมูลผู้ยืมอุปกรณ์
+      </Typography>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2} margin="normal">
           <Grid item xs={12} sm={12}>
             <SearchFilterBar
-              searchTerm={patientSearchTerm}
-              setSearchTerm={setPatientSearchTerm}
-              selectedValue={currentEditRecord.HN}
-              filterItems={filteredPatients}
-              onFilterSelected={handleSelectHNFilter}
-              label="Patient HN"
-              placeholder="Search by HN name or surname"
+              searchTerm={customerSearchTerm}
+              setSearchTerm={setCustomerSearchTerm}
+              selectedValue={currentEditRecord.customer_id}
+              filterItems={filteredCustomers}
+              onFilterSelected={handleSelectCustomer_idFilter}
+              label="Customer ID"
+              placeholder="Search by ID , name or surname"
               required={true}
             />
           </Grid>
@@ -327,61 +324,134 @@ const Form = () => {
               selectedValue={currentEditRecord.docId}
               filterItems={filteredRecords}
               onFilterSelected={handleSelectRecordFilter}
-              label="Patient Record"
+              label="customer Record"
               placeholder="Search by record id"
               required={true}
             />
           </Grid>
         </Grid>
 
-        <FormControl component="fieldset" margin="normal">
-          <FormLabel component="legend" required>
-            เวร
-          </FormLabel>
-          <RadioGroup
-            row
-            aria-label="shift"
-            name="shift"
-            value={form.shift}
-            onChange={handleFormChange}
-          >
-            {[
-              { value: "morning-shift", label: "เวรเช้า (08:00 - 16:00)" },
-              { value: "afternoon-shift", label: "เวรบ่าย (16:00 - 23:59)" },
-              { value: "night-shift", label: "เวรดึก (00:00 - 08:00)" },
-            ].map(({ value, label }) => (
-              <FormControlLabel
-                key={value}
-                value={value}
-                control={<Radio />}
-                label={label}
-              />
-            ))}
-          </RadioGroup>
-        </FormControl>
-
-        {formHeader.HN && (
+        {formHeader.customer_id && (
           <>
             <Divider sx={{ marginY: "3rem" }} />
             <Box
               sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
             >
-              <Typography variant="body1">HN: {formHeader.HN}</Typography>
+              {/* <Typography variant="body1">customer_id: {formHeader.customer_id}</Typography>
               <Typography variant="body1">
                 Name: {formHeader["name surname"]}
               </Typography>
-              <Typography variant="body1">Sex: {formHeader.sex}</Typography>
-              <Typography variant="body1">Age: {formHeader.age}</Typography>
-              <Typography variant="body1">Shift: {form.shift}</Typography>
+              <Typography variant="body1">Role: {formHeader.role}</Typography>
+              <Typography variant="body1">Telephone company: {formHeader.tel_company}</Typography> */}
+              {/* <Typography variant="body1">Shift: {form.shift}</Typography> */}
             </Box>
 
-            <Typography variant="h5" gutterBottom>
-              ส่วนที่ 1 สัญญาณชีพ
+            <Typography variant="h4" gutterBottom>
+              ส่วนที่ 2 ข้อมูลครุภัณฑ์
             </Typography>
             <Grid container spacing={2} marginBottom={2}>
-              {VITAL_SIGNS.map((vitalSign) =>
+              <Grid
+                item
+                xs={6}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "start",
+                }}
+              >
+                <span style={{ fontSize: "25px" }}>ครุภัณฑ์</span>{" "}
+                {/* เพิ่มขนาดตัวหนังสือ */}
+              </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  name="extra_symptoms"
+                  // label="หมายเลขครุภัณฑ์"  // ลบ label ที่ซ้ำกันออก
+                  value={form.extra_symptoms}
+                  placeholder="พิมพ์ครุภัณฑ์ที่นี่"
+                  fullWidth
+                  InputProps={{ style: { fontSize: "18px" } }} // เพิ่มขนาดตัวหนังสือของ input
+                  onChange={handleFormChange}
+                />
+              </Grid>
+
+              <Grid
+                item
+                xs={6}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "start",
+                }}
+              >
+                <span style={{ fontSize: "25px" }}>จำนวน</span>{" "}
+                {/* เพิ่มขนาดตัวหนังสือ */}
+              </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  name="extra_symptoms"
+                  // label="หมายเลขครุภัณฑ์"  // ลบ label ที่ซ้ำกันออก
+                  value={form.extra_symptoms}
+                  placeholder="พิมพ์จำนวนครุภัณฑ์ที่นี่"
+                  fullWidth
+                  InputProps={{ style: { fontSize: "18px" } }} // เพิ่มขนาดตัวหนังสือของ input
+                  onChange={handleFormChange}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "start",
+                }}
+              >
+                <span style={{ fontSize: "25px" }}>หมายเลขครุภัณฑ์</span>{" "}
+                {/* เพิ่มขนาดตัวหนังสือ */}
+              </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  name="extra_symptoms"
+                  // label="หมายเลขครุภัณฑ์"  // ลบ label ที่ซ้ำกันออก
+                  value={form.extra_symptoms}
+                  placeholder="พิมพ์หมายเลขครุภัณฑ์ที่นี่"
+                  fullWidth
+                  InputProps={{ style: { fontSize: "18px" } }} // เพิ่มขนาดตัวหนังสือของ input
+                  onChange={handleFormChange}
+                />
+              </Grid>
+
+              <Grid
+                item
+                xs={6}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "start",
+                }}
+              >
+                <span style={{ fontSize: "25px" }}>หมายเหตุ</span>{" "}
+                {/* เพิ่มขนาดตัวหนังสือ */}
+              </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  name="extra_symptoms"
+                  // label="หมายเลขครุภัณฑ์"  // ลบ label ที่ซ้ำกันออก
+                  value={form.extra_symptoms}
+                  placeholder="พิมพ์หมายเหตุที่นี่"
+                  fullWidth
+                  InputProps={{ style: { fontSize: "18px" } }} // เพิ่มขนาดตัวหนังสือของ input
+                  onChange={handleFormChange}
+                />
+              </Grid>
+
+              {/* {VITAL_SIGNS.map((vitalSign) =>
                 renderRadioGroup({ ...vitalSign, value: form[vitalSign.name] })
-              )}
+              )} */}
             </Grid>
 
             <Divider sx={{ marginY: "3rem" }} />
