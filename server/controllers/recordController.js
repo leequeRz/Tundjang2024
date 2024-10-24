@@ -17,7 +17,18 @@ const { admin } = require("../config/firebaseConfig");
 const AddRecord = logRequest(
   timeExecution(async (req, res) => {
     try {
-      const requiredFields = ["start_date", "end_date", "detail1", "detail2"];
+      const requiredFields =
+       [
+        "start_date",
+        "end_date", 
+        "detail",
+        "item",
+        "count",
+        "item_number",
+        "status",
+        "detail",
+        
+        ];
       if (!checkField(requiredFields, req, res)) {
         return;
       }
@@ -35,22 +46,13 @@ const AddRecord = logRequest(
         update_time: current_time,
         start_date: req.body.start_date,
         end_date: req.body.end_date,
-        detail1: req.body.detail1 || null,
-        detail2: req.body.detail2 || null,
-        // O2sat: req.body.O2sat,
-        // conscious: req.body.conscious,
-        // breath_pattern: req.body.breath_pattern,
-        // phlegm: req.body.phlegm, // add "เสมหะ"
-        // // extra_symptoms: req.body.extra_symptoms || null, **delete**
-        // eat_method: req.body.eat_method,
-        // food_type: req.body.food_type,
-        // // extra_food: req.body.extra_food || null, **delete**
-        // food_intake: req.body.food_intake, // array
-        // sleep: req.body.sleep,
-        // excretion: req.body.excretion, // change to array
-        // urine_num: req.body.urine_num, // add
-        // stool_num: req.body.stool_num, // add
-        // notes: req.body.notes || null,
+        // detail2: req.body.detail2 || null,
+        item: req.body.item,
+        count: req.body.count,
+        item_number: req.body.item_number,
+        status: req.body.status,
+        detail:req.body.detail,
+       
       };
 
       const docId = `rec_${firestoreTimestampToDateInUTCPlus7(

@@ -31,12 +31,11 @@ const initialFormState = {
   end_date: null,
   item: "",
   count: "",
-  responsible_person: "",
+  // responsible_person: "",
   item_number: "",
   status: "ยืม",
-  // eat_value:["กินได้ดี"],
   detail:"",
-  // shift: getCurrentShift(),
+
 };
 
 const Form = () => {
