@@ -47,10 +47,11 @@ const EditCustomer = logRequest(
     try {
       const requiredParams = ["customer_id"];
       if (!checkParam(requiredParams, req, res)) {
-        return;
+        // Missing required parameters in the request
+        return res.status(400).send({ error: "Missing required parameters." });
       }
-      console.log(req.params);
 
+      console.log(req.params);
       const { customer_id } = req.params;
 
       const requiredFields = [
@@ -59,21 +60,44 @@ const EditCustomer = logRequest(
         "surname",
         "phone",
         "role",
-        "tel_company",
+        "tel",
         "group",
       ];
 
       if (!checkField(requiredFields, req, res)) {
-        return;
+        // Missing required fields in the request body
+        return res.status(400).send({ error: "Missing required fields." });
       }
 
+      // Attempt to update the customer record
       await db.collection("customers").doc(customer_id).update(req.body);
-
-      logger.info(`Customer updated: ${customer_id}`); // Log the update of a Customer
+      logger.info(`Customer updated: ${customer_id}`);
+      
+      // Send a success response
       res.status(200).send({ message: "success" });
+
     } catch (error) {
-      logger.error(`Error updating Customer: ${error.message}`); // Log the error
-      res.status(500).send(error.message);
+      // Check if the error is due to a Firestore issue (e.g., document not found)
+      if (error.code === 'not-found') {
+        logger.error(`Customer not found: ${customer_id}`);
+        return res.status(404).send({ error: "Customer not found." });
+      }
+      
+      // Handle permission-related errors (e.g., unauthorized update)
+      if (error.code === 'permission-denied') {
+        logger.error(`Permission denied for updating Customer: ${customer_id}`);
+        return res.status(403).send({ error: "Permission denied." });
+      }
+
+      // Handle other Firestore errors
+      if (error.code) {
+        logger.error(`Firestore Error: ${error.code} - ${error.message}`);
+        return res.status(500).send({ error: "An error occurred while updating the customer." });
+      }
+
+      // Log and respond to unexpected errors
+      logger.error(`Error updating Customer: ${error.message}`);
+      res.status(500).send({ error: "Unexpected error. Please try again later." });
     }
   })
 );

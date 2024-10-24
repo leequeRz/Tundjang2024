@@ -9,8 +9,10 @@ export const useCustomerForm = (customerData, onClose) => {
     name: "",
     surname: "",
     phone: "",
-    tel: "",
     role: "",
+    tel:"",
+    group:"",
+   
 
     // "customer_id",
     // "customer_name",
@@ -28,8 +30,9 @@ export const useCustomerForm = (customerData, onClose) => {
         name: "",
         surname: "",
         phone: "",
-        tel: "",
         role: "",
+        tel:"",
+        group:"",
       });
     }
   }, [customerData]);

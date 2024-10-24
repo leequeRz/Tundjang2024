@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import "./styles/App.css";
 import MainDash from "./components/MainDash/MainDash";
-// import Form from "./components/Form/Form";
+import Form from "./components/Form/Form";
 import Sidebar from "./components/Sidebar";
 import Login from "./components/Login/Login";
 import {
@@ -76,7 +76,7 @@ function MainContent() {
     case "Dashboard":
       return <MainDash />;
     case "Form":
-      // return <Form />;
+      return <Form />;
     default:
       return <MainDash />;
   }
