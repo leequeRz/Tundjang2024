@@ -3,11 +3,11 @@ import {
   Container,
   Divider,
   Typography,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  FormLabel,
+  // Radio,
+  // RadioGroup,
+  // FormControlLabel,
+  // FormControl,
+  // FormLabel,
   TextField,
   Button,
   Box,
@@ -15,77 +15,28 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { getCurrentShift } from "../../utils/helper";
+// import { formatDateToThaiDayJS } from "../../utils/helper";
 import SearchFilterBar from "../SearchFilterBar";
 import { useSearch } from "../../hooks/useSearch";
 import { useCustomers } from "../../context/customerContext";
 import { useCustomerRecords } from "../../context/customerRecordContext";
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import thLocale from "date-fns/locale/th"; // ใช้ locale ภาษาไทย
 
-const VITAL_SIGNS = [
-  {
-    label: "อุณหภูมิ (BT)",
-    name: "BT",
-    options: ["ไม่มีไข้", "ไข้ต่ำ", "ไข้สูง"],
-  },
-  { label: "ความดันโลหิต (BP)", name: "BP", options: ["ปกติ", "ต่ำ", "สูง"] },
-  {
-    label: "อัตราการเต้นของหัวใจ (HR)",
-    name: "HR",
-    options: ["ปกติ", "ช้า", "เร็ว"],
-  },
-  { label: "อัตราการหายใจ (RR)", name: "RR", options: ["ปกติ", "ช้า", "เร็ว"] },
-  {
-    label: "ค่าออกซิเจนในเลือด (O2sat)",
-    name: "O2sat",
-    options: ["ปกติ", "ต่ำ"],
-  },
-];
 
-const CONSCIOUS_OPTIONS = [
-  "ตื่น รู้สึกตัวดี",
-  "หลับ",
-  "ซึม",
-  "สับสน",
-  "ไม่รู้สึกตัว",
-];
-const BREATH_PATTERN_OPTIONS = [
-  "หายใจปกติ",
-  "หายใจช้า",
-  "หายใจเร็ว",
-  "หายใจหอบเหนื่อย",
-];
-
-const PHLEGM_OPTIONS = ["ไม่มีเสมหะ", "มีเสมหะ"];
-const EAT_METHOD_OPTIONS = ["รับประทานเองได้", "ใส่สายยางให้อาหาร"];
-const SLEEP_OPTIONS = ["นอนหลับได้", "นอนไม่หลับ", "หลับๆ ตื่นๆ"];
-const EXCRETION_OPTIONS = [" ถ่ายดี", " ท้องเสีย", " ท้องผูก"];
-const FOOD_TYPE_OPTIONS = [
-  "นมแม่",
-  "นมผสม",
-  "อาหารปกติ",
-  "อาหารอ่อน",
-  "อาหารเหลว",
-];
-const FOOD_INTAKE_OPTIONS = [
-  " กินได้ดี",
-  " กินได้น้อย",
-  " กินไม่ได้",
-  " สำลัก",
-  " คลื่นไส้อาเจียน",
-  " ท้องอืด",
-];
-const EXTRA_FOOD_OPTIONS = ["ตามปกติ", "รับประทานน้อย", "ไม่รับประทาน"];
 
 const initialFormState = {
-  start_date: "",
-  end_date: "",
-  Item: "",
+  start_date: null,
+  end_date: null,
+  item: "",
   count: "",
-  Responsible_person: "",
-  Item_number: "",
-  Status: "ยืม",
+  responsible_person: "",
+  item_number: "",
+  status: "ยืม",
   // eat_value:["กินได้ดี"],
-  shift: getCurrentShift(),
+  detail:"",
+  // shift: getCurrentShift(),
 };
 
 const Form = () => {
@@ -94,7 +45,8 @@ const Form = () => {
     customer_id: "",
     "name surname": "",
     role: "",
-    tel_company: "",
+    group:"",
+    tel: "",
   });
   const [form, setForm] = useState(initialFormState);
   const [alert, setAlert] = useState({
@@ -164,7 +116,8 @@ const Form = () => {
           customer_id: selectedCustomer.customer_id.trim(),
           "name surname": `${selectedCustomer.name} ${selectedCustomer.surname}`,
           role: selectedCustomer.role,
-          tel_company: selectedCustomer.tel_company,
+          group:selectedCustomer.group,
+          tel: selectedCustomer.tel,
         });
         setForm(initialFormState);
       }
@@ -256,34 +209,34 @@ const Form = () => {
     setAlert({ ...alert, open: false });
   };
 
-  const renderRadioGroup = useCallback(
-    ({ label, name, value, options }) => (
-      <Grid item xs={12} sm={6} key={name}>
-        <FormControl component="fieldset">
-          <FormLabel component="legend" required>
-            {label}
-          </FormLabel>
-          <RadioGroup
-            row
-            aria-label={name}
-            name={name}
-            value={value}
-            onChange={handleFormChange}
-          >
-            {options.map((option) => (
-              <FormControlLabel
-                key={option}
-                value={option}
-                control={<Radio />}
-                label={option}
-              />
-            ))}
-          </RadioGroup>
-        </FormControl>
-      </Grid>
-    ),
-    [handleFormChange]
-  );
+  // const renderRadioGroup = useCallback(
+  //   ({ label, name, value, options }) => (
+  //     <Grid item xs={12} sm={6} key={name}>
+  //       <FormControl component="fieldset">
+  //         <FormLabel component="legend" required>
+  //           {label}
+  //         </FormLabel>
+  //         <RadioGroup
+  //           row
+  //           aria-label={name}
+  //           name={name}
+  //           value={value}
+  //           onChange={handleFormChange}
+  //         >
+  //           {options.map((option) => (
+  //             <FormControlLabel
+  //               key={option}
+  //               value={option}
+  //               control={<Radio />}
+  //               label={option}
+  //             />
+  //           ))}
+  //         </RadioGroup>
+  //       </FormControl>
+  //     </Grid>
+  //   ),
+  //   [handleFormChange]
+  // );
 
   return (
     <Container maxWidth="md">
@@ -337,12 +290,12 @@ const Form = () => {
             <Box
               sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
             >
-              {/* <Typography variant="body1">customer_id: {formHeader.customer_id}</Typography>
+              <Typography variant="body1">customer_id: {formHeader.customer_id}</Typography>
               <Typography variant="body1">
                 Name: {formHeader["name surname"]}
               </Typography>
               <Typography variant="body1">Role: {formHeader.role}</Typography>
-              <Typography variant="body1">Telephone company: {formHeader.tel_company}</Typography> */}
+              <Typography variant="body1">Telephone company: {formHeader.tel}</Typography>
               {/* <Typography variant="body1">Shift: {form.shift}</Typography> */}
             </Box>
 
@@ -365,9 +318,8 @@ const Form = () => {
 
               <Grid item xs={6}>
                 <TextField
-                  name="extra_symptoms"
-                  // label="หมายเลขครุภัณฑ์"  // ลบ label ที่ซ้ำกันออก
-                  value={form.extra_symptoms}
+                  name="item"
+                  value={form.item}
                   placeholder="พิมพ์ครุภัณฑ์ที่นี่"
                   fullWidth
                   InputProps={{ style: { fontSize: "18px" } }} // เพิ่มขนาดตัวหนังสือของ input
@@ -390,9 +342,9 @@ const Form = () => {
 
               <Grid item xs={6}>
                 <TextField
-                  name="extra_symptoms"
+                  name="count"
                   // label="หมายเลขครุภัณฑ์"  // ลบ label ที่ซ้ำกันออก
-                  value={form.extra_symptoms}
+                  value={form.count}
                   placeholder="พิมพ์จำนวนครุภัณฑ์ที่นี่"
                   fullWidth
                   InputProps={{ style: { fontSize: "18px" } }} // เพิ่มขนาดตัวหนังสือของ input
@@ -414,9 +366,9 @@ const Form = () => {
 
               <Grid item xs={6}>
                 <TextField
-                  name="extra_symptoms"
+                  name="item_number"
                   // label="หมายเลขครุภัณฑ์"  // ลบ label ที่ซ้ำกันออก
-                  value={form.extra_symptoms}
+                  value={form.item_number}
                   placeholder="พิมพ์หมายเลขครุภัณฑ์ที่นี่"
                   fullWidth
                   InputProps={{ style: { fontSize: "18px" } }} // เพิ่มขนาดตัวหนังสือของ input
@@ -433,15 +385,15 @@ const Form = () => {
                   justifyContent: "start",
                 }}
               >
-                <span style={{ fontSize: "25px" }}>หมายเหตุ</span>{" "}
+                <span style={{ fontSize: "25px" }}>วัตถุประสงค์เพื่อ</span>{" "}
                 {/* เพิ่มขนาดตัวหนังสือ */}
               </Grid>
 
               <Grid item xs={6}>
                 <TextField
-                  name="extra_symptoms"
+                  name="detail"
                   // label="หมายเลขครุภัณฑ์"  // ลบ label ที่ซ้ำกันออก
-                  value={form.extra_symptoms}
+                  value={form.detail}
                   placeholder="พิมพ์หมายเหตุที่นี่"
                   fullWidth
                   InputProps={{ style: { fontSize: "18px" } }} // เพิ่มขนาดตัวหนังสือของ input
@@ -449,163 +401,65 @@ const Form = () => {
                 />
               </Grid>
 
-              {/* {VITAL_SIGNS.map((vitalSign) =>
-                renderRadioGroup({ ...vitalSign, value: form[vitalSign.name] })
-              )} */}
-            </Grid>
+              <Grid
+                item
+                xs={6}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "start",
+                }}
+              >
+                <span style={{ fontSize: "25px" }}>เริ่มตั้งแต่วันที่</span>{" "}
+                {/* เพิ่มขนาดตัวหนังสือ */}
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "start",
+                }}
+              >
+                <span style={{ fontSize: "25px" }}>ถึงวันที่</span>{" "}
+                {/* เพิ่มขนาดตัวหนังสือ */}
+              </Grid>
+              <Grid item xs={6}>
+                <LocalizationProvider dateAdapter={AdapterDateFns} locale={thLocale}>
+                  <DatePicker
+                    name="start_date"
+                    label="ตั้งแต่วันที่"
+                    value={form.start_date}
+                    inputFormat="dd/MM/yyyy" // รูปแบบวันที่ที่ต้องการ
+                    views={["year", "month", "day"]} // สามารถเลือกปี-เดือน-วัน
+                    onChange={(newValue) => handleFormChange({ target: { name: "start_date", value: newValue } })}
+                    renderInput={(params) => (
+                      <TextField {...params} fullWidth InputProps={{ style: { fontSize: "18px" } }} />
+                    )}
+                  />
+                </LocalizationProvider>
+              </Grid>
 
-            <Divider sx={{ marginY: "3rem" }} />
-
-            <Typography variant="h5" gutterBottom>
-              ส่วนที่ 2 อาการเบื้องต้น
-            </Typography>
-            <Grid container spacing={2} marginBottom={2}>
-              {renderRadioGroup({
-                label: "ระดับความรู้สึกตัว",
-                name: "conscious",
-                value: form.conscious,
-                options: CONSCIOUS_OPTIONS,
-              })}
-              {renderRadioGroup({
-                label: "ลักษณะการหายใจ",
-                name: "breath_pattern",
-                value: form.breath_pattern,
-                options: BREATH_PATTERN_OPTIONS,
-              })}
-              {renderRadioGroup({
-                label: "เสมหะ",
-                name: "phlegm",
-                value: form.phlegm,
-                options: PHLEGM_OPTIONS,
-              })}
-              <Grid item xs={12}>
-                <TextField
-                  name="extra_symptoms"
-                  label="อาการเพิ่มเติม"
-                  InputLabelProps={{ shrink: true }}
-                  value={form.extra_symptoms}
-                  placeholder="พิมพ์อาการเพิ่มเติมที่นี่"
-                  fullWidth
-                  onChange={handleFormChange}
-                />
+              <Grid item xs={6}>
+                <LocalizationProvider dateAdapter={AdapterDateFns} locale={thLocale}>
+                  <DatePicker
+                    name="end_date"
+                    label="ถึงวันที่"
+                    value={form.end_date}
+                    inputFormat="dd/MM/yyyy"
+                    views={["year", "month", "day"]}
+                    onChange={(newValue) => handleFormChange({ target: { name: "end_date", value: newValue } })}
+                    renderInput={(params) => (
+                      <TextField {...params} fullWidth InputProps={{ style: { fontSize: "18px" } }} />
+                    )}
+                  />
+                </LocalizationProvider>
               </Grid>
             </Grid>
 
             <Divider sx={{ marginY: "3rem" }} />
 
-            <Typography variant="h6" gutterBottom>
-              ส่วนที่ 3 อาหาร
-            </Typography>
-            <Grid container spacing={2} marginBottom={2}>
-              {renderRadioGroup({
-                label: "รูปแบบการรับประทานอาหาร",
-                name: "eat_method",
-                value: form.eat_method,
-                options: EAT_METHOD_OPTIONS,
-              })}
-              {renderRadioGroup({
-                label: "ประเภทของอาหารอาหาร",
-                name: "food_type",
-                value: form.food_type,
-                options: FOOD_TYPE_OPTIONS,
-              })}
-
-              {renderRadioGroup({
-                label: "พฤติกรรมการรับประทานอาหาร",
-                name: "extra_food",
-                value: form.extra_food,
-                options: EXTRA_FOOD_OPTIONS,
-              })}
-              {renderRadioGroup({
-                label: "การรับประทานอาหาร",
-                name: "food_intake",
-                value: form.food_intake,
-                options: FOOD_INTAKE_OPTIONS,
-              })}
-              {/* <Grid item xs={12} sm={6}>
-								<FormControl component="fieldset">
-									<FormLabel component="legend" required>
-									การรับประทานอาหาร
-									</FormLabel>
-									<Autocomplete
-										multiple
-										options={FOOD_INTAKE_OPTIONS}
-										value={form.food_intake}
-										onChange={(_, value) =>
-											setForm((prev) => ({ ...prev, food_intake: value }))
-										}
-										renderOption={(props, option, { selected }) => (
-											<li {...props}>
-												<Checkbox
-													style={{ marginRight: 8 }}
-													checked={selected}
-												/>
-												{option}
-											</li>
-										)}
-										renderInput={(params) => <TextField {...params} />}
-									/>
-								</FormControl>
-							</Grid> */}
-
-              {renderRadioGroup({
-                label: "การนอนหลับ",
-                name: "sleep",
-                value: form.sleep,
-                options: SLEEP_OPTIONS,
-              })}
-
-              {renderRadioGroup({
-                label: "การขับถ่าย",
-                name: "excretion",
-                value: form.excretion,
-                options: EXCRETION_OPTIONS,
-              })}
-
-              {/* <Grid item xs={12} sm={6}>
-							<FormControl component="fieldset">
-								<FormLabel component="legend" required>
-								การขับถ่าย
-								</FormLabel>
-								<Autocomplete
-									options={EXCRETION_OPTIONS }
-									value={form.excretion}
-									onChange={(_, value) =>
-										setForm((prev) => ({ ...prev, excretion: value }))
-									}
-									renderOption={(props, option, { selected }) => (
-										<li {...props}>
-											<Checkbox
-												style={{ marginRight: 8 }}
-												checked={selected}
-											/>												{option}
-										</li>
-									)}
-									renderInput={(params) => <TextField {...params} />}
-								/>
-							</FormControl>
-							</Grid> */}
-              {/* Urine and Stool Count */}
-              <Grid item xs={12} sm={6}></Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    label="จำนวนปัสสาวะ (ครั้ง)"
-                    name="urine_num"
-                    value={form.urine_num}
-                    onChange={handleFormChange}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6} marginTop={1}>
-                  <TextField
-                    label="จำนวนอุจจาระ (ครั้ง)"
-                    name="stool_num"
-                    value={form.stool_num}
-                    onChange={handleFormChange}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
 
             <Typography variant="h6" gutterBottom>
               หมายเหตุเพิ่มเติม
