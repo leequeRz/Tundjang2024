@@ -53,7 +53,7 @@ const Form = () => {
     severity: "success",
     message: "",
   });
-
+  
   const { customers } = useCustomers();
   const {
     currentEditRecord,
@@ -123,23 +123,23 @@ const Form = () => {
     },
     [customers, setCurrentEditRecord]
   );
-
   const handleSelectRecordFilter = useCallback(
     (value) => {
       setCurrentEditRecord((prev) => ({ ...prev, docId: value }));
-      const selectedRecord = records.find((record) => record.id === value);
+      const selectedRecord = records.find((record) => record.id === value.id);
       if (selectedRecord) {
-        setForm((prev) => ({
-          ...prev,
-          ...selectedRecord,
-          food_type: selectedRecord.food_type || [""],
-        }));
+        // อัปเดต form ด้วยค่าจาก selectedRecord
+        setForm({
+          ...initialFormState, // เริ่มต้นจาก initialFormState
+          ...selectedRecord, // เติมค่าจาก selectedRecord
+        });
       } else {
-        setForm(initialFormState);
+        setForm(initialFormState); // รีเซ็ตฟอร์มถ้าไม่พบ Record
       }
     },
     [records, setCurrentEditRecord]
   );
+  
 
   useEffect(() => {
     // console.log(currentEditRecord);
