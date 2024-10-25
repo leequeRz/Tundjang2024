@@ -10,45 +10,58 @@ import {
   Grid,
   Button,
 } from "@mui/material";
-import { calculateAge } from "../../utils/helper";
-
+import { formatDateToThai } from "../../utils/helper";
 const CustomerRecordPopup = ({ open, onClose, customer, record }) => {
-  console.log(record);
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="sm"
+      maxWidth="md" // Ensure the size is "md" for better readability
       fullWidth
       sx={{ padding: "1rem" }}
     >
       <DialogTitle>
-        <Typography variant="h5" component={"div"}>
-          รายละเอียดการบันทึกอาการ
+        <Typography variant="h5" component="div">
+          รายละเอียดการยืม
         </Typography>
       </DialogTitle>
+
+      <Divider sx={{ marginY: "1rem" }} />
       <DialogContent>
         <Container>
+          <Typography variant="h6" gutterBottom>
+            ส่วนที่ 1 ข้อมูลผู้ยืมอุปกรณ์
+          </Typography>
           <Grid container spacing={1}>
             {/* Static Inputs */}
             <Grid item xs={12} sm={6}>
-              <Typography variant="body2" gutterBottom>
-                <strong>customer_id:</strong> {customer.customer_id}
+              <Typography variant="body1" gutterBottom>
+                <strong>รหัสประจำตัว:</strong> {customer.customer_id}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography variant="body2" gutterBottom>
+              <Typography variant="body1" gutterBottom>
                 <strong>ชื่อ-สกุล:</strong> {customer.name} {customer.surname}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography variant="body2" gutterBottom>
-                <strong>เพศ:</strong> {customer.gender}
+              <Typography variant="body1" gutterBottom>
+                <strong>ตำแหน่ง:</strong> {customer.role}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography variant="body2" gutterBottom>
-                <strong>อายุ:</strong> {calculateAge(customer.DOB)}
+              <Typography variant="body1" gutterBottom>
+                <strong>สังกัด:</strong> {customer.group}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body1" gutterBottom>
+                <strong>โทรศัพย์:</strong> {customer.phone}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="body1" gutterBottom>
+                <strong>โทรศัพย์ภายใน:</strong> {customer.tel}
               </Typography>
             </Grid>
           </Grid>
@@ -57,112 +70,41 @@ const CustomerRecordPopup = ({ open, onClose, customer, record }) => {
 
           {/* Vital Signs Section */}
           <Typography variant="h6" gutterBottom>
-            ส่วนที่ 1 สัญญาณชีพ
+            ส่วนที่ 2 ข้อมูลครุภัณฑ์
           </Typography>
           <Grid container spacing={1}>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="body2" gutterBottom>
-                <strong>อุณหภูมิ (BT):</strong> {record.BT}
+            <Grid item xs={12}>
+              <Typography variant="body1" gutterBottom>
+                <strong>ยืมตั้งแต่วันที่ :</strong> {formatDateToThai(record.start_date)}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="body2" gutterBottom>
-                <strong>ความดันโลหิต (BP):</strong> {record.BP}
+            <Grid item xs={12}>
+              <Typography variant="body1" gutterBottom>
+                <strong>ถึงวันที่ :</strong> {formatDateToThai(record.end_date)}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="body2" gutterBottom>
-                <strong>อัตราการเต้นของหัวใจ (HR):</strong> {record.HR}
+            <Grid item xs={12}>
+              <Typography variant="body1" gutterBottom>
+                <strong>รายการยืม :</strong> {record.item}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="body2" gutterBottom>
-                <strong>อัตราการหายใจ (RR):</strong> {record.RR}
+            <Grid item xs={12}>
+              <Typography variant="body1" gutterBottom>
+                <strong>จำนวน :</strong> {record.count}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="body2" gutterBottom>
-                <strong>ค่าออกซิเจนในเลือด (O2sat):</strong> {record.O2sat}
+            <Grid item xs={12}>
+              <Typography variant="body1" gutterBottom>
+                <strong>วัตถุประสงค์เพื่อ :</strong> {record.detail}
               </Typography>
             </Grid>
           </Grid>
 
           <Divider sx={{ marginY: "2rem" }} />
-
-          {/* Additional Symptoms Section */}
-          <Typography variant="h6" gutterBottom>
-            ส่วนที่ 2 อาการเบื้องต้น
-          </Typography>
           <Grid container spacing={1}>
-            <Grid item xs={12}>
-              <Typography variant="body2" gutterBottom>
-                <strong>ระดับความรู้สึกตัว:</strong> {record.conscious}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body2" gutterBottom>
-                <strong>ลักษณะการหายใจ:</strong> {record.breath_pattern}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body2" gutterBottom>
-                <strong>เสมหะ:</strong> {record.phlegm}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body2" gutterBottom>
-                <strong>อาการเพิ่มเติม:</strong> {record.extra_symptoms}
-              </Typography>
-            </Grid>
-          </Grid>
-
-          <Divider sx={{ marginY: "2rem" }} />
-
-          {/* Diet and Sleep Section */}
-          <Typography variant="h6" gutterBottom>
-            ส่วนที่ 3 การรับประทานอาหาร
-          </Typography>
-          <Grid container spacing={1}>
-            <Grid item xs={12}>
-              <Typography variant="body2" gutterBottom>
-                <strong>รูปแบบการรับประทานอาหาร:</strong> {record.eat_method}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body2" gutterBottom>
-                <strong>ประเภทของอาหารอาหาร:</strong> {record.food_type}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body2" gutterBottom>
-                <strong>พฤติกรรมการรับประทานอาหาร:</strong> {record.extra_food}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body2" gutterBottom>
-                <strong>การรับประทานอาหาร:</strong> {record.food_intake}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body2" gutterBottom>
-                <strong>การนอนหลับ:</strong> {record.sleep}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body2" gutterBottom>
-                <strong>การขับถ่าย:</strong> {record.excretion}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body2" gutterBottom>
-                <strong>จำนวนปัสสาวะ:</strong> {record.urine_num}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body2" gutterBottom>
-                <strong>จำนวนอุจจาระ:</strong> {record.stool_num}
-              </Typography>
-            </Grid>
+            <Typography variant="h6" gutterBottom>
+              <strong>สถานะปัจจุบัน :</strong> {record.status}
+            </Typography>
           </Grid>
         </Container>
       </DialogContent>
