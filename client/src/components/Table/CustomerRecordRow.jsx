@@ -10,6 +10,7 @@ import {
   CircularProgress,
   Button,
 } from "@mui/material";
+// import { createTheme, ThemeProvider } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomerRecordPopup from "./CustomerRecordPopup";
@@ -19,16 +20,18 @@ import DeleteConfirmationDialog from "../Dialog/DeleteConfirmationDialog";
 import { formatDateToThai } from "../../utils/helper";
 
 const CustomerRecordRow = ({ customer }) => {
+
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [customerRecord, setCustomerRecord] = useState({
     start_date: "",
     end_date: "",
-    detail1: "",
-    detail2: "",
-    // excretion: "",
-    // food_intake: [],
-    // conscious: "",
-    // timestamp: "",
+    item: "",
+    count: "",
+    item_number: "",
+    status: "",
+    detail:"",
+  
+  
   });
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState({
@@ -78,9 +81,9 @@ const CustomerRecordRow = ({ customer }) => {
   // Fetch records for the given customer customer_id
   const CustomerRecordsDisplay = () => {
     const {
-      data: records = [],
-      isLoading,
-      isError,
+        data: records = [],
+        isLoading,
+        isError,
     } = useFetchRecords(customer.customer_id);
 
     if (isLoading) return <CircularProgress />;
@@ -88,60 +91,94 @@ const CustomerRecordRow = ({ customer }) => {
 
     // Sort records by timestamp in descending order (latest first)
     const sortedRecords = records.slice().sort((a, b) => {
-      return new Date(b.create_time) - new Date(a.create_time);
+        return new Date(b.create_time) - new Date(a.create_time);
     });
 
-    return sortedRecords.map((entry) => (
-      <TableRow
-        key={entry.id}
-        onClick={() => {
-          setCustomerRecord(entry);
-          openPopup();
-        }}
-      >
-        <TableCell>{formatDateToThai(entry.create_time)}</TableCell>
-        <TableCell>{entry.notes}</TableCell>
-        <TableCell>
-          <Tooltip title="Edit Customer">
-            <IconButton
-              onClick={(e) => {
-                handleEditClick(e, customer.customer_id, entry.id);
-              }}
-              color="primary"
-            >
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Delete customer">
-            <IconButton
-              onClick={(e) => {
-                handleDeleteClick(e, entry.id);
-              }}
-              color="error"
-            >
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        </TableCell>
-      </TableRow>
-    ));
-  };
+    // Calculate the number of records
+    const recordCount = sortedRecords.length;
+
+    return (
+        <>
+            <TableRow >
+                <TableCell colSpan={7} style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                    จำนวนรายการทั้งหมด: {recordCount}
+                </TableCell>
+            </TableRow>
+            {sortedRecords.map((entry, index) => ( // Add index parameter here
+                <TableRow
+                    key={entry.id}
+                    onClick={() => {
+                        setCustomerRecord(entry);
+                        openPopup();
+                    }}
+                >
+                    <TableCell>{index + 1}</TableCell> {/* Order (Index) */}
+                    <TableCell>{formatDateToThai(entry.create_time)}</TableCell> {/* Date */}
+                    <TableCell>{entry.item}</TableCell> {/* Item */}
+                    <TableCell>{entry.count}</TableCell> {/* Count */}
+                    <TableCell>{entry.item_number}</TableCell> {/* Item Number */}
+                    <TableCell>{entry.detail}</TableCell> {/* Detail */}
+                    <TableCell>{entry.status}</TableCell> {/* Status */}
+                    <TableCell>
+                        <Tooltip title="Edit Customer">
+                            <IconButton
+                                onClick={(e) => {
+                                    handleEditClick(e, customer.customer_id, entry.id);
+                                }}
+                                color="primary"
+                            >
+                                <EditIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete customer">
+                            <IconButton
+                                onClick={(e) => {
+                                    handleDeleteClick(e, entry.id);
+                                }}
+                                color="error"
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </TableCell>
+                </TableRow>
+            ))}
+        </>
+    );
+};
 
   return (
     <>
-      <TableRow>
-        <TableCell colSpan={8}>
+      <TableRow sx={{ backgroundColor:"#F9DFB1" }}>
+        <TableCell colSpan={8} >
           <div className="sub-row">
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Time</TableCell>
-                  <TableCell>Detail</TableCell>
-                  <TableCell>
-                    <Button onClick={handleNewClick}>Add New Record</Button>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
+            <Table size="small" >
+            <TableHead sx={{ backgroundColor:"#d6521e" }}>
+              <TableRow > {/* Set background color to orange */}
+                <TableCell sx={{ color: "white", fontSize: "1.25rem" }}>ลำดับ</TableCell>
+                <TableCell sx={{ color: "white", fontSize: "1.25rem" }}>วันที่บันทึก</TableCell>
+                <TableCell sx={{ color: "white", fontSize: "1.25rem" }}>รายการ</TableCell>
+                <TableCell sx={{ color: "white", fontSize: "1.25rem" }}>จำนวน</TableCell>
+                <TableCell sx={{ color: "white", fontSize: "1.25rem" }}>หมายเลขครุภัณฑ์</TableCell>
+                <TableCell sx={{ color: "white", fontSize: "1.25rem" }}>หมายเหตุ</TableCell>
+                <TableCell sx={{ color: "white", fontSize: "1.25rem" }}>สถานะ</TableCell>
+                <TableCell>
+                  <Button 
+                    variant="contained"
+                    // color=""
+                    
+                    sx={{
+                      color:"#d6521e",
+                      backgroundColor:"white",
+                      border:"solid 1px white",
+                      fontSize: "1rem",
+                      minWidth: "150px",
+                    }}
+                  
+                  onClick={handleNewClick}>Add New Record</Button>
+                </TableCell>
+              </TableRow>
+            </TableHead>
               <TableBody>
                 <CustomerRecordsDisplay />
               </TableBody>
