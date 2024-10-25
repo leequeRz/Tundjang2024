@@ -10,25 +10,20 @@ import {
 } from "@mui/material";
 import { useCustomerForm } from "../../hooks/useCustomerForm";
 import { FormField, SelectField } from "./FormComponents";
-// import ThaiYearDatePicker from "../ThaiYearDatePicker";
-// import dayjs from "dayjs";
+import ThaiYearDatePicker from "../ThaiYearDatePicker";
+import dayjs from "dayjs";
 
 const CustomerPopup = ({ open, onClose, customerData }) => {
   const { formData, handleChange, handleSubmit, isSubmitting } =
     useCustomerForm(customerData, onClose);
 
-  // const handleDateChange = (date) => {
-  // 	// Convert dayjs date to Date object or null
-  // 	const formattedDate = date ? date.format("YYYY-MM-DD") : null;
-  // 	handleChange({ target: { name: "DOB", value: formattedDate } });
-  // 	// console.log(formData);
-  // };
-  // customer_id: "",
+  const handleDateChange = (date) => {
+  	// Convert dayjs date to Date object or null
+  	const formattedDate = date ? date.format("YYYY-MM-DD") : null;
+  	handleChange({ target: { name: "DOB", value: formattedDate } });
+  	// console.log(formData);
+  };
 
-  // customer_name: "",
-  // phone: "",
-  // role: "",
-  // tel_company: "",
   const formFields = [
     {
       name: "customer_id",
@@ -36,38 +31,54 @@ const CustomerPopup = ({ open, onClose, customerData }) => {
       disabled: !!customerData,
       sm: 12,
     },
-    // {
-    // 	name: "prefix",
-    // 	label: "Prefix",
-    // 	type: "select",
-    // 	options: ["Mr.", "Mrs.", "Ms."],
-    // 	sm: 2,
-    // },
+
     { name: "name", label: "ชื่อ", sm: 6 },
     { name: "surname", label: "นามสกุล", sm: 6 },
     {
       name: "role",
       label: "ตำแหน่ง",
       type: "select",
-      options: ["เด็กเดิน", "เด็กเชียร์เบียร์", "รด."],
-      sm: 6,
+      options: [
+        "ผู้อำนวยการ สวท.",
+        "เลขานุการ สวท./รองผอ.ฝ่ายบริหารฯ",
+        "นักบริหารจัดการเทคโนโลยีเชิงธุรกิจ",
+        "นักพัสดุ",
+        "นักบริหารงานทั่วไป",
+        "นักบัญชี",
+        "นักบริหารการเงิน",
+        "นักวิเคราะห์แผนและงบประมาณ",
+        "พนักงานบริการ",
+        "พนักงานช่วยบริหาร"
+    ]
+    
+      ,sm: 6,
     },
-    { name: "group", label: "สังกัดกลุ่มหน่วยงาน", sm: 6 },
+    { 
+      name: "group", 
+      label: "สังกัดกลุ่มหน่วยงาน", 
+      type: "select",
+      options: [
+        "ศูนย์วิจัยและบริการเพื่อชุมชนและสังคม",
+        "ศูนย์เทคโนโลยีชีวมวลบำบัดรักษา",
+        "ศูนย์พัฒนาสินค้าอุตสาหกรรม",
+        "ศูนย์ความเป็นเลิศด้านโลจิสติกส์",
+        "ศูนย์วิจัยและบริการวิศวกรรมการเชื่อม",
+        "ศูนย์บูรณาการเทคโนโลยีเพื่ออุตสาหกรรมไทย",
+        "ศูนย์รับรองระบบมาตรฐานนานาชาติ",
+        "ศูนย์การศึกษาต่อเนื่อง",
+        "ศูนย์อิเล็กทรอนิกส์ยานยนต์",
+        "ศูนย์วิจัยและพัฒนาการขนส่งทางถนน",
+        "ศูนย์ความปลอดภัยอาหาร",
+        "ศูนย์การศึกษาด้านการสื่อสารและการบริการครบวงจร",
+        "ศูนย์กลยุทธ์และความสามารถทางการแข่งขันขององค์กร",
+        "ศูนย์วิจัย Mobility & Vehicle Technology Research Center"
+      ], 
+      sm: 6 
+    },
+    
     { name: "tel", label: "หมายเลขโทรศัพท์ภายใน", sm: 6 },
     { name: "phone", label: "โทร", sm: 6 },
-    // {
-    // 	name: "DOB",
-    // 	label: "DOB",
-    // 	type: "date",
-    // 	sm: 6,
-    // 	component: (
-    // 		<ThaiYearDatePicker
-    // 			label="DOB"
-    // 			value={formData.DOB ? dayjs(formData.DOB) : null}
-    // 			onChange={handleDateChange}
-    // 		/>
-    // 	),
-    // },
+
   ];
 
   return (
