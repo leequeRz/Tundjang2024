@@ -10,19 +10,19 @@ import {
 } from "@mui/material";
 import { useCustomerForm } from "../../hooks/useCustomerForm";
 import { FormField, SelectField } from "./FormComponents";
-import ThaiYearDatePicker from "../ThaiYearDatePicker";
-import dayjs from "dayjs";
+// import ThaiYearDatePicker from "../ThaiYearDatePicker";
+// import dayjs from "dayjs";
 
 const CustomerPopup = ({ open, onClose, customerData }) => {
   const { formData, handleChange, handleSubmit, isSubmitting } =
     useCustomerForm(customerData, onClose);
 
-  const handleDateChange = (date) => {
-  	// Convert dayjs date to Date object or null
-  	const formattedDate = date ? date.format("YYYY-MM-DD") : null;
-  	handleChange({ target: { name: "DOB", value: formattedDate } });
-  	// console.log(formData);
-  };
+  // const handleDateChange = (date) => {
+  // 	// Convert dayjs date to Date object or null
+  // 	const formattedDate = date ? date.format("YYYY-MM-DD") : null;
+  // 	handleChange({ target: { name: "DOB", value: formattedDate } });
+  // 	// console.log(formData);
+  // };
 
   const formFields = [
     {
