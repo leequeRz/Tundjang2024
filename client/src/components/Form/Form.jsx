@@ -22,15 +22,16 @@ import { useCustomers } from "../../context/customerContext";
 import { useCustomerRecords } from "../../context/customerRecordContext";
 import ThaiYearDatePicker from "../ThaiYearDatePicker";
 import ThaiYearDatePickerEnd from "../ThaiYearDatePickerEnd";
+import dayjs from "dayjs";
 
 
+const defaultDate = dayjs();
 
 const initialFormState = {
-  start_date: null,
-  end_date: null,
+  start_date: defaultDate,
+  end_date: defaultDate,
   item: "",
   count: "",
-  // responsible_person: "",
   item_number: "",
   status: "ยืม",
   detail:"",
@@ -448,7 +449,7 @@ const Form = () => {
 
 
             <Typography variant="h6" gutterBottom>
-              หมายเหตุเพิ่มเติม
+                วัตถุประสงค์เพื่อ
             </Typography>
             <TextField
               placeholder="พิมพ์หมายเหตุเพิ่มเติมที่นี่"
