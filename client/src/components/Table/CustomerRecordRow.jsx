@@ -120,22 +120,39 @@ const CustomerRecordRow = ({ customer }) => {
                     <TableCell>{entry.detail}</TableCell> {/* Detail */}
                     <TableCell>{entry.status}</TableCell> {/* Status */}
                     <TableCell>
-                        <Tooltip title="Edit Customer">
+                      <Tooltip title="Edit Customer">
                             <IconButton
                                 onClick={(e) => {
                                     handleEditClick(e, customer.customer_id, entry.id);
                                 }}
-                                color="primary"
+                                sx={{ 
+                                    backgroundColor: "orange", // Set background color to orange
+                                    color: "white",            // Set icon color to white
+                                    borderRadius: "8px",       // Make the button appear as a rectangle with rounded corners
+                                    '&:hover': {               // Optional: Change background color on hover
+                                        backgroundColor: "#cc5200", // Darker orange on hover
+                                    },
+                                    padding: "6px",  
+                                    marginRight: "8px",            
+                                }}
                             >
                                 <EditIcon />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Delete customer">
+                        <Tooltip title="Delete Customer">
                             <IconButton
                                 onClick={(e) => {
                                     handleDeleteClick(e, entry.id);
                                 }}
-                                color="error"
+                                sx={{ 
+                                    backgroundColor: "red",   // Set background color to red
+                                    color: "white",           // Set icon color to white
+                                    borderRadius: "8px",      // Make the button appear as a rectangle with rounded corners
+                                    '&:hover': {              // Optional: Change background color on hover
+                                        backgroundColor: "#b30000", // Darker red on hover
+                                    },
+                                    padding: "6px",           // Increase padding for better spacing
+                                }}
                             >
                                 <DeleteIcon />
                             </IconButton>

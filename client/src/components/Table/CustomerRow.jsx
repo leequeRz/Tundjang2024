@@ -49,6 +49,16 @@ const CustomerRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
               }}
               color="primary"
               disabled={!isCustomer_idPresent}
+              sx={{ 
+                backgroundColor: "orange", // Set background color to orange
+                color: "white",            // Set icon color to white
+                borderRadius: "8px",       // Make the button appear as a rectangle with rounded corners
+                '&:hover': {               // Optional: Change background color on hover
+                    backgroundColor: "#cc5200", // Darker orange on hover
+                },
+                padding: "6px",  
+                marginRight: "8px",            
+            }}
             >
               <EditIcon />
             </IconButton>
@@ -58,6 +68,15 @@ const CustomerRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
               onClick={handleDeleteClick}
               color="error"
               disabled={!isCustomer_idPresent}
+              sx={{ 
+                backgroundColor: "red",   // Set background color to red
+                color: "white",           // Set icon color to white
+                borderRadius: "8px",      // Make the button appear as a rectangle with rounded corners
+                '&:hover': {              // Optional: Change background color on hover
+                    backgroundColor: "#b30000", // Darker red on hover
+                },
+                padding: "6px",           // Increase padding for better spacing
+            }}
             >
               <DeleteIcon />
             </IconButton>
