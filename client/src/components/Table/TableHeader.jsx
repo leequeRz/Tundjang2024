@@ -22,8 +22,7 @@ const TableHeader = () => (
           sx={{
             fontWeight: "bold",
             fontSize: "1.05rem",
-            backgroundColor: "whitesmoke",
-            color:"primary",
+            backgroundColor: "white",
             // borderTop: "2px solid black", // Add solid border
             display: hiddenOnMobile
               ? { xs: "none", sm: "table-cell" }
