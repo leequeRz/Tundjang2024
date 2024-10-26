@@ -10,6 +10,7 @@ import MainDash from "./components/MainDash/MainDash";
 import Form from "./components/Form/Form";
 import Sidebar from "./components/Sidebar";
 import Login from "./components/Login/Login";
+import GeneratePDF from "./components/GeneratePDF/GeneratePDF";
 import {
   SelectedItemProvider,
   useSelectedItem,
@@ -77,6 +78,8 @@ function MainContent() {
       return <MainDash />;
     case "Form":
       return <Form />;
+    case "PDF":
+      return <GeneratePDF />;
     default:
       return <MainDash />;
   }

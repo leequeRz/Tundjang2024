@@ -25,6 +25,10 @@ export const SidebarData = [
     heading: "Form",
   },
   {
+    icon: UilClipboardAlt,
+    heading: "PDF",
+  },
+  {
     icon: UilSignOutAlt,
     heading: "Logout",
   },

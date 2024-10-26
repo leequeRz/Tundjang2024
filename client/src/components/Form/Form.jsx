@@ -20,11 +20,9 @@ import SearchFilterBar from "../SearchFilterBar";
 import { useSearch } from "../../hooks/useSearch";
 import { useCustomers } from "../../context/customerContext";
 import { useCustomerRecords } from "../../context/customerRecordContext";
-import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import thLocale from "date-fns/locale/th"; // ใช้ locale ภาษาไทย
-
-
 
 const initialFormState = {
   start_date: null,
@@ -34,8 +32,7 @@ const initialFormState = {
   // responsible_person: "",
   item_number: "",
   status: "ยืม",
-  detail:"",
-
+  detail: "",
 };
 
 const Form = () => {
@@ -44,7 +41,7 @@ const Form = () => {
     customer_id: "",
     "name surname": "",
     role: "",
-    group:"",
+    group: "",
     tel: "",
   });
   const [form, setForm] = useState(initialFormState);
@@ -115,7 +112,7 @@ const Form = () => {
           customer_id: selectedCustomer.customer_id.trim(),
           "name surname": `${selectedCustomer.name} ${selectedCustomer.surname}`,
           role: selectedCustomer.role,
-          group:selectedCustomer.group,
+          group: selectedCustomer.group,
           tel: selectedCustomer.tel,
         });
         setForm(initialFormState);
@@ -289,12 +286,16 @@ const Form = () => {
             <Box
               sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
             >
-              <Typography variant="body1">customer_id: {formHeader.customer_id}</Typography>
+              <Typography variant="body1">
+                customer_id: {formHeader.customer_id}
+              </Typography>
               <Typography variant="body1">
                 Name: {formHeader["name surname"]}
               </Typography>
               <Typography variant="body1">Role: {formHeader.role}</Typography>
-              <Typography variant="body1">Telephone company: {formHeader.tel}</Typography>
+              <Typography variant="body1">
+                Telephone company: {formHeader.tel}
+              </Typography>
               {/* <Typography variant="body1">Shift: {form.shift}</Typography> */}
             </Box>
 
@@ -425,32 +426,54 @@ const Form = () => {
                 {/* เพิ่มขนาดตัวหนังสือ */}
               </Grid>
               <Grid item xs={6}>
-                <LocalizationProvider dateAdapter={AdapterDateFns} locale={thLocale}>
+                <LocalizationProvider
+                  dateAdapter={AdapterDateFns}
+                  locale={thLocale}
+                >
                   <DatePicker
                     name="start_date"
                     label="ตั้งแต่วันที่"
                     value={form.start_date}
                     inputFormat="dd/MM/yyyy" // รูปแบบวันที่ที่ต้องการ
                     views={["year", "month", "day"]} // สามารถเลือกปี-เดือน-วัน
-                    onChange={(newValue) => handleFormChange({ target: { name: "start_date", value: newValue } })}
+                    onChange={(newValue) =>
+                      handleFormChange({
+                        target: { name: "start_date", value: newValue },
+                      })
+                    }
                     renderInput={(params) => (
-                      <TextField {...params} fullWidth InputProps={{ style: { fontSize: "18px" } }} />
+                      <TextField
+                        {...params}
+                        fullWidth
+                        InputProps={{ style: { fontSize: "18px" } }}
+                      />
                     )}
                   />
                 </LocalizationProvider>
               </Grid>
 
               <Grid item xs={6}>
-                <LocalizationProvider dateAdapter={AdapterDateFns} locale={thLocale}>
+                <LocalizationProvider
+                  dateAdapter={AdapterDateFns}
+                  locale={thLocale}
+                >
                   <DatePicker
                     name="end_date"
                     label="ถึงวันที่"
                     value={form.end_date}
                     inputFormat="dd/MM/yyyy"
                     views={["year", "month", "day"]}
-                    onChange={(newValue) => handleFormChange({ target: { name: "end_date", value: newValue } })}
+                    onChange={(newValue) =>
+                      handleFormChange({
+                        target: { name: "end_date", value: newValue },
+                      })
+                    }
                     renderInput={(params) => (
-                      <TextField {...params} fullWidth InputProps={{ style: { fontSize: "18px" } }} />
+                      <TextField
+                        {...params}
+                        fullWidth
+                        InputProps={{ style: { fontSize: "18px" } }}
+                      />
                     )}
                   />
                 </LocalizationProvider>
@@ -458,7 +481,6 @@ const Form = () => {
             </Grid>
 
             <Divider sx={{ marginY: "3rem" }} />
-
 
             <Typography variant="h6" gutterBottom>
               หมายเหตุเพิ่มเติม
