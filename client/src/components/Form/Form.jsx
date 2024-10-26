@@ -20,16 +20,18 @@ import SearchFilterBar from "../SearchFilterBar";
 import { useSearch } from "../../hooks/useSearch";
 import { useCustomers } from "../../context/customerContext";
 import { useCustomerRecords } from "../../context/customerRecordContext";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import thLocale from "date-fns/locale/th"; // ใช้ locale ภาษาไทย
+import ThaiYearDatePicker from "../ThaiYearDatePicker";
+import ThaiYearDatePickerEnd from "../ThaiYearDatePickerEnd";
+import dayjs from "dayjs";
+
+
+const defaultDate = dayjs();
 
 const initialFormState = {
-  start_date: null,
-  end_date: null,
+  start_date: defaultDate,
+  end_date: defaultDate,
   item: "",
   count: "",
-  // responsible_person: "",
   item_number: "",
   status: "ยืม",
   detail: "",
@@ -50,7 +52,7 @@ const Form = () => {
     severity: "success",
     message: "",
   });
-
+  
   const { customers } = useCustomers();
   const {
     currentEditRecord,
@@ -78,7 +80,7 @@ const Form = () => {
       })),
     [customers, generateLabel]
   );
-
+  
   const recordOptions = useMemo(
     () => [
       { id: "create-new", label: "Create New Record" },
@@ -120,23 +122,23 @@ const Form = () => {
     },
     [customers, setCurrentEditRecord]
   );
-
   const handleSelectRecordFilter = useCallback(
     (value) => {
       setCurrentEditRecord((prev) => ({ ...prev, docId: value }));
-      const selectedRecord = records.find((record) => record.id === value);
+      const selectedRecord = records.find((record) => record.id === value.id);
       if (selectedRecord) {
-        setForm((prev) => ({
-          ...prev,
-          ...selectedRecord,
-          food_type: selectedRecord.food_type || [""],
-        }));
+        // อัปเดต form ด้วยค่าจาก selectedRecord
+        setForm({
+          ...initialFormState, // เริ่มต้นจาก initialFormState
+          ...selectedRecord, // เติมค่าจาก selectedRecord
+        });
       } else {
-        setForm(initialFormState);
+        setForm(initialFormState); // รีเซ็ตฟอร์มถ้าไม่พบ Record
       }
     },
     [records, setCurrentEditRecord]
   );
+  
 
   useEffect(() => {
     // console.log(currentEditRecord);
@@ -205,34 +207,7 @@ const Form = () => {
     setAlert({ ...alert, open: false });
   };
 
-  // const renderRadioGroup = useCallback(
-  //   ({ label, name, value, options }) => (
-  //     <Grid item xs={12} sm={6} key={name}>
-  //       <FormControl component="fieldset">
-  //         <FormLabel component="legend" required>
-  //           {label}
-  //         </FormLabel>
-  //         <RadioGroup
-  //           row
-  //           aria-label={name}
-  //           name={name}
-  //           value={value}
-  //           onChange={handleFormChange}
-  //         >
-  //           {options.map((option) => (
-  //             <FormControlLabel
-  //               key={option}
-  //               value={option}
-  //               control={<Radio />}
-  //               label={option}
-  //             />
-  //           ))}
-  //         </RadioGroup>
-  //       </FormControl>
-  //     </Grid>
-  //   ),
-  //   [handleFormChange]
-  // );
+ 
 
   return (
     <Container maxWidth="md">
@@ -387,7 +362,7 @@ const Form = () => {
                 }}
               >
                 <span style={{ fontSize: "25px" }}>วัตถุประสงค์เพื่อ</span>{" "}
-                {/* เพิ่มขนาดตัวหนังสือ */}
+     
               </Grid>
 
               <Grid item xs={6}>
@@ -427,64 +402,57 @@ const Form = () => {
                 {/* เพิ่มขนาดตัวหนังสือ */}
               </Grid>
               <Grid item xs={6}>
-                <LocalizationProvider
-                  dateAdapter={AdapterDateFns}
-                  locale={thLocale}
-                >
-                  <DatePicker
-                    name="start_date"
-                    label="ตั้งแต่วันที่"
-                    value={form.start_date}
-                    inputFormat="dd/MM/yyyy" // รูปแบบวันที่ที่ต้องการ
-                    views={["year", "month", "day"]} // สามารถเลือกปี-เดือน-วัน
-                    onChange={(newValue) =>
-                      handleFormChange({
-                        target: { name: "start_date", value: newValue },
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        fullWidth
-                        InputProps={{ style: { fontSize: "18px" } }}
-                      />
-                    )}
-                  />
-                </LocalizationProvider>
-              </Grid>
+                <ThaiYearDatePicker
+                  name="start_date"
+                  label="ตั้งแต่วันที่"
+                  value={form.start_date}
+                  inputFormat="dd/MM/yyyy" // รูปแบบวันที่ที่ต้องการ
+                  views={["year", "month", "day"]} // สามารถเลือกปี-เดือน-วัน
+                  onChange={(newValue) =>
+                    handleFormChange({ target: { name: "start_date", value: newValue } })
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      InputProps={{ style: { fontSize: "18px" } }}
+                    />
+                  )}
+                />
+      
+            </Grid>
 
-              <Grid item xs={6}>
-                <LocalizationProvider
-                  dateAdapter={AdapterDateFns}
-                  locale={thLocale}
-                >
-                  <DatePicker
-                    name="end_date"
-                    label="ถึงวันที่"
-                    value={form.end_date}
-                    inputFormat="dd/MM/yyyy"
-                    views={["year", "month", "day"]}
-                    onChange={(newValue) =>
-                      handleFormChange({
-                        target: { name: "end_date", value: newValue },
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        fullWidth
-                        InputProps={{ style: { fontSize: "18px" } }}
-                      />
-                    )}
+            <Grid item xs={6}>
+
+              <ThaiYearDatePickerEnd
+                name="end_date"
+                label="ถึงวันที่"
+                value={form.end_date}
+                inputFormat="dd/MM/yyyy" // รูปแบบวันที่ที่ต้องการ
+                views={["year", "month", "day"]} // สามารถเลือกปี-เดือน-วัน
+                onChange={(newValue) =>
+                  handleFormChange({ target: { name: "end_date", value: newValue } })
+                }
+                // อนุญาตให้เลือกวันในอนาคตได้
+             
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    InputProps={{ style: { fontSize: "18px" } }}
                   />
-                </LocalizationProvider>
-              </Grid>
+                )}
+              />
+
+       
+            </Grid>
+
             </Grid>
 
             <Divider sx={{ marginY: "3rem" }} />
 
             <Typography variant="h6" gutterBottom>
-              หมายเหตุเพิ่มเติม
+                วัตถุประสงค์เพื่อ
             </Typography>
             <TextField
               placeholder="พิมพ์หมายเหตุเพิ่มเติมที่นี่"

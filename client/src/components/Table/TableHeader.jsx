@@ -2,19 +2,19 @@ import { TableCell, TableHead, TableRow } from "@mui/material";
 
 const TableHeader = () => (
   <TableHead>
-    <TableRow>
+    <TableRow >
       {[
         { label: "UID", key: "customer_id" },
         // { label: "Prefix", key: "Prefix", hiddenOnMobile: true },
-        { label: "Name", key: "Name" },
-        { label: "Surname", key: "Surname" },
+        { label: "ชื่อ", key: "Name" },
+        { label: "นามสกุล", key: "Surname" },
         // { label: "Gender", key: "Gender", hiddenOnMobile: true },
         // { label: "Age", key: "Age", hiddenOnMobile: true },
         // { label: "Last Update", key: "Last Update", hiddenOnMobile: true },
-        { label: "Phone", key: "Phone" },
-        { label: "Tel_company", key: "tel" },
-        { label: "Role", key: "role" },
-        { label: "Group", key: "group" },
+        { label: "หมายเลขโทรศัพย์", key: "Phone" },
+        { label: "หมายเลขโทรศัพย์ภายใน", key: "tel" },
+        { label: "ตำแหน่ง", key: "role" },
+        { label: "สังกัด", key: "group" },
         { label: "Edit & Delete", key: "" },
         { label: "Export PDF", key: "" },
       ].map(({ label, key, hiddenOnMobile }) => (
@@ -23,7 +23,8 @@ const TableHeader = () => (
           sx={{
             fontWeight: "bold",
             fontSize: "1.05rem",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "white",
+            // borderTop: "2px solid black", // Add solid border
             display: hiddenOnMobile
               ? { xs: "none", sm: "table-cell" }
               : "table-cell",

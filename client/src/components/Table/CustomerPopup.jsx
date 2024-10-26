@@ -7,6 +7,7 @@ import {
   DialogTitle,
   Button,
   Grid,
+  Typography
 } from "@mui/material";
 import { useCustomerForm } from "../../hooks/useCustomerForm";
 import { FormField, SelectField } from "./FormComponents";
@@ -23,74 +24,97 @@ const CustomerPopup = ({ open, onClose, customerData }) => {
   // 	handleChange({ target: { name: "DOB", value: formattedDate } });
   // 	// console.log(formData);
   // };
-  // customer_id: "",
 
-  // customer_name: "",
-  // phone: "",
-  // role: "",
-  // tel_company: "",
   const formFields = [
     {
       name: "customer_id",
-      label: "Customer ID",
+      label: "รหัสประจำตัวพนักงาน",
       disabled: !!customerData,
       sm: 12,
     },
-    // {
-    // 	name: "prefix",
-    // 	label: "Prefix",
-    // 	type: "select",
-    // 	options: ["Mr.", "Mrs.", "Ms."],
-    // 	sm: 2,
-    // },
+
     { name: "name", label: "ชื่อ", sm: 6 },
     { name: "surname", label: "นามสกุล", sm: 6 },
     {
       name: "role",
       label: "ตำแหน่ง",
       type: "select",
-      options: ["เด็กเดิน", "เด็กเชียร์เบียร์", "รด."],
-      sm: 6,
+      options: [
+        "ผู้อำนวยการ สวท.",
+        "เลขานุการ สวท./รองผอ.ฝ่ายบริหารฯ",
+        "นักบริหารจัดการเทคโนโลยีเชิงธุรกิจ",
+        "นักพัสดุ",
+        "นักบริหารงานทั่วไป",
+        "นักบัญชี",
+        "นักบริหารการเงิน",
+        "นักวิเคราะห์แผนและงบประมาณ",
+        "พนักงานบริการ",
+        "พนักงานช่วยบริหาร"
+    ]
+    
+      ,sm: 6,
     },
-    { name: "group", label: "สังกัดกลุ่มหน่วยงาน", sm: 6 },
-    { name: "tel", label: "หมายเลขโทรศัพท์ภายใน", sm: 6 },
-    { name: "phone", label: "โทร", sm: 6 },
-    // {
-    // 	name: "DOB",
-    // 	label: "DOB",
-    // 	type: "date",
-    // 	sm: 6,
-    // 	component: (
-    // 		<ThaiYearDatePicker
-    // 			label="DOB"
-    // 			value={formData.DOB ? dayjs(formData.DOB) : null}
-    // 			onChange={handleDateChange}
-    // 		/>
-    // 	),
-    // },
+    { 
+      name: "group", 
+      label: "สังกัดกลุ่มหน่วยงาน/หน่วยงาน", 
+      type: "select",
+      options: [
+        "ศูนย์วิจัยและบริการเพื่อชุมชนและสังคม",
+        "ศูนย์เทคโนโลยีชีวมวลบำบัดรักษา",
+        "ศูนย์พัฒนาสินค้าอุตสาหกรรม",
+        "ศูนย์ความเป็นเลิศด้านโลจิสติกส์",
+        "ศูนย์วิจัยและบริการวิศวกรรมการเชื่อม",
+        "ศูนย์บูรณาการเทคโนโลยีเพื่ออุตสาหกรรมไทย",
+        "ศูนย์รับรองระบบมาตรฐานนานาชาติ",
+        "ศูนย์การศึกษาต่อเนื่อง",
+        "ศูนย์อิเล็กทรอนิกส์ยานยนต์",
+        "ศูนย์วิจัยและพัฒนาการขนส่งทางถนน",
+        "ศูนย์ความปลอดภัยอาหาร",
+        "ศูนย์การศึกษาด้านการสื่อสารและการบริการครบวงจร",
+        "ศูนย์กลยุทธ์และความสามารถทางการแข่งขันขององค์กร",
+        "ศูนย์วิจัย Mobility & Vehicle Technology Research Center"
+      ], 
+      sm: 6 
+    },
+    { name: "phone", label: "โทร",type: "number",  sm: 6 },
+    { name: "tel", label: "หมายเลขโทรศัพท์ภายใน",type: "number", sm: 6 },
+
+
   ];
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <DialogTitle>
+      <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
         {customerData ? "Update Customer" : "Add New Customer"}
-      </DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          Please fill out the form below to {customerData ? "update" : "add"} a
-          Customer.
-        </DialogContentText>
-        <Grid container spacing={2}>
-          {formFields.map((field) => (
-            <Grid item xs={12} sm={field.sm} key={field.name}>
+      </Typography>
+    </DialogTitle>
+    <DialogContent>
+      <DialogContentText sx={{ fontSize: '20px', mb: 5 }}>
+        Please fill out the form below to {customerData ? "update" : "add"} a Customer.
+      </DialogContentText>
+  
+  
+      <Grid container spacing={2}>
+        {formFields.map((field) => (
+          <React.Fragment key={field.name}>
+            {/* Label ของฟิลด์ */}
+            <Grid item xs={12} sm={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
+              <Typography sx={{ fontSize: '20px', fontWeight: 'medium' }} >
+                {field.label}
+              </Typography>
+            </Grid>
+  
+            {/* Input ของฟิลด์ */}
+            <Grid item xs={12} sm={6}>
               {field.type === "select" ? (
                 <SelectField
                   name={field.name}
-                  label={field.label}
                   value={formData[field.name]}
                   onChange={handleChange}
                   options={field.options}
                   fullWidth
+                  sx={{ fontSize: '16px' }} // เพิ่มขนาดฟอนต์ของ SelectField
                 />
               ) : field.type === "date" ? (
                 field.component
@@ -98,36 +122,39 @@ const CustomerPopup = ({ open, onClose, customerData }) => {
                 <FormField
                   InputLabelProps={{ shrink: true }}
                   name={field.name}
-                  label={field.label}
                   value={formData[field.name]}
                   onChange={handleChange}
                   type={field.type || "text"}
                   disabled={field.disabled}
                   fullWidth
+                  sx={{ fontSize: '16px' }} // เพิ่มขนาดฟอนต์ของ FormField
                 />
               )}
             </Grid>
-          ))}
-        </Grid>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button
-          variant="contained"
-          onClick={handleSubmit}
-          color="primary"
-          disabled={isSubmitting}
-        >
-          {isSubmitting
-            ? customerData
-              ? "Updating..."
-              : "Adding..."
-            : customerData
-            ? "Update Customer"
-            : "Add Customer"}
-        </Button>
-      </DialogActions>
-    </Dialog>
+          </React.Fragment>
+        ))}
+      </Grid>
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={onClose} sx={{ fontSize: '16px', padding: '10px 20px' }}>Cancel</Button>
+      <Button
+        variant="contained"
+        onClick={handleSubmit}
+        color="primary"
+        disabled={isSubmitting}
+        sx={{ fontSize: '16px', padding: '10px 20px' }}
+      >
+        {isSubmitting
+          ? customerData
+            ? "Updating..."
+            : "Adding..."
+          : customerData
+          ? "Update Customer"
+          : "Add Customer"}
+      </Button>
+    </DialogActions>
+  </Dialog>
+  
   );
 };
 

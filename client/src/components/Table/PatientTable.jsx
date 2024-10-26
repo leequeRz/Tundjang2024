@@ -1,4 +1,3 @@
-// Table.jsx
 import React, { useState } from "react";
 import {
   Box,
@@ -12,6 +11,7 @@ import {
   MenuItem,
   FormControl,
   Select,
+  Menu,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useCustomers } from "../../context/customerContext";
@@ -48,7 +48,7 @@ const TableComponent = () => {
     filteredItems,
     15
   );
-
+  
   // Set the initial value to 2567
   const [selectedYear, setSelectedYear] = useState(2567); // Default as 2567
 
@@ -60,6 +60,23 @@ const TableComponent = () => {
   };
 
   const years = generateYears(3); // Generate next 3 years
+
+  const [anchorEl, setAnchorEl] = useState(null); // State to manage filter menu
+  const [selectedCustomerId, setSelectedCustomerId] = useState("");
+
+  const handleFilterClick = (event) => {
+    setAnchorEl(event.currentTarget); // Open dropdown menu
+  };
+
+  const handleFilterClose = () => {
+    setAnchorEl(null); // Close dropdown menu
+  };
+
+  const handleCustomerIdFilter = (customerId) => {
+    setSelectedCustomerId(customerId);
+    setSearchTerm(customerId); // Filter the table by selected customer_id
+    handleFilterClose();
+  };
 
   const handleEdit = (customer) => {
     setEditingCustomer(customer);
@@ -135,50 +152,37 @@ const TableComponent = () => {
               เพิ่มรายชื่อคนยืมพัสดุ
             </Button>
           </ThemeProvider>
-          <ThemeProvider theme={theme}>
-            {/* <Button
-              variant="contained"
-              color="primary"
-              sx={{ ml: 2 }}
-              onClick={() => {
-                setEditingCustomer(null, setIsPopupOpen(true));
-              }}
-            >
-              เพิ่มปี
-            </Button> */}
-          </ThemeProvider>
-          <ThemeProvider theme={theme}>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{
-                ml: 2,
-                // padding: "12px 24px",
-                fontSize: "1rem",
-                minWidth: "150px",
-              }}
-              onClick={() => {
-                setEditingCustomer(null, setIsPopupOpen(true));
-              }}
-            >
-              เพิ่มพัสดุ
-            </Button>
-          </ThemeProvider>
+
+
           <ThemeProvider theme={theme}>
             <Button
               variant="outlined"
               color="primary"
               sx={{
                 ml: 2,
-                // padding: "12px 24px",
                 fontSize: "1rem",
                 minWidth: "150px",
                 textTransform: "none",
               }}
+              onClick={handleFilterClick}
             >
               <FilterListIcon sx={{ mr: 1 }} />
               Filters
             </Button>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleFilterClose}
+            >
+              {customers.map((customer) => (
+                <MenuItem
+                  key={customer.customer_id}
+                  onClick={() => handleCustomerIdFilter(customer.customer_id)}
+                >
+                  {customer.customer_id}
+                </MenuItem>
+              ))}
+            </Menu>
           </ThemeProvider>
           {/* <ThemeProvider theme={theme}>
             <Button
@@ -186,7 +190,6 @@ const TableComponent = () => {
               color="primary"
               sx={{
                 ml: 2,
-                // padding: "12px 24px",
                 fontSize: "1rem",
                 minWidth: "150px",
                 textTransform: "none",
