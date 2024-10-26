@@ -16,6 +16,7 @@ const TableHeader = () => (
         { label: "ตำแหน่ง", key: "role" },
         { label: "สังกัด", key: "group" },
         { label: "Edit & Delete", key: "" },
+        { label: "Export PDF", key: "" },
       ].map(({ label, key, hiddenOnMobile }) => (
         <TableCell
           key={key}

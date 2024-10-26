@@ -34,8 +34,7 @@ const initialFormState = {
   count: "",
   item_number: "",
   status: "ยืม",
-  detail:"",
-
+  detail: "",
 };
 
 const Form = () => {
@@ -44,7 +43,7 @@ const Form = () => {
     customer_id: "",
     "name surname": "",
     role: "",
-    group:"",
+    group: "",
     tel: "",
   });
   const [form, setForm] = useState(initialFormState);
@@ -115,7 +114,7 @@ const Form = () => {
           customer_id: selectedCustomer.customer_id.trim(),
           "name surname": `${selectedCustomer.name} ${selectedCustomer.surname}`,
           role: selectedCustomer.role,
-          group:selectedCustomer.group,
+          group: selectedCustomer.group,
           tel: selectedCustomer.tel,
         });
         setForm(initialFormState);
@@ -242,6 +241,7 @@ const Form = () => {
               />
             </Grid>
           ))}
+
           <Grid item xs={12} sm={12}>
             <SearchFilterBar
               searchTerm={recordSearchTerm}
@@ -262,12 +262,16 @@ const Form = () => {
             <Box
               sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
             >
-              <Typography variant="body1">customer_id: {formHeader.customer_id}</Typography>
+              <Typography variant="body1">
+                customer_id: {formHeader.customer_id}
+              </Typography>
               <Typography variant="body1">
                 Name: {formHeader["name surname"]}
               </Typography>
               <Typography variant="body1">Role: {formHeader.role}</Typography>
-              <Typography variant="body1">Telephone company: {formHeader.tel}</Typography>
+              <Typography variant="body1">
+                Telephone company: {formHeader.tel}
+              </Typography>
               {/* <Typography variant="body1">Shift: {form.shift}</Typography> */}
             </Box>
 
@@ -446,7 +450,6 @@ const Form = () => {
             </Grid>
 
             <Divider sx={{ marginY: "3rem" }} />
-
 
             <Typography variant="h6" gutterBottom>
                 วัตถุประสงค์เพื่อ

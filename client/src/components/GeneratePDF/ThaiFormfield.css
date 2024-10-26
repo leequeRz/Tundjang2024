@@ -1,0 +1,192 @@
+.form-container {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  background: white;
+  padding: 32px;
+  font-family: sans-serif;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  margin-bottom: 10px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.year-select {
+  text-align: right;
+}
+
+.form-fields {
+  margin-bottom: 10px;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.underline {
+  flex: 1;
+  border-bottom: 1px solid #666;
+}
+
+.underline.short {
+  width: 120px;
+  flex: none;
+}
+
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+
+.items-table th,
+.items-table td {
+  border: 1px solid #666;
+  padding: 8px;
+  text-align: center;
+}
+
+.items-table th:first-child {
+  width: 70px; /* Fixed width for index column */
+}
+
+.items-table th:nth-child(2) {
+  width: 200px; /* Adjusted width for item */
+}
+
+.items-table th:nth-child(3) {
+  width: 50px; /* Fixed width for quantity */
+}
+
+.items-table th:nth-child(4) {
+  width: 150px; /* Fixed width for asset number */
+}
+
+.items-table th:nth-child(5) {
+  width: 200px; /* Fixed width for notes */
+}
+
+/* Ensure input fields are responsive */
+.items-table input {
+  width: 90%; /* Makes the input fields fit well within the cells */
+  border: none;
+  outline: none;
+  text-align: center; /* Center text in inputs */
+}
+
+.terms-text {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.signature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+}
+
+.signature-box {
+  text-align: start;
+}
+
+.signature-line {
+  margin-bottom: 5px;
+}
+
+.signature-name {
+  margin-bottom: 5px;
+  margin-left: 30px;
+}
+
+.signature-position {
+  margin-bottom: 5px;
+}
+
+.checkbox-section {
+  margin-top: 5px;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  margin-top: 8px;
+}
+
+.dotsection {
+  margin-bottom: 5px;
+}
+
+.checkbox-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
+
+.footer-notes {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.note-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.footer-notes p {
+  margin-bottom: 4px;
+}
+
+@media print {
+  .form-container {
+    box-shadow: none;
+  }
+}
+
+input {
+  border: none;
+  border-bottom: 1px dotted #000; /* Dotted underline */
+  background-color: transparent; /* Transparent background */
+  outline: none; /* Remove outline */
+  width: 200px; /* Adjust width as needed */
+  margin: 0 5px; /* Adjust margin for spacing */
+}
+
+input:focus {
+  border-bottom: 1px solid #000; /* Solid underline when focused */
+}
+
+/* Adjust widths for specific inputs if necessary */
+input.date {
+  width: 50px;
+}
+input.month {
+  width: 63px;
+}
+input.short {
+  width: 100px;
+}
+
+input.long {
+  width: 300px;
+}
+input.phone {
+  width: 140px;
+}
+
+input.longest {
+  width: 580px;
+}

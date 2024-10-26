@@ -23,7 +23,7 @@ import CustomerRow from "./CustomerRow";
 import PaginationFooter from "./PaginationFooter";
 import CustomerPopup from "./CustomerPopup";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+// import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 
 const theme = createTheme({
   palette: {
@@ -143,7 +143,7 @@ const TableComponent = () => {
               sx={{
                 // padding: "12px 24px",
                 fontSize: "1rem",
-                minWidth: "150px",
+                minWidth: "180px",
               }}
               onClick={() => {
                 setEditingCustomer(null, setIsPopupOpen(true));
@@ -184,7 +184,7 @@ const TableComponent = () => {
               ))}
             </Menu>
           </ThemeProvider>
-          <ThemeProvider theme={theme}>
+          {/* <ThemeProvider theme={theme}>
             <Button
               variant="outlined"
               color="primary"
@@ -198,7 +198,7 @@ const TableComponent = () => {
               <PictureAsPdfIcon sx={{ mr: 1 }} />
               Export PDF
             </Button>
-          </ThemeProvider>
+          </ThemeProvider> */}
         </Box>
       </Box>
 
