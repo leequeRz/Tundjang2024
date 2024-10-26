@@ -1,4 +1,3 @@
-// Table.jsx
 import React, { useState } from "react";
 import {
   Box,
@@ -12,6 +11,7 @@ import {
   MenuItem,
   FormControl,
   Select,
+  Menu,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useCustomers } from "../../context/customerContext";
@@ -28,7 +28,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#FFC72C", // Orange color
+      main: "#FA4616", // Orange color
     },
   },
 });
@@ -48,7 +48,7 @@ const TableComponent = () => {
     filteredItems,
     15
   );
-
+  
   // Set the initial value to 2567
   const [selectedYear, setSelectedYear] = useState(2567); // Default as 2567
 
@@ -59,12 +59,24 @@ const TableComponent = () => {
     return Array.from({ length: numYears }, (_, i) => currentYear + i);
   };
 
-  const handleYearChange = (event) => {
-    setSelectedYear(event.target.value); // Save selected year
-    console.log("Selected Year:", event.target.value); // Log the selected year
+  const years = generateYears(3); // Generate next 3 years
+
+  const [anchorEl, setAnchorEl] = useState(null); // State to manage filter menu
+  const [selectedCustomerId, setSelectedCustomerId] = useState("");
+
+  const handleFilterClick = (event) => {
+    setAnchorEl(event.currentTarget); // Open dropdown menu
   };
 
-  const years = generateYears(3); // Generate next 3 years
+  const handleFilterClose = () => {
+    setAnchorEl(null); // Close dropdown menu
+  };
+
+  const handleCustomerIdFilter = (customerId) => {
+    setSelectedCustomerId(customerId);
+    setSearchTerm(customerId); // Filter the table by selected customer_id
+    handleFilterClose();
+  };
 
   const handleEdit = (customer) => {
     setEditingCustomer(customer);
@@ -83,6 +95,11 @@ const TableComponent = () => {
     );
   };
 
+  const handleYearChange = (event) => {
+    setSelectedYear(event.target.value); // Save selected year
+    console.log("Selected Year:", event.target.value); // Log the selected year
+  };
+
   if (isLoading) return <Typography>Loading...</Typography>;
   if (error) return <Typography>Error: {error}</Typography>;
 
@@ -97,7 +114,7 @@ const TableComponent = () => {
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="h6" sx={{ mr: 2 }}>
+          <Typography variant="h5" sx={{ mr: 2 }}>
             รายชื่อคนยืมพัสดุ
           </Typography>
           <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
@@ -123,7 +140,11 @@ const TableComponent = () => {
             <Button
               variant="contained"
               color="primary"
-              sx={{ ml: 2 }}
+              sx={{
+                // padding: "12px 24px",
+                fontSize: "1rem",
+                minWidth: "150px",
+              }}
               onClick={() => {
                 setEditingCustomer(null, setIsPopupOpen(true));
               }}
@@ -131,45 +152,48 @@ const TableComponent = () => {
               เพิ่มรายชื่อคนยืมพัสดุ
             </Button>
           </ThemeProvider>
-          <ThemeProvider theme={theme}>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ ml: 2 }}
-              onClick={() => {
-                setEditingCustomer(null, setIsPopupOpen(true));
-              }}
-            >
-              เพิ่มปี
-            </Button>
-          </ThemeProvider>
-          <ThemeProvider theme={theme}>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ ml: 2 }}
-              onClick={() => {
-                setEditingCustomer(null, setIsPopupOpen(true));
-              }}
-            >
-              เพิ่มพัสดุ
-            </Button>
-          </ThemeProvider>
+
+
           <ThemeProvider theme={theme}>
             <Button
               variant="outlined"
               color="primary"
-              sx={{ ml: 2, textTransform: "none" }}
+              sx={{
+                ml: 2,
+                fontSize: "1rem",
+                minWidth: "150px",
+                textTransform: "none",
+              }}
+              onClick={handleFilterClick}
             >
               <FilterListIcon sx={{ mr: 1 }} />
               Filters
             </Button>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleFilterClose}
+            >
+              {customers.map((customer) => (
+                <MenuItem
+                  key={customer.customer_id}
+                  onClick={() => handleCustomerIdFilter(customer.customer_id)}
+                >
+                  {customer.customer_id}
+                </MenuItem>
+              ))}
+            </Menu>
           </ThemeProvider>
           <ThemeProvider theme={theme}>
             <Button
               variant="outlined"
               color="primary"
-              sx={{ ml: 2, textTransform: "none" }}
+              sx={{
+                ml: 2,
+                fontSize: "1rem",
+                minWidth: "150px",
+                textTransform: "none",
+              }}
             >
               <PictureAsPdfIcon sx={{ mr: 1 }} />
               Export PDF
