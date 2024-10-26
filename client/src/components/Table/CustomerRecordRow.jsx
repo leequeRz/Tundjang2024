@@ -190,6 +190,10 @@ const CustomerRecordRow = ({ customer }) => {
                       border:"solid 1px white",
                       fontSize: "1rem",
                       minWidth: "150px",
+                      '&:hover': {              // Optional: Change background color on hover
+                        backgroundColor: "#d6521e", // Darker red on hover
+                        color:"white"
+                    },
                     }}
                   
                   onClick={handleNewClick}>Add New Record</Button>
