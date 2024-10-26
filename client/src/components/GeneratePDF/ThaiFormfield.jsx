@@ -21,6 +21,19 @@ const ThaiGovForm = () => {
     endDate: "",
     endMonth: "",
     endYear: "",
+    sendDate: "",
+    sendMonth: "",
+    sendYear: "",
+    nameRent: "",
+    position1: "",
+    position2: "",
+    position3: "",
+    position4: "",
+    position5: "",
+    headerGroupRent: "",
+    parcelOfficer: "",
+    nameApprove: "",
+    parcelPayer: "",
   });
 
   const handleInputChange = (e) => {
@@ -58,46 +71,6 @@ const ThaiGovForm = () => {
     { item: "", quantity: "", assetNumber: "", notes: "" },
   ]);
 
-  // const downloadPDF = () => {
-  //   const input = pdfRef.current;
-  //   html2canvas(input, { scale: 3, useCORS: true }).then((canvas) => {
-  //     const pdf = new jsPDF("p", "mm", "a4", true);
-
-  //     const padding = 10; // Set padding in mm
-
-  //     const pdfWidth = 210; // A4 width in mm
-  //     const pdfHeight = 297; // A4 height in mm
-  //     const contentWidth = pdfWidth - padding * 2; // Width with padding
-  //     const imgHeight = (canvas.height * contentWidth) / canvas.width; // Scale image height proportionally
-
-  //     let position = padding; // Start position with padding
-  //     let remainingHeight = imgHeight;
-
-  //     const imgData = canvas.toDataURL("image/png");
-
-  //     // Add pages if the content height is larger than A4 page height
-  //     while (remainingHeight > 0) {
-  //       pdf.addImage(
-  //         imgData,
-  //         "PNG",
-  //         padding,
-  //         position,
-  //         contentWidth,
-  //         imgHeight
-  //       );
-  //       remainingHeight -= pdfHeight - padding * 2; // Adjust height by removing the padding from both sides
-  //       position -= pdfHeight - padding * 2;
-
-  //       if (remainingHeight > 0) {
-  //         pdf.addPage();
-  //         position = padding; // Reset position for new page
-  //       }
-  //     }
-
-  //     pdf.save("test.pdf");
-  //   });
-  // };
-
   return (
     <div>
       <div ref={pdfRef}>
@@ -120,16 +93,17 @@ const ThaiGovForm = () => {
               value={formData.name}
               onChange={handleInputChange}
               className="long"
+              style={{ textAlign: "center" }}
             />
-            {/* <div className="underline"></div> */}
+
             <span>ตำแหน่ง</span>
             <input
               name="position"
               value={formData.position}
               onChange={handleInputChange}
               className="long"
+              style={{ textAlign: "center" }}
             />
-            {/* <div className="underline"></div> */}
           </div>
 
           <div className="form-row">
@@ -138,16 +112,17 @@ const ThaiGovForm = () => {
               name="department"
               value={formData.department}
               onChange={handleInputChange}
+              style={{ textAlign: "center" }}
             />
-            {/* <div className="underline"></div> */}
+
             <span>หมายเลขโทรศัพท์ภายใน</span>
             <input
               name="internalPhone"
               value={formData.internalPhone}
               onChange={handleInputChange}
               className="phone"
+              style={{ textAlign: "center" }}
             />
-            {/* <div className="underline short"></div> */}
           </div>
 
           <div className="form-row">
@@ -157,15 +132,16 @@ const ThaiGovForm = () => {
               value={formData.mobilePhone}
               onChange={handleInputChange}
               className="short"
+              style={{ textAlign: "center" }}
             />
-            {/* <div className="underline"></div> */}
+
             <span>มีความประสงค์จะขอยืมพัสดุของ</span>
             <input
               name="borrowFrom"
               value={formData.borrowFrom}
               onChange={handleInputChange}
+              style={{ textAlign: "center" }}
             />
-            {/* <div className="underline"></div> */}
           </div>
 
           <div className="form-row">
@@ -175,6 +151,7 @@ const ThaiGovForm = () => {
               value={formData.purpose}
               onChange={handleInputChange}
               className="longest"
+              style={{ textAlign: "center" }}
             />
           </div>
 
@@ -185,6 +162,7 @@ const ThaiGovForm = () => {
               value={formData.startDate}
               onChange={handleInputChange}
               className="date"
+              style={{ textAlign: "center" }}
             />
             <span>เดือน</span>
             <input
@@ -192,6 +170,7 @@ const ThaiGovForm = () => {
               value={formData.startMonth}
               onChange={handleInputChange}
               className="month"
+              style={{ textAlign: "center" }}
             />
             <span>พ.ศ.</span>
             <input
@@ -199,6 +178,7 @@ const ThaiGovForm = () => {
               value={formData.startYear}
               onChange={handleInputChange}
               className="date"
+              style={{ textAlign: "center" }}
             />
             <span>ถึงวันที่</span>
             <input
@@ -206,6 +186,7 @@ const ThaiGovForm = () => {
               value={formData.endDate}
               onChange={handleInputChange}
               className="date"
+              style={{ textAlign: "center" }}
             />
             <span>เดือน</span>
             <input
@@ -213,6 +194,7 @@ const ThaiGovForm = () => {
               value={formData.endMonth}
               onChange={handleInputChange}
               className="month"
+              style={{ textAlign: "center" }}
             />
             <span>พ.ศ.</span>
             <input
@@ -220,6 +202,7 @@ const ThaiGovForm = () => {
               value={formData.endYear}
               onChange={handleInputChange}
               className="date"
+              style={{ textAlign: "center" }}
             />
           </div>
         </div>
@@ -244,6 +227,7 @@ const ThaiGovForm = () => {
                     name="item"
                     value={row.item}
                     onChange={(e) => handleTableInputChange(index, e)}
+                    style={{ textAlign: "center" }}
                   />
                 </td>
                 <td>
@@ -251,6 +235,7 @@ const ThaiGovForm = () => {
                     name="quantity"
                     value={row.quantity}
                     onChange={(e) => handleTableInputChange(index, e)}
+                    style={{ textAlign: "center" }}
                   />
                 </td>
                 <td>
@@ -258,6 +243,7 @@ const ThaiGovForm = () => {
                     name="assetNumber"
                     value={row.assetNumber}
                     onChange={(e) => handleTableInputChange(index, e)}
+                    style={{ textAlign: "center" }}
                   />
                 </td>
                 <td>
@@ -265,6 +251,7 @@ const ThaiGovForm = () => {
                     name="notes"
                     value={row.notes}
                     onChange={(e) => handleTableInputChange(index, e)}
+                    style={{ textAlign: "center" }}
                   />
                 </td>
               </tr>
@@ -281,32 +268,84 @@ const ThaiGovForm = () => {
           หรือชดใช้เป็นพัสดุประเภท ชนิด ขนาด ลักษณะและคุณภาพอย่างเดียวกัน
           หรือชดใช้เป็นเงินตามราคาที่เป็นอยู่ในขณะยืม
           ตามหลักเกณฑ์ที่กระทรวงการคลังกำหนดข้าพเจ้าขอรับผิดชอบโดยไม่มีเงื่อนไขใดๆ
-          ทั้งสิ้น ทั้งนี้ ข้าพเจ้าจะส่งคืนพัสดุ
-          ในวันที่..........เดือน.............พ.ศ.............
+          ทั้งสิ้น ทั้งนี้ ข้าพเจ้าจะส่งคืนพัสดุ ในวันที่
+          <input
+            name="sendDate"
+            value={formData.sendDate}
+            onChange={handleInputChange}
+            className="date20"
+            style={{ textAlign: "center" }}
+          />
+          เดือน
+          <input
+            name="sendMonth"
+            value={formData.sendMonth}
+            onChange={handleInputChange}
+            className="month"
+            style={{ textAlign: "center" }}
+          />
+          พ.ศ
+          <input
+            name="sendYear"
+            value={formData.sendYear}
+            onChange={handleInputChange}
+            className="year30"
+            style={{ textAlign: "center" }}
+          />
         </div>
 
         {/* Signature Section */}
         <div className="signature-grid">
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ.............................................ผู้ยืมพัสดุ
+              ลงชื่อ
+              <input
+                name="nameRent"
+                value={formData.nameRent}
+                onChange={handleInputChange}
+                className="medium"
+                style={{ textAlign: "center" }}
+              />
+              ผู้ยืมพัสดุ
             </div>
             <div className="signature-name">
               (.................................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง...........................................
+              ตำแหน่ง
+              <input
+                name="position1"
+                value={formData.position1}
+                onChange={handleInputChange}
+                className="medium"
+                style={{ textAlign: "center" }}
+              />
             </div>
           </div>
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ................................หัวหน้าหน่วยงานผู้ยืม
+              ลงชื่อ
+              <input
+                name="headerGroupRent"
+                value={formData.headerGroupRent}
+                onChange={handleInputChange}
+                className="short140"
+                style={{ textAlign: "center" }}
+              />
+              หัวหน้าหน่วยงานผู้ยืม
             </div>
             <div className="signature-name">
-              (.................................................)
+              (.................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง...........................................
+              ตำแหน่ง
+              <input
+                name="position2"
+                value={formData.position2}
+                onChange={handleInputChange}
+                className="medium"
+                style={{ textAlign: "center" }}
+              />
             </div>
           </div>
         </div>
@@ -317,8 +356,15 @@ const ThaiGovForm = () => {
         {/* Checkbox Section */}
         <div className="checkbox-section">
           <p>
-            ตรวจสอบแล้วโดย
-            นาย/นาง/นางสาว......................................................เจ้าหน้าที่พัสดุ/ผู้ที่ได้รับมอบหมาย
+            ตรวจสอบแล้วโดย นาย/นาง/นางสาว
+            <input
+              name="parcelOfficer"
+              value={formData.parcelOfficer}
+              onChange={handleInputChange}
+              className="medium"
+              style={{ textAlign: "center" }}
+            />
+            เจ้าหน้าที่พัสดุ/ผู้ที่ได้รับมอบหมาย
           </p>
           <div className="checkbox-row">
             <input type="checkbox" />
@@ -334,24 +380,54 @@ const ThaiGovForm = () => {
         <div className="signature-grid">
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ........................................เจ้าหน้าที่พัสดุ
+              ลงชื่อ
+              <input
+                name="parcelOfficer"
+                value={formData.parcelOfficer}
+                onChange={handleInputChange}
+                className="medium180"
+                style={{ textAlign: "center" }}
+              />
+              เจ้าหน้าที่พัสดุ
             </div>
             <div className="signature-name">
               (.................................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง...........................................
+              ตำแหน่ง
+              <input
+                name="position3"
+                value={formData.position3}
+                onChange={handleInputChange}
+                className="medium"
+                style={{ textAlign: "center" }}
+              />
             </div>
           </div>
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ..........................................ผู้อนุมัติ
+              ลงชื่อ
+              <input
+                name="nameApprove"
+                value={formData.nameApprove}
+                onChange={handleInputChange}
+                className="medium"
+                style={{ textAlign: "center" }}
+              />
+              ผู้อนุมัติ
             </div>
             <div className="signature-name">
               (.................................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง...........................................
+              ตำแหน่ง
+              <input
+                name="position4"
+                value={formData.position4}
+                onChange={handleInputChange}
+                className="medium"
+                style={{ textAlign: "center" }}
+              />
             </div>
           </div>
         </div>
@@ -373,24 +449,54 @@ const ThaiGovForm = () => {
         <div className="signature-grid">
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ........................................ผู้ยืมพัสดุ
+              ลงชื่อ
+              <input
+                name="nameRent"
+                value={formData.nameRent}
+                onChange={handleInputChange}
+                className="medium"
+                style={{ textAlign: "center" }}
+              />
+              ผู้ยืมพัสดุ
             </div>
             <div className="signature-name">
               (.................................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง...........................................
+              ตำแหน่ง
+              <input
+                name="position1"
+                value={formData.position1}
+                onChange={handleInputChange}
+                className="medium"
+                style={{ textAlign: "center" }}
+              />
             </div>
           </div>
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ..........................................ผู้จ่ายพัสดุ
+              ลงชื่อ
+              <input
+                name="parcelPayer"
+                value={formData.parcelPayer}
+                onChange={handleInputChange}
+                className="medium180"
+                style={{ textAlign: "center" }}
+              />
+              ผู้จ่ายพัสดุ
             </div>
             <div className="signature-name">
               (.................................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง...........................................
+              ตำแหน่ง
+              <input
+                name="position6"
+                value={formData.position6}
+                onChange={handleInputChange}
+                className="medium"
+                style={{ textAlign: "center" }}
+              />
             </div>
           </div>
         </div>
@@ -408,24 +514,54 @@ const ThaiGovForm = () => {
         <div className="signature-grid">
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ........................................ผู้ยืมพัสดุ
+              ลงชื่อ
+              <input
+                name="nameRent"
+                value={formData.nameRent}
+                onChange={handleInputChange}
+                className="medium"
+                style={{ textAlign: "center" }}
+              />
+              ผู้ยืมพัสดุ
             </div>
             <div className="signature-name">
               (.................................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง...........................................
+              ตำแหน่ง
+              <input
+                name="position1"
+                value={formData.position1}
+                onChange={handleInputChange}
+                className="medium"
+                style={{ textAlign: "center" }}
+              />
             </div>
           </div>
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ..........................................ผู้จ่ายพัสดุ
+              ลงชื่อ
+              <input
+                name="parcelPayer"
+                value={formData.parcelPayer}
+                onChange={handleInputChange}
+                className="medium180"
+                style={{ textAlign: "center" }}
+              />
+              ผู้จ่ายพัสดุ
             </div>
             <div className="signature-name">
               (.................................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง...........................................
+              ตำแหน่ง
+              <input
+                name="position8"
+                value={formData.position8}
+                onChange={handleInputChange}
+                className="medium"
+                style={{ textAlign: "center" }}
+              />
             </div>
           </div>
         </div>
