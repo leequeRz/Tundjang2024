@@ -1,16 +1,9 @@
-import React, { useRef, useState ,useEffect, useMemo, useCallback } from "react";
+import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import "./ThaiFormfield.css";
-
-import SearchFilterBar from "../SearchFilterBar";
-import { useSearch } from "../../hooks/useSearch";
 import { useCustomers } from "../../context/customerContext";
 import { useCustomerRecords } from "../../context/customerRecordContext";
 
-
-
-
-
-const initialFormState = {
+const defaultFormState = {
   start_date: null,
   end_date: null,
   item: "คอมพิวเตอร์",
@@ -18,135 +11,25 @@ const initialFormState = {
   item_number: "AA00012",
   status: "ยืม",
   detail: "",
-  "name surname": "",
+  name: "",
   role: "",
   group: "",
   tel: "",
 };
 
-const ThaiGovForm = () => {
-  const [formHeader, setFormHeader] = useState({
-    customer_id: "ฟีฟ่า",
-    "name surname": "",
-    role: "",
-    group: "",
-    tel: "",
-  });
-  const [formData, setFormData] = useState(initialFormState);
-  const [alert, setAlert] = useState({
-    open: false,
-    severity: "success",
-    message: "",
-  });
-  
-  const { customers } = useCustomers();
-  const {
-    currentEditRecord,
-    setCurrentEditRecord,
-    useFetchRecords,
-    addRecord,
-    updateRecord,
-  } = useCustomerRecords();
-
-
-  const { data: records = [] } = useFetchRecords(
-    currentEditRecord.customer_id?.trim()
-  );
-
-  const generateLabel = useCallback(
-    (item) => `${item.name} ${item.surname} (${item.customer_id})`,
-    []
-  );
-
-  const customersOptions = useMemo(
-    () =>
-      customers.map((customer) => ({
-        id: customer.customer_id,
-        label: generateLabel(customer),
-      })),
-    [customers, generateLabel]
-  );
-  
-  const recordOptions = useMemo(
-    () => [
-      { id: "create-new", label: "Create New Record" },
-      ...records.map((record) => ({ id: record.id, label: record.id })),
-    ],
-    [records]
-  );
-  // const [excretion, setExcretion] = useState([]);
-  const {
-    searchTerm: customerSearchTerm,
-    setSearchTerm: setCustomerSearchTerm,
-    filteredItems: filteredCustomers,
-  } = useSearch(customersOptions, ["label"]);
-  const {
-    searchTerm: recordSearchTerm,
-    setSearchTerm: setRecordSearchTerm,
-    filteredItems: filteredRecords,
-  } = useSearch(recordOptions, ["label"]);
-
-  const handleSelectCustomer_idFilter = useCallback(
-    (value) => {
-      setCurrentEditRecord({
-        customer_id: value.id,
-        docId: { id: "create-new", label: "Create New Record" },
-      });
-      const selectedCustomer = customers.find(
-        (customer) => customer.id === value.id
-      );
-      if (selectedCustomer) {
-        setFormHeader({
-          customer_id: selectedCustomer.customer_id.trim(),
-          "name surname": `${selectedCustomer.name} ${selectedCustomer.surname}`,
-          role: selectedCustomer.role,
-          group: selectedCustomer.group,
-          tel: selectedCustomer.tel,
-        });
-        setFormData(initialFormState);
-      }
-    },
-    [customers, setCurrentEditRecord]
-  );
-  const handleSelectRecordFilter = useCallback(
-    (value) => {
-      setCurrentEditRecord((prev) => ({ ...prev, docId: value }));
-      const selectedRecord = records.find((record) => record.id === value.id);
-      if (selectedRecord) {
-        // อัปเดต form ด้วยค่าจาก selectedRecord
-        setFormData({
-          ...initialFormState, // เริ่มต้นจาก initialFormState
-          ...selectedRecord, // เติมค่าจาก selectedRecord
-        });
-      } else {
-        setFormData(initialFormState); // รีเซ็ตฟอร์มถ้าไม่พบ Record
-      }
-    },
-    [records, setCurrentEditRecord]
-  );
-  
-
-  useEffect(() => {
-    // console.log(currentEditRecord);
-    handleSelectCustomer_idFilter({ id: currentEditRecord.customer_id });
-    handleSelectRecordFilter(currentEditRecord.docId);
-  }, []);
-
-  useEffect(() => {
-    console.log("Form state updated:", formData);
-  }, [formData]);
-
-  const handleFormChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  }, []);
-
-  const handleCloseAlert = () => {
-    setAlert({ ...alert, open: false });
-  };
-
+const ThaiGovForm = ({ initialFormProps = {} }) => {
+  const [formData, setFormData] = useState({ ...defaultFormState, ...initialFormProps });
+  const [tableData, setTableData] = useState([
+    { item: "", quantity: "", assetNumber: "", notes: "" },
+    { item: "", quantity: "", assetNumber: "", notes: "" },
+    { item: "", quantity: "", assetNumber: "", notes: "" },
+  ]);
   const pdfRef = useRef();
 
+  useEffect(() => {
+    // Update formData whenever initialFormProps change
+    setFormData({ ...defaultFormState, ...initialFormProps });
+  }, [initialFormProps]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -154,31 +37,24 @@ const ThaiGovForm = () => {
       ...prevData,
       [name]: value,
     }));
+    console.log(`Input Changed - Name: ${name}, Value: ${value}`);
   };
 
-  // Handle table input changes
   const handleTableInputChange = (index, e) => {
     const { name, value } = e.target;
     const updatedTableData = [...tableData];
     updatedTableData[index][name] = value;
     setTableData(updatedTableData);
+    console.log(`Table Row ${index} - Name: ${name}, Value: ${value}`);
   };
 
-  const [tableData, setTableData] = useState([
-    { item: "", quantity: "", assetNumber: "", notes: "" },
-    { item: "", quantity: "", assetNumber: "", notes: "" },
-    { item: "", quantity: "", assetNumber: "", notes: "" },
-  ]);
-
   return (
-    
     <div>
       <div ref={pdfRef}>
         {/* Header */}
         <div className="header">
           <h3>ใบยืมพัสดุ</h3>
           <div className="year-select">
-            {/* <p>เลือก ปี 66, 67, 68</p> */}
             <p>หน่วยงาน...................................</p>
             <p>วันที่........เดือน..........พ.ศ...........</p>
           </div>
@@ -189,57 +65,53 @@ const ThaiGovForm = () => {
           <div className="form-row">
             <span>ข้าพเจ้า</span>
             <input
-              name="name surname"
-              value={formHeader["name surname"]}
+              name="name"
+              value={formData.name}
               onChange={handleInputChange}
               className="long"
             />
-            {/* <div className="underline"></div> */}
             <span>ตำแหน่ง</span>
             <input
               name="role"
-              value={formHeader.role}
+              value={formData.role}
               onChange={handleInputChange}
               className="long"
             />
-            {/* <div className="underline"></div> */}
           </div>
 
           <div className="form-row">
             <span>สังกัด/กลุ่มงาน/หน่วยงาน</span>
             <input
-              name="department"
-              value={formHeader.group}
+              name="group"
+              value={formData.group}
               onChange={handleInputChange}
             />
-            {/* <div className="underline"></div> */}
             <span>หมายเลขโทรศัพท์ภายใน</span>
             <input
-              name="internalPhone"
-              value={formHeader.tel}
+              name="tel"
+              value={formData.tel}
               onChange={handleInputChange}
               className="phone"
             />
-            {/* <div className="underline short"></div> */}
+                {/* <div className="underline short"></div> */}
           </div>
 
           <div className="form-row">
             <span>หมายเลขโทรศัพท์มือถือ</span>
             <input
               name="mobilePhone"
-              value={formHeader.phone}
+              value={formData.phone}
               onChange={handleInputChange}
               className="short"
             />
-            {/* <div className="underline"></div> */}
             <span>มีความประสงค์จะขอยืมพัสดุของ</span>
             <input
               name="borrowFrom"
               // value={formData.borrowFrom}
               onChange={handleInputChange}
             />
-            {/* <div className="underline"></div> */}
           </div>
+        
 
           <div className="form-row">
             <span>วัตถุประสงค์เพื่อ</span>
@@ -254,40 +126,12 @@ const ThaiGovForm = () => {
           <div className="form-row">
             <span>ตั้งแต่วันที่</span>
             <input
-              name="startDate"
-              value={formData.startDate}
-              onChange={handleInputChange}
-              className="date"
-            />
-            <span>เดือน</span>
-            <input
-              name="startMonth"
-              value={formData.startMonth}
-              onChange={handleInputChange}
-              className="month"
-            />
-            <span>พ.ศ.</span>
-            <input
-              name="startYear"
-              value={formData.startYear}
+              name="start_date"
+              value={formData.start_date}
               onChange={handleInputChange}
               className="date"
             />
             <span>ถึงวันที่</span>
-            <input
-              name="endDate"
-              value={formData.endDate}
-              onChange={handleInputChange}
-              className="date"
-            />
-            <span>เดือน</span>
-            <input
-              name="endMonth"
-              value={formData.endMonth}
-              onChange={handleInputChange}
-              className="month"
-            />
-            <span>พ.ศ.</span>
             <input
               name="end_date"
               value={formData.end_date}
@@ -311,11 +155,11 @@ const ThaiGovForm = () => {
           <tbody>
             {tableData.map((row, index) => (
               <tr key={index}>
-                <td>{index + 1}</td> {/* Add row numbering */}
+                <td>{index + 1}</td>
                 <td>
                   <input
                     name="item"
-                    value={initialFormState.item}
+                    value={formData.item}
                     onChange={(e) => handleTableInputChange(index, e)}
                   />
                 </td>
@@ -329,7 +173,7 @@ const ThaiGovForm = () => {
                 <td>
                   <input
                     name="item_number"
-                    value={initialFormState.item_number}
+                    value={formData.item_number}
                     onChange={(e) => handleTableInputChange(index, e)}
                   />
                 </td>
@@ -344,6 +188,7 @@ const ThaiGovForm = () => {
             ))}
           </tbody>
         </table>
+        
 
         {/* Terms Text */}
         <div className="terms-text">
