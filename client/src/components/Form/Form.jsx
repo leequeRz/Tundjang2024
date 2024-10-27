@@ -3,7 +3,8 @@ import {
   Container,
   Divider,
   Typography,
-
+  Select,
+  MenuItem,
   TextField,
   Button,
   Box,
@@ -315,7 +316,7 @@ const Form = () => {
               <Grid item xs={6}>
                 <TextField
                   name="count"
-                  // label="หมายเลขครุภัณฑ์"  // ลบ label ที่ซ้ำกันออก
+                  type="number"
                   value={form.count}
                   placeholder="พิมพ์จำนวนครุภัณฑ์ที่นี่"
                   fullWidth
@@ -452,7 +453,7 @@ const Form = () => {
             </Typography>
             <TextField
               placeholder="พิมพ์หมายเหตุเพิ่มเติมที่นี่"
-              name="notes"
+              name="detail"
               value={form.detail}
               multiline
               rows={4}
@@ -462,22 +463,64 @@ const Form = () => {
             />
             <Divider sx={{ marginY: "3rem" }} />
 
-            {/* <Typography variant="h6" gutterBottom>
-                สถานะปัจจุบัน
-            </Typography>
-            <TextField
-              placeholder="พิมพ์หมายเหตุเพิ่มเติมที่นี่"
-              name="notes"
-              value={form.ห}
-              multiline
-              rows={4}
-              fullWidth
-              margin="normal"
-              onChange={handleFormChange}
-            /> */}
+            <Grid container spacing={2} marginBottom={2}>
+              <Grid
+                item
+                xs={6}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "start",
+                }}
+              >
+                <span style={{ fontSize: "25px" }}>สถานะปัจจุบัน</span>{" "}
+                {/* เพิ่มขนาดตัวหนังสือ */}
+              </Grid>
 
-            <Box marginTop={2} marginBottom={15}>
-              <Button type="submit" variant="contained" color="primary">
+              <Grid item xs={6}>
+                <Select
+                  name="status"
+                  value={form.status}
+                  fullWidth
+                  onChange={handleFormChange}
+                  style={{
+                    textAlign: "center",
+                    justifyContent: "center" ,
+                    fontSize: "20px",
+                    color: form.status === "ยืม" ? "red" : form.status === "คืนแล้ว" ? "green" : "inherit",
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+
+                        textAlign: "center", // กำหนดให้ข้อความในเมนูอยู่กึ่งกลาง
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem
+                    value="ยืม"
+                    style={{ color: "orange", justifyContent: "center" }} // กำหนดให้ข้อความในเมนูอยู่กึ่งกลาง
+                  >
+                    ยืม
+                  </MenuItem>
+                  <MenuItem
+                    value="คืนแล้ว"
+                    style={{ color: "green", justifyContent: "center" }} // กำหนดให้ข้อความในเมนูอยู่กึ่งกลาง
+                  >
+                    คืนแล้ว
+                  </MenuItem>
+                </Select>
+              </Grid>
+              </Grid>
+
+            <Box marginTop={5} marginBottom={15}
+             style={{
+                textAlign: "center",
+                justifyContent: "center",
+                // width:"900px"
+              }}>
+              <Button type="submit" variant="contained" color="primary" >
                 บันทึกข้อมูล
               </Button>
             </Box>

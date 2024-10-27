@@ -11,7 +11,7 @@ import {
 } from "@mui/material"; // นำเข้า Material-UI
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import SearchFilterBar from "../SearchFilterBar"; // นำเข้าคอมโพเนนต์ SearchFilterBar
+import SearchFilterBarPDF from "../SearchFilterBarPDF"; // นำเข้าคอมโพเนนต์ SearchFilterBar
 import { useCustomers } from "../../context/customerContext";
 import { useCustomerRecords } from "../../context/customerRecordContext";
 import { formatDateToThai } from "../../utils/helper";
@@ -47,7 +47,7 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
 
   const recordOptions = useMemo(
     () => [
-      { id: "create-new", label: "Create New Record" },
+      { id: "create-new", label: "Use only user" },
       ...recordsData.map((record) => ({ id: record.id, label: record.id })),
     ],
     [recordsData]
@@ -132,7 +132,7 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
       >
         <Grid container spacing={2} margin="normal">
           <Grid item xs={12}>
-            <SearchFilterBar
+            <SearchFilterBarPDF
               searchTerm={customerSearchTerm}
               setSearchTerm={setCustomerSearchTerm}
               selectedValue={currentEditRecord.customer_id}
@@ -162,7 +162,7 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
           ))}
 
           <Grid item xs={12}>
-            <SearchFilterBar
+            <SearchFilterBarPDF
               searchTerm={recordSearchTerm}
               setSearchTerm={setRecordSearchTerm}
               selectedValue={currentEditRecord.docId}
