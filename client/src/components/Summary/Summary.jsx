@@ -114,18 +114,26 @@ const CustomTable = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Surname</TableCell>
-                <TableCell>Customer ID</TableCell>
+                <TableCell>รหัสพนักงาน</TableCell>
+                <TableCell>ชื่อ</TableCell>
+                <TableCell>นามสกุล</TableCell>
+                <TableCell>หมายเลขโทรศัพท์</TableCell>
+                <TableCell>หมายเลขโทรศัพท์ภายใน</TableCell>
+                <TableCell>ตำแหน่ง</TableCell>
+                <TableCell>สังกัด</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {data.map((selectedRow) => (
                 <React.Fragment key={selectedRow.customer_id}>
                   <TableRow style={{ backgroundColor: "#f9f9f9" }}>
+                    <TableCell>{selectedRow.customer_id}</TableCell>
                     <TableCell>{selectedRow.name}</TableCell>
                     <TableCell>{selectedRow.surname}</TableCell>
-                    <TableCell>{selectedRow.customer_id}</TableCell>
+                    <TableCell>{selectedRow.phone}</TableCell>
+                    <TableCell>{selectedRow.tel}</TableCell>
+                    <TableCell>{selectedRow.role}</TableCell>
+                    <TableCell>{selectedRow.group}</TableCell>
                   </TableRow>
                   <SummaryRecordRow customer={selectedRow} />
                 </React.Fragment>
