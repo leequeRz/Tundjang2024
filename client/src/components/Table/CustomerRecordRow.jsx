@@ -9,6 +9,7 @@ import {
   IconButton,
   CircularProgress,
   Button,
+  Box
 } from "@mui/material";
 // import { createTheme, ThemeProvider } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
@@ -123,7 +124,24 @@ const CustomerRecordRow = ({ customer }) => {
               <TableCell>{entry.count}</TableCell> {/* Count */}
               <TableCell>{entry.item_number}</TableCell> {/* Item Number */}
               <TableCell>{entry.detail}</TableCell> {/* Detail */}
-              <TableCell>{entry.status}</TableCell> {/* Status */}
+              <TableCell>
+                <Box
+                  sx={{
+                    backgroundColor: "white", // ตั้งพื้นหลังให้เป็นสีขาว
+                    padding: "8px 0", // เพิ่ม padding บน-ล่าง
+                    borderRadius: "4px", // ทำมุมโค้งมน
+                    display: "flex", // ใช้ flexbox เพื่อจัดการการจัดวาง
+                    justifyContent: "center", // ทำให้ข้อความอยู่ตรงกลางแนวนอน
+                    alignItems: "center", // ทำให้ข้อความอยู่ตรงกลางแนวตั้ง
+                    width: "100%", // ให้กล่องมีขนาดเต็มความกว้างของ TableCell
+                    color: entry.status === "ยืม" ? "red" : "green", // กำหนดสีข้อความ
+                    fontWeight: "bold", // ทำให้ตัวหนาเพื่อให้ดูชัดเจน
+                  }}
+                >
+                  {entry.status}
+                </Box>
+                
+              </TableCell> {/* Status */}
               <TableCell>
                 <Tooltip title="Edit Customer">
                   <IconButton

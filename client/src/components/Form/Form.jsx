@@ -500,7 +500,7 @@ const Form = () => {
                 >
                   <MenuItem
                     value="ยืม"
-                    style={{ color: "orange", justifyContent: "center" }} // กำหนดให้ข้อความในเมนูอยู่กึ่งกลาง
+                    style={{ color: "red", justifyContent: "center" }} // กำหนดให้ข้อความในเมนูอยู่กึ่งกลาง
                   >
                     ยืม
                   </MenuItem>
