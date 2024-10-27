@@ -24,10 +24,10 @@ jobs:
           git config --global user.name "tundjang67@gmail.com"
           
           # Clone the destination repository
-          git clone https://Tundjang:${{ secrets.PAT_TOKEN }}@github.com/Tundjang/Tundjang2024.git
+          git clone https://Tundjang:${{ secrets.PAT_TOKEN }}@github.com/Tundjang/lend2024.git
 
           # Navigate into the destination repository
-          cd Tundjang2024
+          cd lend2024
           
           # Add the original repository as a remote
           git remote add Tundjang2024 https://leequeRz:${{ secrets.PAT_TOKEN }}@github.com/leequeRz/Tundjang2024.git
