@@ -18,12 +18,6 @@ const CustomerPopup = ({ open, onClose, customerData }) => {
   const { formData, handleChange, handleSubmit, isSubmitting } =
     useCustomerForm(customerData, onClose);
 
-  // const handleDateChange = (date) => {
-  // 	// Convert dayjs date to Date object or null
-  // 	const formattedDate = date ? date.format("YYYY-MM-DD") : null;
-  // 	handleChange({ target: { name: "DOB", value: formattedDate } });
-  // 	// console.log(formData);
-  // };
 
   const formFields = [
     {

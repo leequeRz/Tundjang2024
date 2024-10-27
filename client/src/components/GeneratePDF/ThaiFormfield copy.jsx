@@ -1,38 +1,30 @@
-import React, { useRef, useState ,useEffect, useMemo, useCallback } from "react";
-import "./ThaiFormfield.css";
-
-import SearchFilterBar from "../SearchFilterBar";
+import React, { useRef, useState } from "react";
 import { useSearch } from "../../hooks/useSearch";
 import { useCustomers } from "../../context/customerContext";
 import { useCustomerRecords } from "../../context/customerRecordContext";
-
-
-
-
-
-const initialFormState = {
-  start_date: null,
-  end_date: null,
-  item: "คอมพิวเตอร์",
-  count: "12",
-  item_number: "AA00012",
-  status: "ยืม",
-  detail: "",
-  "name surname": "",
-  role: "",
-  group: "",
-  tel: "",
-};
+import "./ThaiFormfield.css";
 
 const ThaiGovForm = () => {
-  const [formHeader, setFormHeader] = useState({
-    customer_id: "ฟีฟ่า",
-    "name surname": "",
+  const pdfRef = useRef();
+
+  const [recordData, setrecordData] = useState({
+  start_date: null,
+  end_date: null,
+  item: "",
+  count: "",
+  item_number: "",
+  status: "ยืม",
+  detail: "",
+  });
+  const [userData, setuserData] = useState({
+    customer_id: "",
+    name : "",
+    surname: "",
     role: "",
     group: "",
     tel: "",
   });
-  const [formData, setFormData] = useState(initialFormState);
+  const [form, setForm] = useState(initialFormState);
   const [alert, setAlert] = useState({
     open: false,
     severity: "success",
@@ -48,7 +40,7 @@ const ThaiGovForm = () => {
     updateRecord,
   } = useCustomerRecords();
 
-
+  // console.log(currentEditRecord);
   const { data: records = [] } = useFetchRecords(
     currentEditRecord.customer_id?.trim()
   );
@@ -103,7 +95,7 @@ const ThaiGovForm = () => {
           group: selectedCustomer.group,
           tel: selectedCustomer.tel,
         });
-        setFormData(initialFormState);
+        setForm(initialFormState);
       }
     },
     [customers, setCurrentEditRecord]
@@ -114,12 +106,12 @@ const ThaiGovForm = () => {
       const selectedRecord = records.find((record) => record.id === value.id);
       if (selectedRecord) {
         // อัปเดต form ด้วยค่าจาก selectedRecord
-        setFormData({
+        setForm({
           ...initialFormState, // เริ่มต้นจาก initialFormState
           ...selectedRecord, // เติมค่าจาก selectedRecord
         });
       } else {
-        setFormData(initialFormState); // รีเซ็ตฟอร์มถ้าไม่พบ Record
+        setForm(initialFormState); // รีเซ็ตฟอร์มถ้าไม่พบ Record
       }
     },
     [records, setCurrentEditRecord]
@@ -133,24 +125,68 @@ const ThaiGovForm = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Form state updated:", formData);
-  }, [formData]);
+    console.log("Form state updated:", form);
+  }, [form]);
 
   const handleFormChange = useCallback((e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   }, []);
+
+  const handleSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
+
+      const recordData = {
+        customer_id: formHeader.customer_id,
+        record: {
+          ...form,
+          id: currentEditRecord.docId.id,
+        },
+      };
+
+      const options = {
+        onSuccess: () => {
+          setAlert({
+            open: true,
+            message: "Record successfully saved!",
+            severity: "success",
+          });
+        },
+        onError: () => {
+          setAlert({
+            open: true,
+            message: "An error occurred while saving the record.",
+            severity: "error",
+          });
+        },
+      };
+
+      if (
+        currentEditRecord.docId &&
+        currentEditRecord.docId.id !== "create-new"
+      ) {
+        updateRecord(recordData, options);
+      } else {
+        addRecord(recordData, options);
+        setForm(initialFormState);
+      }
+    },
+    [
+      form,
+      formHeader.customer_id,
+      currentEditRecord.docId,
+      addRecord,
+      updateRecord,
+    ]
+  );
 
   const handleCloseAlert = () => {
     setAlert({ ...alert, open: false });
   };
-
-  const pdfRef = useRef();
-
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
+    setuserData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
@@ -164,14 +200,66 @@ const ThaiGovForm = () => {
     setTableData(updatedTableData);
   };
 
+  // Add a new row to the table
+  // const addTableRow = () => {
+  //   setTableData([
+  //     ...tableData,
+  //     { item: "", quantity: "", assetNumber: "", notes: "" },
+  //   ]);
+  // };
+
+  // // Remove a row from the table
+  // const removeTableRow = (index) => {
+  //   const updatedTableData = tableData.filter((_, i) => i !== index);
+  //   setTableData(updatedTableData);
+  // };
   const [tableData, setTableData] = useState([
     { item: "", quantity: "", assetNumber: "", notes: "" },
     { item: "", quantity: "", assetNumber: "", notes: "" },
     { item: "", quantity: "", assetNumber: "", notes: "" },
   ]);
 
+  // const downloadPDF = () => {
+  //   const input = pdfRef.current;
+  //   html2canvas(input, { scale: 3, useCORS: true }).then((canvas) => {
+  //     const pdf = new jsPDF("p", "mm", "a4", true);
+
+  //     const padding = 10; // Set padding in mm
+
+  //     const pdfWidth = 210; // A4 width in mm
+  //     const pdfHeight = 297; // A4 height in mm
+  //     const contentWidth = pdfWidth - padding * 2; // Width with padding
+  //     const imgHeight = (canvas.height * contentWidth) / canvas.width; // Scale image height proportionally
+
+  //     let position = padding; // Start position with padding
+  //     let remainingHeight = imgHeight;
+
+  //     const imgData = canvas.toDataURL("image/png");
+
+  //     // Add pages if the content height is larger than A4 page height
+  //     while (remainingHeight > 0) {
+  //       pdf.addImage(
+  //         imgData,
+  //         "PNG",
+  //         padding,
+  //         position,
+  //         contentWidth,
+  //         imgHeight
+  //       );
+  //       remainingHeight -= pdfHeight - padding * 2; // Adjust height by removing the padding from both sides
+  //       position -= pdfHeight - padding * 2;
+
+  //       if (remainingHeight > 0) {
+  //         pdf.addPage();
+  //         position = padding; // Reset position for new page
+  //       }
+  //     }
+
+  //     pdf.save("test.pdf");
+  //   });
+  // };
+
   return (
-    
     <div>
       <div ref={pdfRef}>
         {/* Header */}
@@ -189,16 +277,16 @@ const ThaiGovForm = () => {
           <div className="form-row">
             <span>ข้าพเจ้า</span>
             <input
-              name="name surname"
-              value={formHeader["name surname"]}
+              name="name"
+              value={userData.name}
               onChange={handleInputChange}
               className="long"
             />
             {/* <div className="underline"></div> */}
             <span>ตำแหน่ง</span>
             <input
-              name="role"
-              value={formHeader.role}
+              name="position"
+              value={userData.position}
               onChange={handleInputChange}
               className="long"
             />
@@ -209,14 +297,14 @@ const ThaiGovForm = () => {
             <span>สังกัด/กลุ่มงาน/หน่วยงาน</span>
             <input
               name="department"
-              value={formHeader.group}
+              value={userData.group}
               onChange={handleInputChange}
             />
             {/* <div className="underline"></div> */}
             <span>หมายเลขโทรศัพท์ภายใน</span>
             <input
               name="internalPhone"
-              value={formHeader.tel}
+              value={userData.tel}
               onChange={handleInputChange}
               className="phone"
             />
@@ -226,16 +314,16 @@ const ThaiGovForm = () => {
           <div className="form-row">
             <span>หมายเลขโทรศัพท์มือถือ</span>
             <input
-              name="mobilePhone"
-              value={formHeader.phone}
+              name="phone"
+              value={userData.phone}
               onChange={handleInputChange}
               className="short"
             />
             {/* <div className="underline"></div> */}
             <span>มีความประสงค์จะขอยืมพัสดุของ</span>
             <input
-              name="borrowFrom"
-              // value={formData.borrowFrom}
+              name="detail"
+              value={recordData.detail}
               onChange={handleInputChange}
             />
             {/* <div className="underline"></div> */}
@@ -245,7 +333,7 @@ const ThaiGovForm = () => {
             <span>วัตถุประสงค์เพื่อ</span>
             <input
               name="detail"
-              value={formData.detail}
+              value={recordData.detail}
               onChange={handleInputChange}
               className="longest"
             />
@@ -254,43 +342,43 @@ const ThaiGovForm = () => {
           <div className="form-row">
             <span>ตั้งแต่วันที่</span>
             <input
-              name="startDate"
-              value={formData.startDate}
+              name="start_date"
+              value={recordData.start_date}
               onChange={handleInputChange}
               className="date"
             />
             <span>เดือน</span>
             <input
               name="startMonth"
-              value={formData.startMonth}
+              value={recordData.start_date}
               onChange={handleInputChange}
               className="month"
             />
             <span>พ.ศ.</span>
             <input
               name="startYear"
-              value={formData.startYear}
+              value={recordData.start_date}
               onChange={handleInputChange}
               className="date"
             />
             <span>ถึงวันที่</span>
             <input
               name="endDate"
-              value={formData.endDate}
+              value={recordData.endDate}
               onChange={handleInputChange}
               className="date"
             />
             <span>เดือน</span>
             <input
               name="endMonth"
-              value={formData.endMonth}
+              value={recordData.endMonth}
               onChange={handleInputChange}
               className="month"
             />
             <span>พ.ศ.</span>
             <input
-              name="end_date"
-              value={formData.end_date}
+              name="endYear"
+              value={recordData.endYear}
               onChange={handleInputChange}
               className="date"
             />
@@ -315,7 +403,7 @@ const ThaiGovForm = () => {
                 <td>
                   <input
                     name="item"
-                    value={initialFormState.item}
+                    value={row.item}
                     onChange={(e) => handleTableInputChange(index, e)}
                   />
                 </td>
@@ -328,8 +416,8 @@ const ThaiGovForm = () => {
                 </td>
                 <td>
                   <input
-                    name="item_number"
-                    value={initialFormState.item_number}
+                    name="assetNumber"
+                    value={row.assetNumber}
                     onChange={(e) => handleTableInputChange(index, e)}
                   />
                 </td>
