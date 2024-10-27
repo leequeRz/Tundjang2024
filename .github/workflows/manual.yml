@@ -30,13 +30,13 @@ jobs:
           cd Tundjang2024
           
           # Add the original repository as a remote
-          git remote add ResponsiveWeb https://leequeRz:${{ secrets.PAT_TOKEN }}@github.com/leequeRz/Tundjang2024.git
+          git remote add Tundjang2024 https://leequeRz:${{ secrets.PAT_TOKEN }}@github.com/leequeRz/Tundjang2024.git
           
           # Update the remotes to fetch the latest changes
           git remote update
           
           # Merge the main branch from the original repository into the destination repository
-          git merge ResponsiveWeb/main
+          git merge Tundjang2024/main
           
           # Push the merged changes to the destination repository's main branch
           git push origin main
