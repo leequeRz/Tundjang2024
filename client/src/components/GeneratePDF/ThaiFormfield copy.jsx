@@ -1,51 +1,263 @@
-import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
+import React, { useRef, useState } from "react";
+import { useSearch } from "../../hooks/useSearch";
+import { useCustomers } from "../../context/customerContext";
+import { useCustomerRecords } from "../../context/customerRecordContext";
 import "./ThaiFormfield.css";
-import { formatDateToThai } from "../../utils/helper";
 
-const defaultFormState = {
+const ThaiGovForm = () => {
+  const pdfRef = useRef();
+
+  const [recordData, setrecordData] = useState({
   start_date: null,
   end_date: null,
   item: "",
   count: "",
   item_number: "",
-  // status: "",
+  status: "ยืม",
   detail: "",
-  name: "",
-  role: "",
-  group: "",
-  tel: "",
-};
+  });
+  const [userData, setuserData] = useState({
+    customer_id: "",
+    name : "",
+    surname: "",
+    role: "",
+    group: "",
+    tel: "",
+  });
+  const [form, setForm] = useState(initialFormState);
+  const [alert, setAlert] = useState({
+    open: false,
+    severity: "success",
+    message: "",
+  });
+  
+  const { customers } = useCustomers();
+  const {
+    currentEditRecord,
+    setCurrentEditRecord,
+    useFetchRecords,
+    addRecord,
+    updateRecord,
+  } = useCustomerRecords();
 
-const ThaiGovForm = ({ initialFormProps = {} }) => {
-  const [formData, setFormData] = useState({ ...defaultFormState, ...initialFormProps });
-  const [tableData, setTableData] = useState([
-    { item: "", quantity: "", assetNumber: "", notes: "" },
-    { item: "", quantity: "", assetNumber: "", notes: "" },
-    { item: "", quantity: "", assetNumber: "", notes: "" },
-  ]);
-  const pdfRef = useRef();
+  // console.log(currentEditRecord);
+  const { data: records = [] } = useFetchRecords(
+    currentEditRecord.customer_id?.trim()
+  );
+
+  const generateLabel = useCallback(
+    (item) => `${item.name} ${item.surname} (${item.customer_id})`,
+    []
+  );
+
+  const customersOptions = useMemo(
+    () =>
+      customers.map((customer) => ({
+        id: customer.customer_id,
+        label: generateLabel(customer),
+      })),
+    [customers, generateLabel]
+  );
+  
+  const recordOptions = useMemo(
+    () => [
+      { id: "create-new", label: "Create New Record" },
+      ...records.map((record) => ({ id: record.id, label: record.id })),
+    ],
+    [records]
+  );
+  // const [excretion, setExcretion] = useState([]);
+  const {
+    searchTerm: customerSearchTerm,
+    setSearchTerm: setCustomerSearchTerm,
+    filteredItems: filteredCustomers,
+  } = useSearch(customersOptions, ["label"]);
+  const {
+    searchTerm: recordSearchTerm,
+    setSearchTerm: setRecordSearchTerm,
+    filteredItems: filteredRecords,
+  } = useSearch(recordOptions, ["label"]);
+
+  const handleSelectCustomer_idFilter = useCallback(
+    (value) => {
+      setCurrentEditRecord({
+        customer_id: value.id,
+        docId: { id: "create-new", label: "Create New Record" },
+      });
+      const selectedCustomer = customers.find(
+        (customer) => customer.id === value.id
+      );
+      if (selectedCustomer) {
+        setFormHeader({
+          customer_id: selectedCustomer.customer_id.trim(),
+          "name surname": `${selectedCustomer.name} ${selectedCustomer.surname}`,
+          role: selectedCustomer.role,
+          group: selectedCustomer.group,
+          tel: selectedCustomer.tel,
+        });
+        setForm(initialFormState);
+      }
+    },
+    [customers, setCurrentEditRecord]
+  );
+  const handleSelectRecordFilter = useCallback(
+    (value) => {
+      setCurrentEditRecord((prev) => ({ ...prev, docId: value }));
+      const selectedRecord = records.find((record) => record.id === value.id);
+      if (selectedRecord) {
+        // อัปเดต form ด้วยค่าจาก selectedRecord
+        setForm({
+          ...initialFormState, // เริ่มต้นจาก initialFormState
+          ...selectedRecord, // เติมค่าจาก selectedRecord
+        });
+      } else {
+        setForm(initialFormState); // รีเซ็ตฟอร์มถ้าไม่พบ Record
+      }
+    },
+    [records, setCurrentEditRecord]
+  );
+  
 
   useEffect(() => {
-    // Update formData whenever initialFormProps change
-    setFormData({ ...defaultFormState, ...initialFormProps });
-  }, [initialFormProps]);
+    // console.log(currentEditRecord);
+    handleSelectCustomer_idFilter({ id: currentEditRecord.customer_id });
+    handleSelectRecordFilter(currentEditRecord.docId);
+  }, []);
 
+  useEffect(() => {
+    console.log("Form state updated:", form);
+  }, [form]);
+
+  const handleFormChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
+  const handleSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
+
+      const recordData = {
+        customer_id: formHeader.customer_id,
+        record: {
+          ...form,
+          id: currentEditRecord.docId.id,
+        },
+      };
+
+      const options = {
+        onSuccess: () => {
+          setAlert({
+            open: true,
+            message: "Record successfully saved!",
+            severity: "success",
+          });
+        },
+        onError: () => {
+          setAlert({
+            open: true,
+            message: "An error occurred while saving the record.",
+            severity: "error",
+          });
+        },
+      };
+
+      if (
+        currentEditRecord.docId &&
+        currentEditRecord.docId.id !== "create-new"
+      ) {
+        updateRecord(recordData, options);
+      } else {
+        addRecord(recordData, options);
+        setForm(initialFormState);
+      }
+    },
+    [
+      form,
+      formHeader.customer_id,
+      currentEditRecord.docId,
+      addRecord,
+      updateRecord,
+    ]
+  );
+
+  const handleCloseAlert = () => {
+    setAlert({ ...alert, open: false });
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
+    setuserData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-    console.log(`Input Changed - Name: ${name}, Value: ${value}`);
   };
 
+  // Handle table input changes
   const handleTableInputChange = (index, e) => {
     const { name, value } = e.target;
     const updatedTableData = [...tableData];
     updatedTableData[index][name] = value;
     setTableData(updatedTableData);
-    console.log(`Table Row ${index} - Name: ${name}, Value: ${value}`);
   };
+
+  // Add a new row to the table
+  // const addTableRow = () => {
+  //   setTableData([
+  //     ...tableData,
+  //     { item: "", quantity: "", assetNumber: "", notes: "" },
+  //   ]);
+  // };
+
+  // // Remove a row from the table
+  // const removeTableRow = (index) => {
+  //   const updatedTableData = tableData.filter((_, i) => i !== index);
+  //   setTableData(updatedTableData);
+  // };
+  const [tableData, setTableData] = useState([
+    { item: "", quantity: "", assetNumber: "", notes: "" },
+    { item: "", quantity: "", assetNumber: "", notes: "" },
+    { item: "", quantity: "", assetNumber: "", notes: "" },
+  ]);
+
+  // const downloadPDF = () => {
+  //   const input = pdfRef.current;
+  //   html2canvas(input, { scale: 3, useCORS: true }).then((canvas) => {
+  //     const pdf = new jsPDF("p", "mm", "a4", true);
+
+  //     const padding = 10; // Set padding in mm
+
+  //     const pdfWidth = 210; // A4 width in mm
+  //     const pdfHeight = 297; // A4 height in mm
+  //     const contentWidth = pdfWidth - padding * 2; // Width with padding
+  //     const imgHeight = (canvas.height * contentWidth) / canvas.width; // Scale image height proportionally
+
+  //     let position = padding; // Start position with padding
+  //     let remainingHeight = imgHeight;
+
+  //     const imgData = canvas.toDataURL("image/png");
+
+  //     // Add pages if the content height is larger than A4 page height
+  //     while (remainingHeight > 0) {
+  //       pdf.addImage(
+  //         imgData,
+  //         "PNG",
+  //         padding,
+  //         position,
+  //         contentWidth,
+  //         imgHeight
+  //       );
+  //       remainingHeight -= pdfHeight - padding * 2; // Adjust height by removing the padding from both sides
+  //       position -= pdfHeight - padding * 2;
+
+  //       if (remainingHeight > 0) {
+  //         pdf.addPage();
+  //         position = padding; // Reset position for new page
+  //       }
+  //     }
+
+  //     pdf.save("test.pdf");
+  //   });
+  // };
 
   return (
     <div>
@@ -54,6 +266,7 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
         <div className="header">
           <h3>ใบยืมพัสดุ</h3>
           <div className="year-select">
+            {/* <p>เลือก ปี 66, 67, 68</p> */}
             <p>หน่วยงาน...................................</p>
             <p>วันที่........เดือน..........พ.ศ...........</p>
           </div>
@@ -65,67 +278,64 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
             <span>ข้าพเจ้า</span>
             <input
               name="name"
-              value={formData.name}
+              value={userData.name}
               onChange={handleInputChange}
               className="long"
-              style={{ textAlign: "center" }}
             />
+            {/* <div className="underline"></div> */}
             <span>ตำแหน่ง</span>
             <input
-              name="role"
-              value={formData.role}
+              name="position"
+              value={userData.position}
               onChange={handleInputChange}
               className="long"
-              style={{ textAlign: "center" }}
             />
+            {/* <div className="underline"></div> */}
           </div>
 
           <div className="form-row">
             <span>สังกัด/กลุ่มงาน/หน่วยงาน</span>
             <input
-              name="group"
-              value={formData.group}
+              name="department"
+              value={userData.group}
               onChange={handleInputChange}
-              style={{ textAlign: "center" }}
             />
+            {/* <div className="underline"></div> */}
             <span>หมายเลขโทรศัพท์ภายใน</span>
             <input
-              name="tel"
-              value={formData.tel}
+              name="internalPhone"
+              value={userData.tel}
               onChange={handleInputChange}
               className="phone"
-              style={{ textAlign: "center" }}
             />
-                {/* <div className="underline short"></div> */}
+            {/* <div className="underline short"></div> */}
           </div>
 
           <div className="form-row">
             <span>หมายเลขโทรศัพท์มือถือ</span>
             <input
-              name="mobilePhone"
-              value={formData.phone}
+              name="phone"
+              value={userData.phone}
               onChange={handleInputChange}
               className="short"
-              style={{ textAlign: "center" }}
             />
+            {/* <div className="underline"></div> */}
             <span>มีความประสงค์จะขอยืมพัสดุของ</span>
             <input
-              name="borrowFrom"
-              // value={formData.borrowFrom}
+              name="detail"
+              value={recordData.detail}
               onChange={handleInputChange}
-              style={{ textAlign: "center" }}
             />
+            {/* <div className="underline"></div> */}
           </div>
-        
 
           <div className="form-row">
             <span>วัตถุประสงค์เพื่อ</span>
             <input
               name="detail"
-              value={formData.detail}
+              value={recordData.detail}
               onChange={handleInputChange}
               className="longest"
-              style={{ textAlign: "center" }}
             />
           </div>
 
@@ -133,18 +343,44 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
             <span>ตั้งแต่วันที่</span>
             <input
               name="start_date"
-              value={formatDateToThai(formData.start_date)}
+              value={recordData.start_date}
               onChange={handleInputChange}
               className="date"
-              style={{ textAlign: "center" }}
+            />
+            <span>เดือน</span>
+            <input
+              name="startMonth"
+              value={recordData.start_date}
+              onChange={handleInputChange}
+              className="month"
+            />
+            <span>พ.ศ.</span>
+            <input
+              name="startYear"
+              value={recordData.start_date}
+              onChange={handleInputChange}
+              className="date"
             />
             <span>ถึงวันที่</span>
             <input
-              name="end_date"
-              value={formatDateToThai(formData.end_date)}
+              name="endDate"
+              value={recordData.endDate}
               onChange={handleInputChange}
               className="date"
-              style={{ textAlign: "center" }}
+            />
+            <span>เดือน</span>
+            <input
+              name="endMonth"
+              value={recordData.endMonth}
+              onChange={handleInputChange}
+              className="month"
+            />
+            <span>พ.ศ.</span>
+            <input
+              name="endYear"
+              value={recordData.endYear}
+              onChange={handleInputChange}
+              className="date"
             />
           </div>
         </div>
@@ -163,13 +399,12 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
           <tbody>
             {tableData.map((row, index) => (
               <tr key={index}>
-                <td>{index + 1}</td>
+                <td>{index + 1}</td> {/* Add row numbering */}
                 <td>
                   <input
                     name="item"
-                    value={formData.item}
+                    value={row.item}
                     onChange={(e) => handleTableInputChange(index, e)}
-                    style={{ textAlign: "center" }}
                   />
                 </td>
                 <td>
@@ -177,15 +412,13 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
                     name="quantity"
                     value={row.quantity}
                     onChange={(e) => handleTableInputChange(index, e)}
-                    style={{ textAlign: "center" }}
                   />
                 </td>
                 <td>
                   <input
-                    name="item_number"
-                    value={formData.item_number}
+                    name="assetNumber"
+                    value={row.assetNumber}
                     onChange={(e) => handleTableInputChange(index, e)}
-                    style={{ textAlign: "center" }}
                   />
                 </td>
                 <td>
@@ -193,14 +426,12 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
                     name="notes"
                     value={row.notes}
                     onChange={(e) => handleTableInputChange(index, e)}
-                    style={{ textAlign: "center" }}
                   />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        
 
         {/* Terms Text */}
         <div className="terms-text">
@@ -211,84 +442,32 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
           หรือชดใช้เป็นพัสดุประเภท ชนิด ขนาด ลักษณะและคุณภาพอย่างเดียวกัน
           หรือชดใช้เป็นเงินตามราคาที่เป็นอยู่ในขณะยืม
           ตามหลักเกณฑ์ที่กระทรวงการคลังกำหนดข้าพเจ้าขอรับผิดชอบโดยไม่มีเงื่อนไขใดๆ
-          ทั้งสิ้น ทั้งนี้ ข้าพเจ้าจะส่งคืนพัสดุ ในวันที่
-          <input
-            name="sendDate"
-            value={formData.sendDate}
-            onChange={handleInputChange}
-            className="date20"
-            style={{ textAlign: "center" }}
-          />
-          เดือน
-          <input
-            name="sendMonth"
-            value={formData.sendMonth}
-            onChange={handleInputChange}
-            className="month"
-            style={{ textAlign: "center" }}
-          />
-          พ.ศ
-          <input
-            name="sendYear"
-            value={formData.sendYear}
-            onChange={handleInputChange}
-            className="year30"
-            style={{ textAlign: "center" }}
-          />
+          ทั้งสิ้น ทั้งนี้ ข้าพเจ้าจะส่งคืนพัสดุ
+          ในวันที่..........เดือน.............พ.ศ.............
         </div>
 
         {/* Signature Section */}
         <div className="signature-grid">
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ
-              <input
-                name="nameRent"
-                value={formData.nameRent}
-                onChange={handleInputChange}
-                className="medium"
-                style={{ textAlign: "center" }}
-              />
-              ผู้ยืมพัสดุ
+              ลงชื่อ.............................................ผู้ยืมพัสดุ
             </div>
             <div className="signature-name">
               (.................................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง
-              <input
-                name="position1"
-                value={formData.position1}
-                onChange={handleInputChange}
-                className="medium"
-                style={{ textAlign: "center" }}
-              />
+              ตำแหน่ง...........................................
             </div>
           </div>
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ
-              <input
-                name="headerGroupRent"
-                value={formData.headerGroupRent}
-                onChange={handleInputChange}
-                className="short140"
-                style={{ textAlign: "center" }}
-              />
-              หัวหน้าหน่วยงานผู้ยืม
+              ลงชื่อ................................หัวหน้าหน่วยงานผู้ยืม
             </div>
             <div className="signature-name">
-              (.................................)
+              (.................................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง
-              <input
-                name="position2"
-                value={formData.position2}
-                onChange={handleInputChange}
-                className="medium"
-                style={{ textAlign: "center" }}
-              />
+              ตำแหน่ง...........................................
             </div>
           </div>
         </div>
@@ -299,15 +478,8 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
         {/* Checkbox Section */}
         <div className="checkbox-section">
           <p>
-            ตรวจสอบแล้วโดย นาย/นาง/นางสาว
-            <input
-              name="parcelOfficer"
-              value={formData.parcelOfficer}
-              onChange={handleInputChange}
-              className="medium"
-              style={{ textAlign: "center" }}
-            />
-            เจ้าหน้าที่พัสดุ/ผู้ที่ได้รับมอบหมาย
+            ตรวจสอบแล้วโดย
+            นาย/นาง/นางสาว......................................................เจ้าหน้าที่พัสดุ/ผู้ที่ได้รับมอบหมาย
           </p>
           <div className="checkbox-row">
             <input type="checkbox" />
@@ -323,54 +495,24 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
         <div className="signature-grid">
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ
-              <input
-                name="parcelOfficer"
-                value={formData.parcelOfficer}
-                onChange={handleInputChange}
-                className="medium180"
-                style={{ textAlign: "center" }}
-              />
-              เจ้าหน้าที่พัสดุ
+              ลงชื่อ........................................เจ้าหน้าที่พัสดุ
             </div>
             <div className="signature-name">
               (.................................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง
-              <input
-                name="position3"
-                value={formData.position3}
-                onChange={handleInputChange}
-                className="medium"
-                style={{ textAlign: "center" }}
-              />
+              ตำแหน่ง...........................................
             </div>
           </div>
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ
-              <input
-                name="nameApprove"
-                value={formData.nameApprove}
-                onChange={handleInputChange}
-                className="medium"
-                style={{ textAlign: "center" }}
-              />
-              ผู้อนุมัติ
+              ลงชื่อ..........................................ผู้อนุมัติ
             </div>
             <div className="signature-name">
               (.................................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง
-              <input
-                name="position4"
-                value={formData.position4}
-                onChange={handleInputChange}
-                className="medium"
-                style={{ textAlign: "center" }}
-              />
+              ตำแหน่ง...........................................
             </div>
           </div>
         </div>
@@ -392,54 +534,24 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
         <div className="signature-grid">
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ
-              <input
-                name="nameRent"
-                value={formData.nameRent}
-                onChange={handleInputChange}
-                className="medium"
-                style={{ textAlign: "center" }}
-              />
-              ผู้ยืมพัสดุ
+              ลงชื่อ........................................ผู้ยืมพัสดุ
             </div>
             <div className="signature-name">
               (.................................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง
-              <input
-                name="position1"
-                value={formData.position1}
-                onChange={handleInputChange}
-                className="medium"
-                style={{ textAlign: "center" }}
-              />
+              ตำแหน่ง...........................................
             </div>
           </div>
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ
-              <input
-                name="parcelPayer"
-                value={formData.parcelPayer}
-                onChange={handleInputChange}
-                className="medium180"
-                style={{ textAlign: "center" }}
-              />
-              ผู้จ่ายพัสดุ
+              ลงชื่อ..........................................ผู้จ่ายพัสดุ
             </div>
             <div className="signature-name">
               (.................................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง
-              <input
-                name="position6"
-                value={formData.position6}
-                onChange={handleInputChange}
-                className="medium"
-                style={{ textAlign: "center" }}
-              />
+              ตำแหน่ง...........................................
             </div>
           </div>
         </div>
@@ -457,54 +569,24 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
         <div className="signature-grid">
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ
-              <input
-                name="nameRent"
-                value={formData.nameRent}
-                onChange={handleInputChange}
-                className="medium"
-                style={{ textAlign: "center" }}
-              />
-              ผู้ยืมพัสดุ
+              ลงชื่อ........................................ผู้ยืมพัสดุ
             </div>
             <div className="signature-name">
               (.................................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง
-              <input
-                name="position1"
-                value={formData.position1}
-                onChange={handleInputChange}
-                className="medium"
-                style={{ textAlign: "center" }}
-              />
+              ตำแหน่ง...........................................
             </div>
           </div>
           <div className="signature-box">
             <div className="signature-line">
-              ลงชื่อ
-              <input
-                name="parcelPayer"
-                value={formData.parcelPayer}
-                onChange={handleInputChange}
-                className="medium180"
-                style={{ textAlign: "center" }}
-              />
-              ผู้จ่ายพัสดุ
+              ลงชื่อ..........................................ผู้จ่ายพัสดุ
             </div>
             <div className="signature-name">
               (.................................................)
             </div>
             <div className="signature-position">
-              ตำแหน่ง
-              <input
-                name="position8"
-                value={formData.position8}
-                onChange={handleInputChange}
-                className="medium"
-                style={{ textAlign: "center" }}
-              />
+              ตำแหน่ง...........................................
             </div>
           </div>
         </div>

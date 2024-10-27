@@ -3,11 +3,7 @@ import {
   Container,
   Divider,
   Typography,
-  // Radio,
-  // RadioGroup,
-  // FormControlLabel,
-  // FormControl,
-  // FormLabel,
+
   TextField,
   Button,
   Box,
@@ -352,7 +348,7 @@ const Form = () => {
                 />
               </Grid>
 
-              <Grid
+              {/* <Grid
                 item
                 xs={6}
                 style={{
@@ -375,7 +371,7 @@ const Form = () => {
                   InputProps={{ style: { fontSize: "18px" } }} // เพิ่มขนาดตัวหนังสือของ input
                   onChange={handleFormChange}
                 />
-              </Grid>
+              </Grid> */}
 
               <Grid
                 item
@@ -457,13 +453,28 @@ const Form = () => {
             <TextField
               placeholder="พิมพ์หมายเหตุเพิ่มเติมที่นี่"
               name="notes"
-              value={form.notes}
+              value={form.detail}
               multiline
               rows={4}
               fullWidth
               margin="normal"
               onChange={handleFormChange}
             />
+            <Divider sx={{ marginY: "3rem" }} />
+
+            {/* <Typography variant="h6" gutterBottom>
+                สถานะปัจจุบัน
+            </Typography>
+            <TextField
+              placeholder="พิมพ์หมายเหตุเพิ่มเติมที่นี่"
+              name="notes"
+              value={form.ห}
+              multiline
+              rows={4}
+              fullWidth
+              margin="normal"
+              onChange={handleFormChange}
+            /> */}
 
             <Box marginTop={2} marginBottom={15}>
               <Button type="submit" variant="contained" color="primary">
