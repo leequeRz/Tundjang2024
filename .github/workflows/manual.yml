@@ -1,0 +1,57 @@
+# @format
+
+name: Sync Repos
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the source repository (original repo)
+      - name: Checkout source repository
+        uses: actions/checkout@v2
+
+      # Step 2: Push to the destination repository
+      - name: Push to destination repository
+        run: |
+          # Configure the Git user
+          git config --global user.email "tundjang67@gmail.com"
+          git config --global user.name "Tundjang"
+          
+          # Clone the destination repository
+          git clone https://Tundjang:${{ secrets.PAT_TOKEN }}@github.com/Tundjang/lend2024.git
+
+          # Navigate into the destination repository
+          cd lend2024
+          
+          # Add the original repository as a remote
+          git remote add Tundjang2024 https://leequeRz:${{ secrets.PAT_TOKEN }}@github.com/leequeRz/Tundjang2024.git
+          
+          # Update the remotes to fetch the latest changes
+          git remote update
+          
+          # Merge the main branch from the original repository into the destination repository
+          git merge Tundjang2024/main --allow-unrelated-histories
+          
+          # Push the merged changes to the destination repository's main branch
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+           
+    # - name: Set up Git
+    #   run: |
+    #     git config --global user.name "leequeRz"
+    #     git config --global user.email "fifa52766@gmail.com"
+
+    # - name: Add remote and push to mirror repository
+    #   env:
+    #     PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+    #   run: |
+    #     git remote add mirror https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/ICAREU/mirror-icareu.git
+    #     git push --mirror mirror
