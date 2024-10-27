@@ -36,7 +36,7 @@ jobs:
           git remote update
           
           # Merge the main branch from the original repository into the destination repository
-          git merge Tundjang2024/main
+          git merge Tundjang2024/main --allow-unrelated-histories
           
           # Push the merged changes to the destination repository's main branch
           git push origin main
