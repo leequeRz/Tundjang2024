@@ -37,6 +37,7 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
       [name]: value,
     }));
     console.log(`Input Changed - Name: ${name}, Value: ${value}`);
+    console.log(formData)
   };
 
   const handleTableInputChange = (index, e) => {
@@ -133,7 +134,7 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
             <span>ตั้งแต่วันที่</span>
             <input
               name="start_date"
-              value={formatDateToThai(formData.start_date)}
+              value={formData.start_date}
               onChange={handleInputChange}
               className="date"
               style={{ textAlign: "center" }}
@@ -141,7 +142,7 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
             <span>ถึงวันที่</span>
             <input
               name="end_date"
-              value={formatDateToThai(formData.end_date)}
+              value={formData.end_date}
               onChange={handleInputChange}
               className="date"
               style={{ textAlign: "center" }}

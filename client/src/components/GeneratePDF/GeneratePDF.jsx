@@ -7,6 +7,7 @@ import jsPDF from "jspdf";
 import SearchFilterBar from "../SearchFilterBar"; // นำเข้าคอมโพเนนต์ SearchFilterBar
 import { useCustomers } from "../../context/customerContext";
 import { useCustomerRecords } from "../../context/customerRecordContext";
+import { formatDateToThai } from "../../utils/helper";
 
 const GeneratePDF = ({ formData, formHeader = {} }) => { // กำหนดค่าเริ่มต้นให้กับ formHeader
   const pdfRef = useRef();
@@ -85,8 +86,8 @@ const GeneratePDF = ({ formData, formHeader = {} }) => { // กำหนดค�
   
     // สร้าง updatedFormProps โดยผสานข้อมูลจาก `selectedCustomer` และ `selectedRecord`
     const updatedFormProps = {
-      start_date: selectedRecord?.start_date || null, // ใช้ข้อมูลจากระเบียนถ้ามี
-      end_date: selectedRecord?.end_date || null,
+      start_date: selectedRecord?.start_date ? formatDateToThai(selectedRecord.start_date) : null, // ใช้ข้อมูลจากระเบียนถ้ามี
+      end_date: selectedRecord?.end_date ? formatDateToThai(selectedRecord.end_date) : null,
       item: selectedRecord?.item || "",
       count: selectedRecord?.count || "",
       item_number: selectedRecord?.item_number || "",
@@ -161,18 +162,26 @@ const GeneratePDF = ({ formData, formHeader = {} }) => { // กำหนดค�
                 }));
               }}
               label="Customer Record"
-              placeholder="Search by record id"
+              // placeholder="Search by record id"
               required={true}
             />
           </Grid>
 
           {/* ปุ่มสำหรับอัปเดตค่าใน ThaiFormField */}
-          <Grid item xs={12}>
-            <Button variant="contained" color="primary" onClick={handleUpdateForm}>
+          <Grid item xs={12} display="flex" justifyContent="flex-end" spacing={2}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleUpdateForm}
+              style={{ marginRight: '10px' }} // กำหนดระยะห่างระหว่างปุ่ม
+            >
               แสดงตัวอย่างข้อมูลฟอร์ม
             </Button>
-            <Button variant="contained" color="primary"  onClick={downloadPDF}>ดาวน์โหลด PDF</Button>
+            <Button variant="contained" color="primary" onClick={downloadPDF}>
+              ดาวน์โหลด PDF
+            </Button>
           </Grid>
+
         </Grid>
       </form>
 
