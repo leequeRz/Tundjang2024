@@ -11,6 +11,7 @@ import Form from "./components/Form/Form";
 import Sidebar from "./components/Sidebar";
 import Login from "./components/Login/Login";
 import GeneratePDF from "./components/GeneratePDF/GeneratePDF";
+import Summary from "./components/Summary/Summary";
 import {
   SelectedItemProvider,
   useSelectedItem,
@@ -80,6 +81,8 @@ function MainContent() {
       return <Form />;
     case "PDF":
       return <GeneratePDF />;
+    case "Summary":
+      return <Summary />;
     default:
       return <MainDash />;
   }

@@ -48,7 +48,7 @@ const TableComponent = () => {
     filteredItems,
     15
   );
-  
+
   // Set the initial value to 2567
   const [selectedYear, setSelectedYear] = useState(2567); // Default as 2567
 
@@ -117,7 +117,7 @@ const TableComponent = () => {
           <Typography variant="h5" sx={{ mr: 2 }}>
             รายชื่อคนยืมพัสดุ
           </Typography>
-          <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+          {/* <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
             <InputLabel id="year-select-label">ปี</InputLabel>
             <Select
               labelId="year-select-label"
@@ -132,7 +132,7 @@ const TableComponent = () => {
                 </MenuItem>
               ))}
             </Select>
-          </FormControl>
+          </FormControl> */}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
@@ -152,7 +152,6 @@ const TableComponent = () => {
               เพิ่มรายชื่อคนยืมพัสดุ
             </Button>
           </ThemeProvider>
-
 
           <ThemeProvider theme={theme}>
             <Button
@@ -184,7 +183,7 @@ const TableComponent = () => {
               ))}
             </Menu>
           </ThemeProvider>
-          <ThemeProvider theme={theme}>
+          {/* <ThemeProvider theme={theme}>
             <Button
               variant="outlined"
               color="primary"
@@ -198,7 +197,7 @@ const TableComponent = () => {
               <PictureAsPdfIcon sx={{ mr: 1 }} />
               Export PDF
             </Button>
-          </ThemeProvider>
+          </ThemeProvider> */}
         </Box>
       </Box>
 

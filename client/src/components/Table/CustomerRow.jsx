@@ -10,7 +10,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import axios from "axios"; // Import axios
 
 import CustomerRecordRow from "./CustomerRecordRow";
 import DeleteConfirmationDialog from "../Dialog/DeleteConfirmationDialog";
@@ -41,26 +40,6 @@ const CustomerRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
     },
   });
 
-  // Function to request PDF generation
-  const pdfGenerate = async () => {
-    try {
-      const response = await axios.get("/pdf", {
-        responseType: "blob", // Important for handling binary data
-      });
-
-      // Create a download link for the PDF
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "output.pdf"); // Set the file name
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link); // Clean up
-    } catch (error) {
-      console.error("Failed to generate PDF:", error);
-    }
-  };
-
   return (
     <>
       <TableRow onClick={() => handleRowClick(customer_id)}>
@@ -81,16 +60,17 @@ const CustomerRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
               }}
               color="primary"
               disabled={!isCustomer_idPresent}
-              sx={{ 
+              sx={{
                 backgroundColor: "orange", // Set background color to orange
-                color: "white",            // Set icon color to white
-                borderRadius: "8px",       // Make the button appear as a rectangle with rounded corners
-                '&:hover': {               // Optional: Change background color on hover
-                    backgroundColor: "#cc5200", // Darker orange on hover
+                color: "white", // Set icon color to white
+                borderRadius: "8px", // Make the button appear as a rectangle with rounded corners
+                "&:hover": {
+                  // Optional: Change background color on hover
+                  backgroundColor: "#cc5200", // Darker orange on hover
                 },
-                padding: "6px",  
-                marginRight: "8px",            
-            }}
+                padding: "6px",
+                marginRight: "8px",
+              }}
             >
               <EditIcon />
             </IconButton>
@@ -100,28 +80,28 @@ const CustomerRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
               onClick={handleDeleteClick}
               color="error"
               disabled={!isCustomer_idPresent}
-              sx={{ 
-                backgroundColor: "red",   // Set background color to red
-                color: "white",           // Set icon color to white
-                borderRadius: "8px",      // Make the button appear as a rectangle with rounded corners
-                '&:hover': {              // Optional: Change background color on hover
-                    backgroundColor: "#b30000", // Darker red on hover
+              sx={{
+                backgroundColor: "red", // Set background color to red
+                color: "white", // Set icon color to white
+                borderRadius: "8px", // Make the button appear as a rectangle with rounded corners
+                "&:hover": {
+                  // Optional: Change background color on hover
+                  backgroundColor: "#b30000", // Darker red on hover
                 },
-                padding: "6px",           // Increase padding for better spacing
-            }}
+                padding: "6px", // Increase padding for better spacing
+              }}
             >
               <DeleteIcon />
             </IconButton>
           </Tooltip>
         </TableCell>
         <TableCell>
-          <ThemeProvider theme={theme}>
+          {/* <ThemeProvider theme={theme}>
             <Button
               variant="outlined"
               color="primary"
               onClick={(e) => {
-                e.stopPropagation(); // Prevents triggering row click
-                pdfGenerate(); // Call the function
+                e.stopPropagation(); // Prevents triggering row click // Call the function
               }}
               sx={{
                 ml: 2,
@@ -133,7 +113,7 @@ const CustomerRow = ({ row, isExpanded, handleRowClick, onEdit, onDelete }) => {
               <PictureAsPdfIcon sx={{ mr: 1 }} />
               Export PDF
             </Button>
-          </ThemeProvider>
+          </ThemeProvider> */}
         </TableCell>
       </TableRow>
       {isExpanded && <CustomerRecordRow customer={row} />}
