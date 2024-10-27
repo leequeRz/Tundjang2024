@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import "./ThaiFormfield.css";
-import { formatDateToThai } from "../../utils/helper";
+
 
 const defaultFormState = {
   start_date: null,
@@ -69,7 +69,11 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
               value={formData.name}
               onChange={handleInputChange}
               className="long"
-              style={{ textAlign: "center" }}
+              style={{ 
+                textAlign: "center" ,
+        
+          
+              }}
             />
             <span>ตำแหน่ง</span>
             <input
@@ -126,12 +130,14 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
               value={formData.detail}
               onChange={handleInputChange}
               className="longest"
-              style={{ textAlign: "center" }}
+              style={{ 
+                textAlign: "center" 
+              }}
             />
           </div>
 
           <div className="form-row">
-            <span>ตั้งแต่วันที่</span>
+            <span >ตั้งแต่วันที่</span>
             <input
               name="start_date"
               value={formData.start_date}
@@ -139,7 +145,7 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
               className="date"
               style={{ textAlign: "center" }}
             />
-            <span>ถึงวันที่</span>
+            <span >ถึงวันที่</span>
             <input
               name="end_date"
               value={formData.end_date}
@@ -147,6 +153,7 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
               className="date"
               style={{ textAlign: "center" }}
             />
+            <span>ดังต่อไปนี้</span>
           </div>
         </div>
 

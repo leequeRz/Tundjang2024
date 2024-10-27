@@ -158,11 +158,11 @@
 
 input {
   border: none;
-  border-bottom: 1px dotted #000; /* Dotted underline */
+  border-bottom: 1px dotted #000; 
   background-color: transparent; /* Transparent background */
   outline: none; /* Remove outline */
   width: 200px; /* Adjust width as needed */
-  margin: 0 5px; /* Adjust margin for spacing */
+  line-height: 1.5;
 }
 
 input:focus {
@@ -170,13 +170,13 @@ input:focus {
 }
 
 /* Adjust widths for specific inputs if necessary */
-/* input.date20 {
+input.date20 {
   width: 20px;
 }
 
 input.year30 {
   width: 30px;
-} */
+}
 input.date {
   width: 250px;
 }
@@ -185,12 +185,6 @@ input.month {
   width: 60px;
 }
 
-input.month {
-  width: 60px;
-}
-input.month {
-  width: 63px;
-}
 input.short {
   width: 100px;
 }

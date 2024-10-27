@@ -8,10 +8,12 @@ import {
   Button,
   Grid,
   TextField,
+  Divider,
 } from "@mui/material"; // นำเข้า Material-UI
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import SearchFilterBarPDF from "../SearchFilterBarPDF"; // นำเข้าคอมโพเนนต์ SearchFilterBar
+import SearchFilterBar from "../SearchFilterBar"; // นำเข้าคอมโพเนนต์ SearchFilterBar
 import { useCustomers } from "../../context/customerContext";
 import { useCustomerRecords } from "../../context/customerRecordContext";
 import { formatDateToThai } from "../../utils/helper";
@@ -48,7 +50,7 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
   const recordOptions = useMemo(
     () => [
       { id: "create-new", label: "Use only user" },
-      ...recordsData.map((record) => ({ id: record.id, label: record.id })),
+      ...recordsData.map((record) => ({ id: record.id, label: formatDateToThai(record.id) })),
     ],
     [recordsData]
   );
@@ -117,22 +119,31 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
   return (
     <div>
       {/* Navbar */}
-      <AppBar position="static">
-        <Toolbar>
+      <AppBar position="static" gutterBottom sx={{ marginY: 3 }}>
+        <Toolbar
+         sx={{
+            backgroundColor: "#FFCF9D", // สีส้มแดง
+            color: "#CC4626",
+            marginRight: "10px",
+          }}>
           <Typography variant="h6">ข้อมูลผู้ยืมอุปกรณ์</Typography>
-          {/* <Button color="inherit" onClick={downloadPDF}>ดาวน์โหลด PDF</Button> */}
         </Toolbar>
       </AppBar>
 
       {/* ฟอร์มข้อมูลผู้ยืมอุปกรณ์ */}
-      <form
+      <form gutterBottom sx={{ marginY: 6  }}
         onSubmit={(e) => {
           e.preventDefault();
         }}
+        
+
       >
-        <Grid container spacing={2} margin="normal">
-          <Grid item xs={12}>
-            <SearchFilterBarPDF
+        <Grid item xs={12} container spacing={0} margin="normal"
+      
+        >
+          <Grid item xs={6}
+          >
+            <SearchFilterBar
               searchTerm={customerSearchTerm}
               setSearchTerm={setCustomerSearchTerm}
               selectedValue={currentEditRecord.customer_id}
@@ -151,7 +162,7 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
           </Grid>
 
           {Object.entries(formHeader).map(([key, value]) => (
-            <Grid item xs={12} sm={6} key={key}>
+            <Grid item xs={6} sm={6} key={key}>
               <TextField
                 label={key}
                 value={value}
@@ -161,7 +172,7 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
             </Grid>
           ))}
 
-          <Grid item xs={12}>
+          <Grid item xs={3}>
             <SearchFilterBarPDF
               searchTerm={recordSearchTerm}
               setSearchTerm={setRecordSearchTerm}
@@ -181,22 +192,44 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
           </Grid>
 
           {/* ปุ่มสำหรับอัปเดตค่าใน ThaiFormField */}
-          <Grid item xs={12} display="flex" justifyContent="flex-end" spacing={2}>
+          <Grid item xs={3} display="flex" justifyContent="flex-end" spacing={2}>
             <Button
               variant="contained"
-              color="primary"
+   
               onClick={handleUpdateForm}
               style={{ marginRight: '10px' }} // กำหนดระยะห่างระหว่างปุ่ม
+              sx={{
+                backgroundColor: "#FF5733", // สีส้มแดง
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "#CC4626", // สีเมื่อเอาเมาส์ไปวาง
+                },
+                marginRight: "10px",
+              }}
             >
               แสดงตัวอย่างข้อมูลฟอร์ม
             </Button>
-            <Button variant="contained" color="primary" onClick={downloadPDF}>
+            <Button
+              variant="contained"
+              onClick={downloadPDF}
+              sx={{
+                  backgroundColor: "#FF5733", // สีส้มแดง
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#CC4626", // สีเมื่อเอาเมาส์ไปวาง
+                  },
+                  marginRight: "10px",
+                }}>
               ดาวน์โหลด PDF
             </Button>
           </Grid>
 
         </Grid>
       </form>
+      <Divider sx={{ marginY: "3rem" }} />
+      <Typography variant="h6" gutterBottom sx={{ alignItems:"center"}}>
+        เอกสารประกอบการยืม
+      </Typography>
 
       <div className="a4-page" ref={pdfRef}>
         <ThaiFormField initialFormProps={initialFormProps} />
