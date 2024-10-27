@@ -10,6 +10,7 @@ import { UilUsdSquare, UilMoneyWithdrawal } from "@iconscout/react-unicons";
 
 import InventoryIcon from "@mui/icons-material/Inventory";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import BackupTableIcon from "@mui/icons-material/BackupTable";
 // Recent Card Imports
 import img1 from "../imgs/img1.png";
 import img2 from "../imgs/img2.png";
@@ -28,6 +29,10 @@ export const SidebarData = [
   {
     icon: PictureAsPdfIcon,
     heading: "PDF",
+  },
+  {
+    icon: BackupTableIcon,
+    heading: "Summary",
   },
   {
     icon: UilSignOutAlt,

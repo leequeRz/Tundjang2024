@@ -11,15 +11,13 @@ import {
   Button,
 } from "@mui/material";
 // import { createTheme, ThemeProvider } from "@mui/material/styles";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import CustomerRecordPopup from "./CustomerRecordPopup";
+// import CustomerRecordPopup from "./CustomerRecordPopup";
 import { useCustomerRecords } from "../../context/customerRecordContext";
 import { useSelectedItem } from "../../context/mainContentContext";
 import DeleteConfirmationDialog from "../Dialog/DeleteConfirmationDialog";
 import { formatDateToThai } from "../../utils/helper";
 
-const CustomerRecordRow = ({ customer }) => {
+const SummaryRecordRow = ({ customer }) => {
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [customerRecord, setCustomerRecord] = useState({
     start_date: "",
@@ -117,54 +115,17 @@ const CustomerRecordRow = ({ customer }) => {
               }}
             >
               <TableCell>{index + 1}</TableCell> {/* Order (Index) */}
-              <TableCell>{formatDateToThai(entry.create_time)}</TableCell>{" "}
+              {/* <TableCell>{formatDateToThai(entry.create_time)}</TableCell>{" "} */}
               {/* Date */}
+              <TableCell>{formatDateToThai(entry.start_date)}</TableCell>{" "}
+              {/* Start Date */}
+              <TableCell>{formatDateToThai(entry.end_date)}</TableCell>{" "}
+              {/* End Date */}
               <TableCell>{entry.item}</TableCell> {/* Item */}
               <TableCell>{entry.count}</TableCell> {/* Count */}
               <TableCell>{entry.item_number}</TableCell> {/* Item Number */}
               <TableCell>{entry.detail}</TableCell> {/* Detail */}
               <TableCell>{entry.status}</TableCell> {/* Status */}
-              <TableCell>
-                <Tooltip title="Edit Customer">
-                  <IconButton
-                    onClick={(e) => {
-                      handleEditClick(e, customer.customer_id, entry.id);
-                    }}
-                    sx={{
-                      backgroundColor: "orange", // Set background color to orange
-                      color: "white", // Set icon color to white
-                      borderRadius: "8px", // Make the button appear as a rectangle with rounded corners
-                      "&:hover": {
-                        // Optional: Change background color on hover
-                        backgroundColor: "#cc5200", // Darker orange on hover
-                      },
-                      padding: "6px",
-                      marginRight: "8px",
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete Customer">
-                  <IconButton
-                    onClick={(e) => {
-                      handleDeleteClick(e, entry.id);
-                    }}
-                    sx={{
-                      backgroundColor: "red", // Set background color to red
-                      color: "white", // Set icon color to white
-                      borderRadius: "8px", // Make the button appear as a rectangle with rounded corners
-                      "&:hover": {
-                        // Optional: Change background color on hover
-                        backgroundColor: "#b30000", // Darker red on hover
-                      },
-                      padding: "6px", // Increase padding for better spacing
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Tooltip>
-              </TableCell>
             </TableRow>
           )
         )}
@@ -186,7 +147,10 @@ const CustomerRecordRow = ({ customer }) => {
                     ลำดับ
                   </TableCell>
                   <TableCell sx={{ color: "white", fontSize: "1.25rem" }}>
-                    วันที่บันทึก
+                    เริ่มต้น
+                  </TableCell>
+                  <TableCell sx={{ color: "white", fontSize: "1.25rem" }}>
+                    สิ้นสุด
                   </TableCell>
                   <TableCell sx={{ color: "white", fontSize: "1.25rem" }}>
                     รายการ
@@ -203,31 +167,6 @@ const CustomerRecordRow = ({ customer }) => {
                   <TableCell sx={{ color: "white", fontSize: "1.25rem" }}>
                     สถานะ
                   </TableCell>
-                  <TableCell sx={{ color: "white", fontSize: "1rem" }}>
-                    แก้ไข/ลบ
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      // color=""
-
-                      sx={{
-                        color: "#d6521e",
-                        backgroundColor: "white",
-                        border: "solid 1px white",
-                        fontSize: "1rem",
-                        minWidth: "150px",
-                        "&:hover": {
-                          // Optional: Change background color on hover
-                          backgroundColor: "#d6521e", // Darker red on hover
-                          color: "white",
-                        },
-                      }}
-                      onClick={handleNewClick}
-                    >
-                      Add New Record
-                    </Button>
-                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -238,12 +177,12 @@ const CustomerRecordRow = ({ customer }) => {
         </TableCell>
       </TableRow>
 
-      <CustomerRecordPopup
+      {/* <CustomerRecordPopup
         open={isPopupOpen}
         onClose={closePopup}
         customer={customer}
         record={customerRecord}
-      />
+      /> */}
       <DeleteConfirmationDialog
         isOpen={isDialogOpen}
         onClose={() => setDialogOpen(false)}
@@ -255,4 +194,4 @@ const CustomerRecordRow = ({ customer }) => {
   );
 };
 
-export default CustomerRecordRow;
+export default SummaryRecordRow;

@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { Button } from "@mui/material";
 // import SelectCustomer from "./SelectCustomer";
 // import DownloadButton from "./DownloadButton";
 const GeneratePDF = () => {
@@ -50,7 +51,7 @@ const GeneratePDF = () => {
   return (
     <div>
       <div>
-        <button onClick={downloadPDF}>Download PDF</button>
+        <Button onClick={downloadPDF}>Download PDF</Button>
       </div>
       {/* <SelectCustomer /> */}
       {/* <DownloadButton /> */}
