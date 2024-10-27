@@ -170,15 +170,15 @@ input:focus {
 }
 
 /* Adjust widths for specific inputs if necessary */
-input.date20 {
+/* input.date20 {
   width: 20px;
 }
 
 input.year30 {
   width: 30px;
-}
+} */
 input.date {
-  width: 50px;
+  width: 250px;
 }
 
 input.month {

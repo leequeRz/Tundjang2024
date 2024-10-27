@@ -85,8 +85,8 @@ const GeneratePDF = ({ formData, formHeader = {} }) => { // กำหนดค�
   
     // สร้าง updatedFormProps โดยผสานข้อมูลจาก `selectedCustomer` และ `selectedRecord`
     const updatedFormProps = {
-      start_date: selectedRecord?.start_date || "", // ใช้ข้อมูลจากระเบียนถ้ามี
-      end_date: selectedRecord?.end_date || "",
+      start_date: selectedRecord?.start_date || null, // ใช้ข้อมูลจากระเบียนถ้ามี
+      end_date: selectedRecord?.end_date || null,
       item: selectedRecord?.item || "",
       count: selectedRecord?.count || "",
       item_number: selectedRecord?.item_number || "",
@@ -110,7 +110,7 @@ const GeneratePDF = ({ formData, formHeader = {} }) => { // กำหนดค�
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6">ข้อมูลผู้ยืมอุปกรณ์</Typography>
-          <Button color="inherit" onClick={downloadPDF}>ดาวน์โหลด PDF</Button>
+          {/* <Button color="inherit" onClick={downloadPDF}>ดาวน์โหลด PDF</Button> */}
         </Toolbar>
       </AppBar>
 
@@ -171,6 +171,7 @@ const GeneratePDF = ({ formData, formHeader = {} }) => { // กำหนดค�
             <Button variant="contained" color="primary" onClick={handleUpdateForm}>
               แสดงตัวอย่างข้อมูลฟอร์ม
             </Button>
+            <Button variant="contained" color="primary"  onClick={downloadPDF}>ดาวน์โหลด PDF</Button>
           </Grid>
         </Grid>
       </form>

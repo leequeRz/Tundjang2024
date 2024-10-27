@@ -1,15 +1,14 @@
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import "./ThaiFormfield.css";
-import { useCustomers } from "../../context/customerContext";
-import { useCustomerRecords } from "../../context/customerRecordContext";
+import { formatDateToThai } from "../../utils/helper";
 
 const defaultFormState = {
   start_date: null,
   end_date: null,
-  item: "คอมพิวเตอร์",
-  count: "12",
-  item_number: "AA00012",
-  status: "ยืม",
+  item: "",
+  count: "",
+  item_number: "",
+  // status: "",
   detail: "",
   name: "",
   role: "",
@@ -127,14 +126,14 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
             <span>ตั้งแต่วันที่</span>
             <input
               name="start_date"
-              value={formData.start_date}
+              value={formatDateToThai(formData.start_date)}
               onChange={handleInputChange}
               className="date"
             />
             <span>ถึงวันที่</span>
             <input
               name="end_date"
-              value={formData.end_date}
+              value={formatDateToThai(formData.end_date)}
               onChange={handleInputChange}
               className="date"
             />
