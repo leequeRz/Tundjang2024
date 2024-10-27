@@ -74,17 +74,35 @@ const GeneratePDF = ({ formData, formHeader = {} }) => { // กำหนดค�
   };
 
   const handleUpdateForm = () => {
-    // อัปเดตข้อมูลที่จะส่งไปยัง ThaiFormField
-    setInitialFormProps({
-      start_date: "01/01/2024",
-      end_date: "01/31/2024",
-      item: "Laptop",
-      count: "2",
-      item_number: "12345",
-      status: "ยืม",
-      detail: "เพื่อการประชุม"
-    });
+    // ดึงข้อมูลลูกค้าและระเบียนที่เลือก
+    const selectedCustomer = customers.find(
+      (customer) => customer.customer_id === currentEditRecord.customer_id
+    );
+    
+    const selectedRecord = recordsData.find(
+      (record) => record.id === currentEditRecord.docId
+    );
+  
+    // สร้าง updatedFormProps โดยผสานข้อมูลจาก `selectedCustomer` และ `selectedRecord`
+    const updatedFormProps = {
+      start_date: selectedRecord?.start_date || "", // ใช้ข้อมูลจากระเบียนถ้ามี
+      end_date: selectedRecord?.end_date || "",
+      item: selectedRecord?.item || "",
+      count: selectedRecord?.count || "",
+      item_number: selectedRecord?.item_number || "",
+      status: selectedRecord?.status || "",
+      detail: selectedRecord?.detail || "",
+      name: selectedCustomer ? `${selectedCustomer.name} ${selectedCustomer.surname}` : "", // ดึงข้อมูลชื่อจากลูกค้าที่เลือก
+      role: selectedCustomer?.role || "",
+      group: selectedCustomer?.group || "",
+      phone: selectedCustomer?.phone || "",
+      tel: selectedCustomer?.tel || "",
+    };
+  
+    console.log("Updating form with props:", updatedFormProps);
+    setInitialFormProps(updatedFormProps); // อัปเดตค่า initialFormProps
   };
+  
 
   return (
     <div>
@@ -159,6 +177,7 @@ const GeneratePDF = ({ formData, formHeader = {} }) => { // กำหนดค�
 
       <div className="a4-page" ref={pdfRef}>
         <ThaiFormField initialFormProps={initialFormProps} />
+        {console.log("Rendering ThaiFormField with initialFormProps:", initialFormProps)}
       </div>
     </div>
   );
