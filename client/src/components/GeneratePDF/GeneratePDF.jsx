@@ -126,7 +126,7 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
             color: "#CC4626",
             marginRight: "10px",
           }}>
-          <Typography variant="h6">ข้อมูลผู้ยืมอุปกรณ์</Typography>
+          <Typography variant="h6">สร้างเอกสารยืมอุปกรณ์</Typography>
         </Toolbar>
       </AppBar>
 
@@ -155,8 +155,8 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
                   customer_id: selectedCustomer.id,
                 }));
               }}
-              label="Customer ID"
-              placeholder="Search by ID, name or surname"
+              label="เลือกผู้ยืมอุปกรณ์"
+              placeholder="ค้นหาผู้ยืม จาก ชื่อ รหัส"
               required={true}
             />
           </Grid>
@@ -185,7 +185,7 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
                   docId: selectedRecord.id,
                 }));
               }}
-              label="Customer Record"
+              label="เลือกข้อมูลการยืม"
               // placeholder="Search by record id"
               required={true}
             />
@@ -207,7 +207,7 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
                 marginRight: "10px",
               }}
             >
-              แสดงตัวอย่างข้อมูลฟอร์ม
+              วางข้อมูลลงกระดาษ
             </Button>
             <Button
               variant="contained"
