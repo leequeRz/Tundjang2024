@@ -1,0 +1,18 @@
+.a4-landscape {
+  width: 297mm;
+  height: 210mm;
+  overflow-x: auto;
+  margin: auto;
+  box-shadow: none; /* Optional: remove shadow for a print-ready look */
+  background: white;
+
+  /* For screen preview */
+  box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+}
+
+@media print {
+  .a4-landscape {
+    width: 297mm;
+    height: 210mm;
+  }
+}

@@ -1,14 +1,22 @@
 import "./GeneratePDF.css"; // ใส่การจัดการ CSS ในไฟล์นี้
 import ThaiFormField from "./ThaiFormfield"; // นำเข้าฟอร์ม
 import React, { useRef, useState, useMemo, useCallback } from "react"; // ใช้ useState สำหรับจัดการข้อมูลฟอร์ม
-import { AppBar, Toolbar, Typography, Button, Grid, TextField } from "@mui/material"; // นำเข้า Material-UI
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Grid,
+  TextField,
+} from "@mui/material"; // นำเข้า Material-UI
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import SearchFilterBar from "../SearchFilterBar"; // นำเข้าคอมโพเนนต์ SearchFilterBar
 import { useCustomers } from "../../context/customerContext";
 import { useCustomerRecords } from "../../context/customerRecordContext";
 
-const GeneratePDF = ({ formData, formHeader = {} }) => { // กำหนดค่าเริ่มต้นให้กับ formHeader
+const GeneratePDF = ({ formData, formHeader = {} }) => {
+  // กำหนดค่าเริ่มต้นให้กับ formHeader
   const pdfRef = useRef();
   const [customerSearchTerm, setCustomerSearchTerm] = useState("");
   const [recordSearchTerm, setRecordSearchTerm] = useState("");
@@ -78,11 +86,11 @@ const GeneratePDF = ({ formData, formHeader = {} }) => { // กำหนดค�
     const selectedCustomer = customers.find(
       (customer) => customer.customer_id === currentEditRecord.customer_id
     );
-    
+
     const selectedRecord = recordsData.find(
       (record) => record.id === currentEditRecord.docId
     );
-  
+
     // สร้าง updatedFormProps โดยผสานข้อมูลจาก `selectedCustomer` และ `selectedRecord`
     const updatedFormProps = {
       start_date: selectedRecord?.start_date || null, // ใช้ข้อมูลจากระเบียนถ้ามี
@@ -92,17 +100,18 @@ const GeneratePDF = ({ formData, formHeader = {} }) => { // กำหนดค�
       item_number: selectedRecord?.item_number || "",
       status: selectedRecord?.status || "",
       detail: selectedRecord?.detail || "",
-      name: selectedCustomer ? `${selectedCustomer.name} ${selectedCustomer.surname}` : "", // ดึงข้อมูลชื่อจากลูกค้าที่เลือก
+      name: selectedCustomer
+        ? `${selectedCustomer.name} ${selectedCustomer.surname}`
+        : "", // ดึงข้อมูลชื่อจากลูกค้าที่เลือก
       role: selectedCustomer?.role || "",
       group: selectedCustomer?.group || "",
       phone: selectedCustomer?.phone || "",
       tel: selectedCustomer?.tel || "",
     };
-  
+
     console.log("Updating form with props:", updatedFormProps);
     setInitialFormProps(updatedFormProps); // อัปเดตค่า initialFormProps
   };
-  
 
   return (
     <div>
@@ -115,7 +124,11 @@ const GeneratePDF = ({ formData, formHeader = {} }) => { // กำหนดค�
       </AppBar>
 
       {/* ฟอร์มข้อมูลผู้ยืมอุปกรณ์ */}
-      <form onSubmit={(e) => { e.preventDefault(); }}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
         <Grid container spacing={2} margin="normal">
           <Grid item xs={12}>
             <SearchFilterBar
@@ -168,17 +181,26 @@ const GeneratePDF = ({ formData, formHeader = {} }) => { // กำหนดค�
 
           {/* ปุ่มสำหรับอัปเดตค่าใน ThaiFormField */}
           <Grid item xs={12}>
-            <Button variant="contained" color="primary" onClick={handleUpdateForm}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleUpdateForm}
+            >
               แสดงตัวอย่างข้อมูลฟอร์ม
             </Button>
-            <Button variant="contained" color="primary"  onClick={downloadPDF}>ดาวน์โหลด PDF</Button>
+            <Button variant="contained" color="primary" onClick={downloadPDF}>
+              ดาวน์โหลด PDF
+            </Button>
           </Grid>
         </Grid>
       </form>
 
       <div className="a4-page" ref={pdfRef}>
         <ThaiFormField initialFormProps={initialFormProps} />
-        {console.log("Rendering ThaiFormField with initialFormProps:", initialFormProps)}
+        {console.log(
+          "Rendering ThaiFormField with initialFormProps:",
+          initialFormProps
+        )}
       </div>
     </div>
   );

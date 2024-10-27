@@ -1,6 +1,6 @@
 import { TableCell, TableHead, TableRow } from "@mui/material";
 
-const TableHeader = () => (
+const SummaryTableHeader = () => (
   <TableHead>
     <TableRow>
       {[
@@ -15,8 +15,8 @@ const TableHeader = () => (
         { label: "หมายเลขโทรศัพท์ภายใน", key: "tel" },
         { label: "ตำแหน่ง", key: "role" },
         { label: "สังกัด", key: "group" },
-        { label: "Edit & Delete", key: "" },
-        // { label: "Export PDF", key: "" },
+        //   { label: "Edit & Delete", key: "" },
+        //   { label: "Export PDF", key: "" },
       ].map(({ label, key, hiddenOnMobile }) => (
         <TableCell
           key={key}
@@ -37,4 +37,4 @@ const TableHeader = () => (
   </TableHead>
 );
 
-export default TableHeader;
+export default SummaryTableHeader;
