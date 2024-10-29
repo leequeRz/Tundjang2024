@@ -50,7 +50,10 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
   const recordOptions = useMemo(
     () => [
       { id: "create-new", label: "Use only user" },
-      ...recordsData.map((record) => ({ id: record.id, label: formatDateToThai(record.id) })),
+      ...recordsData.map((record) => ({
+        id: record.id,
+        label: formatDateToThai(record.id),
+      })),
     ],
     [recordsData]
   );
@@ -96,8 +99,12 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
 
     // สร้าง updatedFormProps โดยผสานข้อมูลจาก `selectedCustomer` และ `selectedRecord`
     const updatedFormProps = {
-      start_date: selectedRecord?.start_date ? formatDateToThai(selectedRecord.start_date) : null, // ใช้ข้อมูลจากระเบียนถ้ามี
-      end_date: selectedRecord?.end_date ? formatDateToThai(selectedRecord.end_date) : null,
+      start_date: selectedRecord?.start_date
+        ? formatDateToThai(selectedRecord.start_date)
+        : null, // ใช้ข้อมูลจากระเบียนถ้ามี
+      end_date: selectedRecord?.end_date
+        ? formatDateToThai(selectedRecord.end_date)
+        : null,
       item: selectedRecord?.item || "",
       count: selectedRecord?.count || "",
       item_number: selectedRecord?.item_number || "",
@@ -121,28 +128,25 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
       {/* Navbar */}
       <AppBar position="static" gutterBottom sx={{ marginY: 3 }}>
         <Toolbar
-         sx={{
+          sx={{
             backgroundColor: "#FFCF9D", // สีส้มแดง
             color: "#CC4626",
-            marginRight: "10px",
-          }}>
+          }}
+        >
           <Typography variant="h6">สร้างเอกสารยืมอุปกรณ์</Typography>
         </Toolbar>
       </AppBar>
 
       {/* ฟอร์มข้อมูลผู้ยืมอุปกรณ์ */}
-      <form gutterBottom sx={{ marginY: 6  }}
+      <form
+        gutterBottom
+        sx={{ marginY: 6 }}
         onSubmit={(e) => {
           e.preventDefault();
         }}
-        
-
       >
-        <Grid item xs={12} container spacing={0} margin="normal"
-      
-        >
-          <Grid item xs={6}
-          >
+        <Grid item xs={12} container spacing={0} margin="normal">
+          <Grid item xs={6}>
             <SearchFilterBar
               searchTerm={customerSearchTerm}
               setSearchTerm={setCustomerSearchTerm}
@@ -192,12 +196,17 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
           </Grid>
 
           {/* ปุ่มสำหรับอัปเดตค่าใน ThaiFormField */}
-          <Grid item xs={3} display="flex" justifyContent="flex-end" spacing={2}>
+          <Grid
+            item
+            xs={3}
+            display="flex"
+            justifyContent="flex-end"
+            spacing={2}
+          >
             <Button
               variant="contained"
-   
               onClick={handleUpdateForm}
-              style={{ marginRight: '10px' }} // กำหนดระยะห่างระหว่างปุ่ม
+              style={{ marginRight: "10px" }} // กำหนดระยะห่างระหว่างปุ่ม
               sx={{
                 backgroundColor: "#FF5733", // สีส้มแดง
                 color: "white",
@@ -213,21 +222,25 @@ const GeneratePDF = ({ formData, formHeader = {} }) => {
               variant="contained"
               onClick={downloadPDF}
               sx={{
-                  backgroundColor: "#FF5733", // สีส้มแดง
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#CC4626", // สีเมื่อเอาเมาส์ไปวาง
-                  },
-                  marginRight: "10px",
-                }}>
+                backgroundColor: "#FF5733", // สีส้มแดง
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "#CC4626", // สีเมื่อเอาเมาส์ไปวาง
+                },
+                marginRight: "10px",
+              }}
+            >
               ดาวน์โหลด PDF
             </Button>
           </Grid>
-
         </Grid>
       </form>
       <Divider sx={{ marginY: "3rem" }} />
-      <Typography variant="h6" gutterBottom sx={{ alignItems:"center"}}>
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{ alignItems: "center", marginBottom: "20px" }}
+      >
         เอกสารประกอบการยืม
       </Typography>
 

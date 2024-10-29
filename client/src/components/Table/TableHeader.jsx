@@ -4,7 +4,7 @@ const TableHeader = () => (
   <TableHead>
     <TableRow>
       {[
-        { label: "UID", key: "customer_id" },
+        { label: "รหัสพนักงาน", key: "customer_id" },
         // { label: "Prefix", key: "Prefix", hiddenOnMobile: true },
         { label: "ชื่อ", key: "Name" },
         { label: "นามสกุล", key: "Surname" },

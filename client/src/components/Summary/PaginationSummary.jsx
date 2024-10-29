@@ -9,7 +9,7 @@ const PaginationSummary = ({
   <Box
     sx={{
       display: "flex",
-      justifyContent: "space-between",
+      justifyContent: "flex-end",
       alignItems: "center",
       mt: 2,
     }}
