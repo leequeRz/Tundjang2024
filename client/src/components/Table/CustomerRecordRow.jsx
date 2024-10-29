@@ -9,7 +9,7 @@ import {
   IconButton,
   CircularProgress,
   Button,
-  Box
+  Box,
 } from "@mui/material";
 // import { createTheme, ThemeProvider } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
@@ -140,8 +140,8 @@ const CustomerRecordRow = ({ customer }) => {
                 >
                   {entry.status}
                 </Box>
-                
-              </TableCell> {/* Status */}
+              </TableCell>{" "}
+              {/* Status */}
               <TableCell>
                 <Tooltip title="Edit Customer">
                   <IconButton
@@ -243,7 +243,7 @@ const CustomerRecordRow = ({ customer }) => {
                       }}
                       onClick={handleNewClick}
                     >
-                      Add New Record
+                      เพิ่มรายการยืมพัสดุ
                     </Button>
                   </TableCell>
                 </TableRow>

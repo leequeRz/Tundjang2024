@@ -12,15 +12,17 @@ import {
   TableHead,
   TableRow,
   TableCell,
+  AppBar,
+  Toolbar,
+  Typography,
 } from "@mui/material";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import SummaryRow from "./SummaryRow";
 import SummaryRecordRow from "./SummaryRecordRow";
 import { useCustomers } from "../../context/customerContext";
 import { usePagination } from "../../hooks/usePagination";
 import { useSearch } from "../../hooks/useSearch";
-import PaginationFooter from "../Table/PaginationFooter";
+import PaginationSummary from "./PaginationSummary";
 
 const CustomTable = () => {
   const pdfRef = useRef();
@@ -82,73 +84,101 @@ const CustomTable = () => {
   };
 
   return (
-    <div style={{ width: "297mm", margin: "0 auto" }}>
-      {/* Button and dropdown in a single row */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "10px",
-        }}
-      >
-        <FormControl style={{ minWidth: 200 }}>
-          <InputLabel>Select Customer</InputLabel>
-          <Select
-            value={selectedCustomer}
-            onChange={handleDropdownChange}
-            displayEmpty
-          >
-            {customers.map((customer) => (
-              <MenuItem key={customer.customer_id} value={customer.customer_id}>
-                {customer.name} {customer.surname}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <Button onClick={downloadPDF}>Download PDF</Button>
-      </div>
-
-      <div ref={pdfRef} style={{ marginTop: 20 }}>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>รหัสพนักงาน</TableCell>
-                <TableCell>ชื่อ</TableCell>
-                <TableCell>นามสกุล</TableCell>
-                <TableCell>หมายเลขโทรศัพท์</TableCell>
-                <TableCell>หมายเลขโทรศัพท์ภายใน</TableCell>
-                <TableCell>ตำแหน่ง</TableCell>
-                <TableCell>สังกัด</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.map((selectedRow) => (
-                <React.Fragment key={selectedRow.customer_id}>
-                  <TableRow style={{ backgroundColor: "#f9f9f9" }}>
-                    <TableCell>{selectedRow.customer_id}</TableCell>
-                    <TableCell>{selectedRow.name}</TableCell>
-                    <TableCell>{selectedRow.surname}</TableCell>
-                    <TableCell>{selectedRow.phone}</TableCell>
-                    <TableCell>{selectedRow.tel}</TableCell>
-                    <TableCell>{selectedRow.role}</TableCell>
-                    <TableCell>{selectedRow.group}</TableCell>
-                  </TableRow>
-                  <SummaryRecordRow customer={selectedRow} />
-                </React.Fragment>
+    <div>
+      <AppBar position="static" gutterBottom sx={{ marginY: 3 }}>
+        <Toolbar
+          sx={{
+            backgroundColor: "#FFCF9D", // สีส้มแดง
+            color: "#CC4626",
+          }}
+        >
+          <Typography variant="h6">ตารางสรุปข้อมูลการยืม</Typography>
+        </Toolbar>
+      </AppBar>
+      <div style={{ width: "297mm", margin: "0 auto" }}>
+        {/* Button and dropdown in a single row */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "10px",
+          }}
+        >
+          <FormControl style={{ minWidth: 200 }}>
+            <InputLabel>เลือกผู้ยืม</InputLabel>
+            <Select
+              value={selectedCustomer}
+              onChange={handleDropdownChange}
+              displayEmpty
+            >
+              {customers.map((customer) => (
+                <MenuItem
+                  key={customer.customer_id}
+                  value={customer.customer_id}
+                >
+                  {customer.name} {customer.surname}
+                </MenuItem>
               ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
+            </Select>
+          </FormControl>
+          <Button
+            variant="contained"
+            onClick={downloadPDF}
+            sx={{
+              backgroundColor: "#FF5733", // สีส้มแดง
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#CC4626", // สีเมื่อเอาเมาส์ไปวาง
+              },
+              marginRight: "10px",
+            }}
+          >
+            ดาวน์โหลด PDF
+          </Button>
+        </div>
 
-      <PaginationFooter
-        total={filteredItems.length}
-        currentPage={currentPage}
-        rowsPerPage={15}
-        onPageChange={handlePageChange}
-      />
+        <div ref={pdfRef} style={{ marginTop: 20 }}>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>รหัสพนักงาน</TableCell>
+                  <TableCell>ชื่อ</TableCell>
+                  <TableCell>นามสกุล</TableCell>
+                  <TableCell>หมายเลขโทรศัพท์</TableCell>
+                  <TableCell>หมายเลขโทรศัพท์ภายใน</TableCell>
+                  <TableCell>ตำแหน่ง</TableCell>
+                  <TableCell>สังกัด</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.map((selectedRow) => (
+                  <React.Fragment key={selectedRow.customer_id}>
+                    <TableRow style={{ backgroundColor: "#f9f9f9" }}>
+                      <TableCell>{selectedRow.customer_id}</TableCell>
+                      <TableCell>{selectedRow.name}</TableCell>
+                      <TableCell>{selectedRow.surname}</TableCell>
+                      <TableCell>{selectedRow.phone}</TableCell>
+                      <TableCell>{selectedRow.tel}</TableCell>
+                      <TableCell>{selectedRow.role}</TableCell>
+                      <TableCell>{selectedRow.group}</TableCell>
+                    </TableRow>
+                    <SummaryRecordRow customer={selectedRow} />
+                  </React.Fragment>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+
+        <PaginationSummary
+          total={filteredItems.length}
+          currentPage={currentPage}
+          rowsPerPage={15}
+          onPageChange={handlePageChange}
+        />
+      </div>
     </div>
   );
 };
