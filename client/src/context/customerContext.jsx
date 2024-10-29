@@ -21,7 +21,7 @@ export const CustomerProvider = ({ children }) => {
 
   // Query to fetch all Customer
   const {
-    data: customers = [], // Default to an empty array to avoid undefined issues
+    data: customers = [], 
     isLoading,
     isError,
     refetch,
@@ -30,28 +30,33 @@ export const CustomerProvider = ({ children }) => {
     cacheTime: 30 * 60 * 1000,
   });
 
-  // Mutation to delete a Customer
   const deleteCustomer = useMutation(
     async (customer_id) => {
+      console.log("Attempting to delete customer:", customer_id);
       const response = await fetch(`${apiUrl}/customer/${customer_id}`, {
         method: "DELETE",
       });
-      if (!response.ok) throw new Error("Failed to delete the Customer");
-      return response.json();
+      if (!response.ok) {
+        const errorMessage = `Failed to delete customer: ${response.statusText}`;
+        console.error(errorMessage);
+        throw new Error(errorMessage); // จะทำให้ frontend ได้รับ error
+      }
+      console.log("Customer deletion response:", await response.json());
     },
     {
       onSuccess: (_, customer_id) => {
+        console.log("Customer deleted successfully:", customer_id);
         queryClient.setQueryData(["customers"], (oldCustomers = []) =>
-          oldCustomers.filter(
-            (customer) => customer.customer_id !== customer_id
-          )
+          oldCustomers.filter((customer) => customer.customer_id !== customer_id)
         );
       },
       onError: (error) => {
-        console.error("Error deleting Customer:", error);
+        console.error("Error deleting Customer:", error.message);
       },
     }
   );
+  
+
 
   // Mutation to add a new Customer
   const addCustomer = useMutation(
@@ -111,7 +116,6 @@ export const CustomerProvider = ({ children }) => {
       },
     }
   );
-
   return (
     <CustomerContext.Provider
       value={{

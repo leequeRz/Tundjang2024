@@ -7,11 +7,9 @@ import {
   TableBody,
   TableContainer,
   Paper,
-  InputLabel,
   MenuItem,
-  FormControl,
-  Select,
   Menu,
+  CircularProgress,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useCustomers } from "../../context/customerContext";
@@ -23,7 +21,6 @@ import CustomerRow from "./CustomerRow";
 import PaginationFooter from "./PaginationFooter";
 import CustomerPopup from "./CustomerPopup";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 
 const theme = createTheme({
   palette: {
@@ -34,10 +31,12 @@ const theme = createTheme({
 });
 
 const TableComponent = () => {
-  const { customers, isLoading, error, deleteCustomer } = useCustomers();
+  const { customers, isLoading, error, deleteCustomer, refetchCustomers } = useCustomers();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState(null);
   const [expandedRows, setExpandedRows] = useState([]);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
 
   const { searchTerm, setSearchTerm, filteredItems } = useSearch(customers, [
     "name",
@@ -49,32 +48,20 @@ const TableComponent = () => {
     15
   );
 
-  // Set the initial value to 2567
-  const [selectedYear, setSelectedYear] = useState(2567); // Default as 2567
-
-  // Automatically generate years starting from the current year
-  const currentYear = new Date().getFullYear() + 543; // Convert to Buddhist year (พ.ศ.)
-  const generateYears = (numYears) => {
-    // Generate an array of years starting from the current year
-    return Array.from({ length: numYears }, (_, i) => currentYear + i);
-  };
-
-  const years = generateYears(3); // Generate next 3 years
-
-  const [anchorEl, setAnchorEl] = useState(null); // State to manage filter menu
+  const [anchorEl, setAnchorEl] = useState(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
 
   const handleFilterClick = (event) => {
-    setAnchorEl(event.currentTarget); // Open dropdown menu
+    setAnchorEl(event.currentTarget);
   };
 
   const handleFilterClose = () => {
-    setAnchorEl(null); // Close dropdown menu
+    setAnchorEl(null);
   };
 
   const handleCustomerIdFilter = (customerId) => {
     setSelectedCustomerId(customerId);
-    setSearchTerm(customerId); // Filter the table by selected customer_id
+    setSearchTerm(customerId);
     handleFilterClose();
   };
 
@@ -83,9 +70,20 @@ const TableComponent = () => {
     setIsPopupOpen(true);
   };
 
-  const handleDelete = (customer_id) => {
-    deleteCustomer(customer_id);
+  const handleDelete = async (customer_id) => {
+    setIsDeleting(true);
+    setDeleteError(null);
+    try {
+      await deleteCustomer(customer_id);  // ใช้ await ตรวจสอบการลบที่ frontend
+      await refetchCustomers(); // ดึงข้อมูลใหม่ทันทีหลังจากลบ
+    } catch (error) {
+      console.error("Deletion failed:", error.message);
+      setDeleteError("Failed to delete customer, please try again.");
+    } finally {
+      setIsDeleting(false);
+    }
   };
+  
 
   const handleRowClick = (customer_ID) => {
     setExpandedRows((prev) =>
@@ -93,11 +91,6 @@ const TableComponent = () => {
         ? prev.filter((rowCustomer_Id) => rowCustomer_Id !== customer_ID)
         : [...prev, customer_ID]
     );
-  };
-
-  const handleYearChange = (event) => {
-    setSelectedYear(event.target.value); // Save selected year
-    console.log("Selected Year:", event.target.value); // Log the selected year
   };
 
   if (isLoading) return <Typography>Loading...</Typography>;
@@ -117,22 +110,6 @@ const TableComponent = () => {
           <Typography variant="h5" sx={{ mr: 2 }}>
             รายชื่อคนยืมพัสดุ
           </Typography>
-          {/* <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-            <InputLabel id="year-select-label">ปี</InputLabel>
-            <Select
-              labelId="year-select-label"
-              id="year-select"
-              value={selectedYear} // Selected year
-              label="ปี"
-              onChange={handleYearChange} // Handle year selection
-            >
-              {years.map((year, index) => (
-                <MenuItem key={index} value={year}>
-                  {year}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl> */}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
@@ -141,7 +118,6 @@ const TableComponent = () => {
               variant="contained"
               color="primary"
               sx={{
-                // padding: "12px 24px",
                 fontSize: "1rem",
                 minWidth: "150px",
               }}
@@ -183,23 +159,15 @@ const TableComponent = () => {
               ))}
             </Menu>
           </ThemeProvider>
-          {/* <ThemeProvider theme={theme}>
-            <Button
-              variant="outlined"
-              color="primary"
-              sx={{
-                ml: 2,
-                fontSize: "1rem",
-                minWidth: "150px",
-                textTransform: "none",
-              }}
-            >
-              <PictureAsPdfIcon sx={{ mr: 1 }} />
-              Export PDF
-            </Button>
-          </ThemeProvider> */}
         </Box>
       </Box>
+
+      {isDeleting && <CircularProgress sx={{ margin: "20px auto" }} />}
+      {deleteError && (
+        <Typography color="error" variant="body1" sx={{ mb: 2 }}>
+          {deleteError}
+        </Typography>
+      )}
 
       <TableContainer component={Paper}>
         <Table>
