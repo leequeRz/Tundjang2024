@@ -176,7 +176,7 @@ const DelCustomer = logRequest(
       }
 
       const { customer_id } = req.params;
-
+      await db.collection("customers").doc(customer_id).delete();
       logger.info(`Customer deleted: ${customer_id}`); // Log the deletion of a Customer
       res.status(200).send({ message: "Customer deleted successfully" });
     } catch (error) {
