@@ -1,24 +1,16 @@
 import { useState, useEffect } from "react";
 import { useCustomers } from "../context/customerContext";
-// import dayjs from "dayjs";
 
 export const useCustomerForm = (customerData, onClose) => {
-  const { addCustomer, updateCustomer } = useCustomers();
+  const { addCustomer, updateCustomer, refetchCustomers, customers } = useCustomers(); // Extract customers from context
   const [formData, setFormData] = useState({
     customer_id: "",
     name: "",
     surname: "",
     phone: "",
     role: "",
-    tel:"",
-    group:"",
-   
-
-    // "customer_id",
-    // "customer_name",
-    // "phone",
-    // "role",
-    // "tel_company",
+    tel: "",
+    group: "",
   });
 
   useEffect(() => {
@@ -26,16 +18,29 @@ export const useCustomerForm = (customerData, onClose) => {
       setFormData(customerData);
     } else {
       setFormData({
-        customer_id: "",
+        customer_id: generateNextCustomerId(), // Generate customer ID
         name: "",
         surname: "",
         phone: "",
         role: "",
-        tel:"",
-        group:"",
+        tel: "",
+        group: "",
       });
     }
   }, [customerData]);
+
+  const generateNextCustomerId = () => {
+    // Ensure customers array is available
+    if (!customers || customers.length === 0) return "KM0001";
+
+    const lastCustomerId = customers
+      .map((customer) => parseInt(customer.customer_id.replace("KM", "")))
+      .filter((id) => !isNaN(id))
+      .sort((a, b) => b - a)[0];
+
+    const nextCustomerId = (lastCustomerId || 0) + 1;
+    return `KM${String(nextCustomerId).padStart(4, "0")}`;
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -50,6 +55,7 @@ export const useCustomerForm = (customerData, onClose) => {
         await updateCustomer(formData);
       } else {
         await addCustomer(formData);
+        await refetchCustomers(); // Fetch updated customer list
       }
       onClose();
     } catch (error) {
