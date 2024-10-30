@@ -53,13 +53,6 @@ const TableComponent = () => {
   const [selectedYear, setSelectedYear] = useState(2567); // Default as 2567
 
   // Automatically generate years starting from the current year
-  const currentYear = new Date().getFullYear() + 543; // Convert to Buddhist year (พ.ศ.)
-  const generateYears = (numYears) => {
-    // Generate an array of years starting from the current year
-    return Array.from({ length: numYears }, (_, i) => currentYear + i);
-  };
-
-  const years = generateYears(3); // Generate next 3 years
 
   const [anchorEl, setAnchorEl] = useState(null); // State to manage filter menu
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
@@ -205,16 +198,18 @@ const TableComponent = () => {
         <Table>
           <TableHeader />
           <TableBody>
-            {currentItems.map((row, index) => (
-              <CustomerRow
-                key={row.customer_id || index}
-                row={row}
-                isExpanded={expandedRows.includes(row.customer_id)}
-                handleRowClick={handleRowClick}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
-            ))}
+            {currentItems
+              .sort((a, b) => a.customer_id - b.customer_id) // Sort the items by customer_id
+              .map((row, index) => (
+                <CustomerRow
+                  key={row.customer_id || index}
+                  row={row}
+                  isExpanded={expandedRows.includes(row.customer_id)}
+                  handleRowClick={handleRowClick}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
