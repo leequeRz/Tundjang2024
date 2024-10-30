@@ -140,7 +140,7 @@ const FindCustomer = logRequest(
             .get();
         } else {
           // ถ้าไม่มีเงื่อนไขใดๆ ส่งข้อมูลลูกค้ามากที่สุด 15 รายการ
-          snapshot = await db.collection("customers").limit(15).get();
+          snapshot = await db.collection("customers").get();
         }
 
         const customers = []; // สร้าง array สำหรับเก็บข้อมูลลูกค้า
