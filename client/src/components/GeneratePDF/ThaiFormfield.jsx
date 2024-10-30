@@ -1,6 +1,5 @@
-import React, { useRef, useState, useEffect,} from "react";
+import React, { useRef, useState, useEffect } from "react";
 import "./ThaiFormfield.css";
-
 
 const defaultFormState = {
   start_date: null,
@@ -14,10 +13,14 @@ const defaultFormState = {
   role: "",
   group: "",
   tel: "",
+  date: "",
 };
 
 const ThaiGovForm = ({ initialFormProps = {} }) => {
-  const [formData, setFormData] = useState({ ...defaultFormState, ...initialFormProps });
+  const [formData, setFormData] = useState({
+    ...defaultFormState,
+    ...initialFormProps,
+  });
   const [tableData, setTableData] = useState([
     { item: "", quantity: "", assetNumber: "", notes: "" },
     { item: "", quantity: "", assetNumber: "", notes: "" },
@@ -37,7 +40,7 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
       [name]: value,
     }));
     console.log(`Input Changed - Name: ${name}, Value: ${value}`);
-    console.log(formData)
+    console.log(formData);
   };
 
   const handleTableInputChange = (index, e) => {
@@ -55,8 +58,25 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
         <div className="header">
           <h3>ใบยืมพัสดุ</h3>
           <div className="year-select">
-            <p>หน่วยงาน...................................</p>
-            <p>วันที่........เดือน..........พ.ศ...........</p>
+            <div>
+              <span>หน่วยงาน</span>
+              <input
+                name="group"
+                value={formData.group}
+                onChange={handleInputChange}
+                style={{ textAlign: "center" }}
+              />
+            </div>
+            <div>
+              <span>วันที่</span>
+              <input
+                name="date"
+                value={formData.date}
+                onChange={handleInputChange}
+                className="date"
+                style={{ textAlign: "center" }}
+              />
+            </div>
           </div>
         </div>
 
@@ -69,10 +89,8 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
               value={formData.name}
               onChange={handleInputChange}
               className="long"
-              style={{ 
-                textAlign: "center" ,
-        
-          
+              style={{
+                textAlign: "center",
               }}
             />
             <span>ตำแหน่ง</span>
@@ -101,7 +119,7 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
               className="phone"
               style={{ textAlign: "center" }}
             />
-                {/* <div className="underline short"></div> */}
+            {/* <div className="underline short"></div> */}
           </div>
 
           <div className="form-row">
@@ -121,7 +139,6 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
               style={{ textAlign: "center" }}
             />
           </div>
-        
 
           <div className="form-row">
             <span>วัตถุประสงค์เพื่อ</span>
@@ -130,14 +147,14 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
               value={formData.detail}
               onChange={handleInputChange}
               className="longest"
-              style={{ 
-                textAlign: "center" 
+              style={{
+                textAlign: "center",
               }}
             />
           </div>
 
           <div className="form-row">
-            <span >ตั้งแต่วันที่</span>
+            <span>ตั้งแต่วันที่</span>
             <input
               name="start_date"
               value={formData.start_date}
@@ -145,7 +162,7 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
               className="date"
               style={{ textAlign: "center" }}
             />
-            <span >ถึงวันที่</span>
+            <span>ถึงวันที่</span>
             <input
               name="end_date"
               value={formData.end_date}
@@ -208,7 +225,6 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
             ))}
           </tbody>
         </table>
-        
 
         {/* Terms Text */}
         <div className="terms-text">
