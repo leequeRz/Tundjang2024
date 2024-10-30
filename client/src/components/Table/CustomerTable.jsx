@@ -31,7 +31,8 @@ const theme = createTheme({
 });
 
 const TableComponent = () => {
-  const { customers, isLoading, error, deleteCustomer, refetchCustomers } = useCustomers();
+  const { customers, isLoading, error, deleteCustomer, refetchCustomers } =
+    useCustomers();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState(null);
   const [expandedRows, setExpandedRows] = useState([]);
@@ -74,7 +75,7 @@ const TableComponent = () => {
     setIsDeleting(true);
     setDeleteError(null);
     try {
-      await deleteCustomer(customer_id);  // ใช้ await ตรวจสอบการลบที่ frontend
+      await deleteCustomer(customer_id); // ใช้ await ตรวจสอบการลบที่ frontend
       await refetchCustomers(); // ดึงข้อมูลใหม่ทันทีหลังจากลบ
     } catch (error) {
       console.error("Deletion failed:", error.message);
@@ -83,7 +84,6 @@ const TableComponent = () => {
       setIsDeleting(false);
     }
   };
-  
 
   const handleRowClick = (customer_ID) => {
     setExpandedRows((prev) =>
@@ -173,16 +173,18 @@ const TableComponent = () => {
         <Table>
           <TableHeader />
           <TableBody>
-            {currentItems.map((row, index) => (
-              <CustomerRow
-                key={row.customer_id || index}
-                row={row}
-                isExpanded={expandedRows.includes(row.customer_id)}
-                handleRowClick={handleRowClick}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
-            ))}
+            {currentItems
+              .sort((a, b) => a.customer_id - b.customer_id) // Sort the items by customer_id
+              .map((row, index) => (
+                <CustomerRow
+                  key={row.customer_id || index}
+                  row={row}
+                  isExpanded={expandedRows.includes(row.customer_id)}
+                  handleRowClick={handleRowClick}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              ))}
           </TableBody>
         </Table>
       </TableContainer>

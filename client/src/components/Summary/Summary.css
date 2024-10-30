@@ -1,10 +1,9 @@
 .a4-landscape {
   width: 297mm;
   height: 210mm;
-
-  /* Common print settings */
-  margin: 0 auto;
-  padding: 10mm;
+  overflow-x: auto;
+  margin: auto;
+  box-shadow: none; /* Optional: remove shadow for a print-ready look */
   background: white;
 
   /* For screen preview */
