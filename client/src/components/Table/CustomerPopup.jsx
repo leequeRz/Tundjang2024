@@ -79,13 +79,12 @@ const CustomerPopup = ({ open, onClose, customerData }) => {
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
         <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-          {customerData ? "Update Customer" : "Add New Customer"}
+          {customerData ? "แก้ไขข้อมูลผู้ใช้" : "เพิ่มผู้ใช้ใหม่"}
         </Typography>
       </DialogTitle>
       <DialogContent>
         <DialogContentText sx={{ fontSize: "20px", mb: 5 }}>
-          Please fill out the form below to {customerData ? "update" : "add"} a
-          Customer.
+          กรุณา{customerData ? "แก้ไข" : "เพิ่ม"}ข้อมูล โดยข้อมูลต้องมีให้ครบทุกช่องเพื่อ {customerData ? "แก้ไข" : "เพิ่ม"} ผู้ใช้
         </DialogContentText>
 
         <Grid container spacing={2}>

@@ -31,27 +31,20 @@ const theme = createTheme({
 });
 
 const TableComponent = () => {
-  const { customers, isLoading, error, deleteCustomer, refetchCustomers } =
-    useCustomers();
+  const { customers, isLoading, error, deleteCustomer, refetchCustomers } = useCustomers();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState(null);
   const [expandedRows, setExpandedRows] = useState([]);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState(null);
-
-  const { searchTerm, setSearchTerm, filteredItems } = useSearch(customers, [
-    "name",
-    "surname",
-    "customer_id",
-  ]);
-  const { currentItems, currentPage, handlePageChange } = usePagination(
-    filteredItems,
-    15
-  );
+  
+  const { searchTerm, setSearchTerm, filteredItems } = useSearch(customers, ["name", "surname", "customer_id"]);
+  const { currentItems, currentPage, handlePageChange } = usePagination(filteredItems, 15);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
-
+  const [sortDirection, setSortDirection] = useState("asc"); // State สำหรับทิศทางการเรียง
+  
   const handleFilterClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -66,6 +59,11 @@ const TableComponent = () => {
     handleFilterClose();
   };
 
+  const handleSortDirectionChange = (direction) => {
+    setSortDirection(direction);
+    handleFilterClose();
+  };
+
   const handleEdit = (customer) => {
     setEditingCustomer(customer);
     setIsPopupOpen(true);
@@ -75,8 +73,8 @@ const TableComponent = () => {
     setIsDeleting(true);
     setDeleteError(null);
     try {
-      await deleteCustomer(customer_id); // ใช้ await ตรวจสอบการลบที่ frontend
-      await refetchCustomers(); // ดึงข้อมูลใหม่ทันทีหลังจากลบ
+      await deleteCustomer(customer_id);
+      await refetchCustomers();
     } catch (error) {
       console.error("Deletion failed:", error.message);
       setDeleteError("Failed to delete customer, please try again.");
@@ -142,21 +140,20 @@ const TableComponent = () => {
               onClick={handleFilterClick}
             >
               <FilterListIcon sx={{ mr: 1 }} />
-              Filters
+              Filters ID
             </Button>
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleFilterClose}
             >
-              {customers.map((customer) => (
-                <MenuItem
-                  key={customer.customer_id}
-                  onClick={() => handleCustomerIdFilter(customer.customer_id)}
-                >
-                  {customer.customer_id}
-                </MenuItem>
-              ))}
+
+              <MenuItem onClick={() => handleSortDirectionChange("asc")}>
+                เรียงจากน้อยไปมาก
+              </MenuItem>
+              <MenuItem onClick={() => handleSortDirectionChange("desc")}>
+                เรียงจากมากไปน้อย
+              </MenuItem>
             </Menu>
           </ThemeProvider>
         </Box>
@@ -174,7 +171,9 @@ const TableComponent = () => {
           <TableHeader />
           <TableBody>
             {currentItems
-              .sort((a, b) => a.customer_id - b.customer_id) // Sort the items by customer_id
+              .sort((a, b) => sortDirection === "asc"
+                ? a.customer_id - b.customer_id
+                : b.customer_id - a.customer_id)
               .map((row, index) => (
                 <CustomerRow
                   key={row.customer_id || index}
