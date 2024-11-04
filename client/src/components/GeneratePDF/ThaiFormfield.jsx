@@ -7,12 +7,12 @@ const defaultFormState = {
   item: "",
   count: "",
   item_number: "",
-  item2: " ",
-  count2: " ",
-  item_number2: " ",
-  item3: " ",
-  count3: " ",
-  item_number3: " ",
+  item2: "",
+  count2: "",
+  item_number2: "",
+  item3: "",
+  count3: "",
+  item_number3: "",
   status: "",
   detail: "",
   name: "",
@@ -229,7 +229,7 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
               </tr>
 
               <tr >
-                <td>1</td>
+                <td>2</td>
                 <td>
                   <input
                     name="item2"
@@ -264,7 +264,7 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
                 </td>
               </tr>
               <tr >
-                <td>1</td>
+                <td>3</td>
                 <td>
                   <input
                     name="item3"
