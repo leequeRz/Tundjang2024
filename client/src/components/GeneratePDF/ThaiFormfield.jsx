@@ -29,8 +29,8 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
   });
   const [tableData, setTableData] = useState([
     { item: "", count: "", item_number: "", notes: "" },
-    { item2: "", count2: "", item_number2: "", notes: "" },
-    { item3: "", count3: "", item_number3: "", notes: "" },
+    { item2: "", count2: "", item_number2: "", notes2: "" },
+    { item3: "", count3: "", item_number3: "", notes3: "" },
   ]);
   const pdfRef = useRef();
 
