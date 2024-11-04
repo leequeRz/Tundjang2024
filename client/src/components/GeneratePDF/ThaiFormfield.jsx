@@ -7,7 +7,13 @@ const defaultFormState = {
   item: "",
   count: "",
   item_number: "",
-  // status: "",
+  item2: "-",
+  count2: "0",
+  item_number2: "-",
+  item3: "-",
+  count3: "0",
+  item_number3: "-",
+  status: "",
   detail: "",
   name: "",
   role: "",
@@ -22,9 +28,9 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
     ...initialFormProps,
   });
   const [tableData, setTableData] = useState([
-    { item: "", quantity: "", assetNumber: "", notes: "" },
-    { item: "", quantity: "", assetNumber: "", notes: "" },
-    { item: "", quantity: "", assetNumber: "", notes: "" },
+    { item: "", count: "", item_number: "", notes: "" },
+    { item2: "", count2: "", item_number2: "", notes: "" },
+    { item3: "", count3: "", item_number3: "", notes: "" },
   ]);
   const pdfRef = useRef();
 
@@ -186,22 +192,21 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
             </tr>
           </thead>
           <tbody>
-            {tableData.map((row, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
+              <tr >
+                <td>1</td>
                 <td>
                   <input
                     name="item"
                     value={formData.item}
-                    onChange={(e) => handleTableInputChange(index, e)}
+                    onChange={handleInputChange}
                     style={{ textAlign: "center" }}
                   />
                 </td>
                 <td>
                   <input
-                    name="quantity"
-                    value={row.quantity}
-                    onChange={(e) => handleTableInputChange(index, e)}
+                    name="count"
+                    value={formData.count}
+                    onChange={handleInputChange}
                     style={{ textAlign: "center" }}
                   />
                 </td>
@@ -209,20 +214,91 @@ const ThaiGovForm = ({ initialFormProps = {} }) => {
                   <input
                     name="item_number"
                     value={formData.item_number}
-                    onChange={(e) => handleTableInputChange(index, e)}
+                    onChange={handleInputChange}
                     style={{ textAlign: "center" }}
                   />
                 </td>
                 <td>
                   <input
                     name="notes"
-                    value={row.notes}
-                    onChange={(e) => handleTableInputChange(index, e)}
+                    value={formData.notes}
+                    onChange={handleInputChange}
                     style={{ textAlign: "center" }}
                   />
                 </td>
               </tr>
-            ))}
+
+              <tr >
+                <td>1</td>
+                <td>
+                  <input
+                    name="item2"
+                    value={formData.item2}
+                    onChange={handleInputChange}
+                    style={{ textAlign: "center" }}
+                  />
+                </td>
+                <td>
+                  <input
+                    name="count2"
+                    value={formData.count2}
+                    onChange={handleInputChange}
+                    style={{ textAlign: "center" }}
+                  />
+                </td>
+                <td>
+                  <input
+                    name="item_number2"
+                    value={formData.item_number2}
+                    onChange={handleInputChange}
+                    style={{ textAlign: "center" }}
+                  />
+                </td>
+                <td>
+                  <input
+                    name="notes2"
+                    value={formData.notes2}
+                    onChange={handleInputChange}
+                    style={{ textAlign: "center" }}
+                  />
+                </td>
+              </tr>
+              <tr >
+                <td>1</td>
+                <td>
+                  <input
+                    name="item3"
+                    value={formData.item3}
+                    onChange={handleInputChange}
+                    style={{ textAlign: "center" }}
+                  />
+                </td>
+                <td>
+                  <input
+                    name="count3"
+                    value={formData.count3}
+                    onChange={handleInputChange}
+                    style={{ textAlign: "center" }}
+                  />
+                </td>
+                <td>
+                  <input
+                    name="item_number3"
+                    value={formData.item_number3}
+                    onChange={handleInputChange}
+                    style={{ textAlign: "center" }}
+                  />
+                </td>
+                <td>
+                  <input
+                    name="notes3"
+                    value={formData.notes3}
+                    onChange={handleInputChange}
+                    style={{ textAlign: "center" }}
+                  />
+                </td>
+              </tr>
+              
           </tbody>
         </table>
 
