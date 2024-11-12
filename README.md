@@ -45,5 +45,5 @@ https://www.figma.com/design/vQR5VgNEVZi4kafhymaKTk/%E0%B8%97%E0%B8%B8%E0%B8%99%
 https://drive.google.com/file/d/1bRJkyLSyATn5eqRTPRWjYrdBrElxecFd/view?usp=sharing
 
 ## Credit
-Bundit T. - Coding Project
-Tanaton P. - Coding Project
+- Bundit T. #Coding Project
+- Tanaton P. #Coding Project
