@@ -1,9 +1,11 @@
 # KMUTT เว็บยืมคืนพัสดุ
-เป็นเว็บไซต์เกี่ยวกับการจัดการยืมพัสดุต่างๆภายในองค์กร โดยตัวเว็บมีระบบดังนี้
+เป็นเว็บไซต์เกี่ยวกับการจัดการยืมพัสดุต่างๆภายในองค์กร โดยตัวเว็บพัฒนาขึ้นโดยใช้ React และ MUI ในการพัฒนาหน้าบ้านและใช้ Node.js และ Express.js ในการพัฒนาหลังบ้าน โดยตัวเว็บมีระบบดังนี้
 
  - CRUD ของ User และของที่ยืม (Record)
  - Export Form PDF ตาม User ที่ต้องการ
  - ตารางสรุปของที่ยืมของแต่ละ User
+ - Database ใช้ firebase มี Swagger เป็น API Document
+ - Deploy on Vercel
 
 ## Table of Contents
 
@@ -46,4 +48,4 @@ https://drive.google.com/file/d/1bRJkyLSyATn5eqRTPRWjYrdBrElxecFd/view?usp=shari
 
 ## Credit
 - Bundit T. #Coding Project
-- Tanaton P. #Coding Project
+- Tanaton P. # Coding Project
